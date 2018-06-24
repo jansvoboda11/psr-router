@@ -1,0 +1,27 @@
+{
+    "require": {
+        "php": "^7.2",
+        "psr/http-server-middleware": "^1.0"
+    },
+    "require-dev": {
+        "phpbench/phpbench": "^0.14.0",
+        "phpunit/phpunit": "^7.2",
+        "zendframework/zend-diactoros": "^1.7",
+        "phpstan/phpstan": "^0.10.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Svoboda\\PsrRouter\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "SvobodaTest\\PsrRouter\\": "tests/"
+        }
+    },
+    "scripts": {
+        "analyse": "phpstan analyse src/ --level=5",
+        "bench": "phpbench run benchmarks/ --report=aggregate",
+        "test": "phpunit tests/"
+    }
+}
