@@ -5,9 +5,9 @@
     },
     "require-dev": {
         "phpbench/phpbench": "^0.14.0",
+        "phpstan/phpstan": "^0.10.0",
         "phpunit/phpunit": "^7.2",
-        "zendframework/zend-diactoros": "^1.7",
-        "phpstan/phpstan": "^0.10.0"
+        "zendframework/zend-diactoros": "^1.7"
     },
     "autoload": {
         "psr-4": {
