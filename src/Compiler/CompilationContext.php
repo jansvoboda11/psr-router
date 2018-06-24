@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 namespace Svoboda\PsrRouter\Compiler;
 
+/**
+ * Defines all configurable variables used during compilation.
+ */
 class CompilationContext
 {
     /**
+     * The default attribute types and their regular expressions.
+     *
      * @var string[]
      */
     private const DEFAULT_TYPE_PATTERNS = [
@@ -15,6 +20,8 @@ class CompilationContext
     ];
 
     /**
+     * The default implicit attribute type.
+     *
      * @var string
      */
     private const DEFAULT_IMPLICIT_TYPE = "any";
