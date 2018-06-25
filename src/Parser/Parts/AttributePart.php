@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Svoboda\PsrRouter\Parser\Parts;
 
 use Svoboda\PsrRouter\Compiler\PartsVisitor;
-use function is_null;
 
 /**
  * Route part that represents user-defined attribute.

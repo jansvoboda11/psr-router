@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Svoboda\PsrRouter\Parser\Parts;
 
 use Svoboda\PsrRouter\Compiler\PartsVisitor;
-use function array_map;
 
 /**
  * Wrapper for the optional part of the route.
