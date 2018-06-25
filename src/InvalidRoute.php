@@ -12,6 +12,24 @@ use Svoboda\PsrRouter\Parser\Input;
 class InvalidRoute extends PsrRouterException
 {
     /**
+     * Invalid route with more attributes of the same name.
+     *
+     * @param string $path
+     * @param string[] $names
+     * @return InvalidRoute
+     */
+    public static function ambiguousAttribute(string $path, array $names): self
+    {
+        $names = array_map(function ($name) {
+            return "'$name'";
+        }, $names);
+
+        $names = implode(", ", $names);
+
+        return new self("Multiple attributes with name $names:\n$path");
+    }
+
+    /**
      * Invalid route with unexpected end.
      *
      * @param Input $path

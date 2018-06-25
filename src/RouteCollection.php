@@ -13,16 +13,22 @@ use IteratorAggregate;
 class RouteCollection implements IteratorAggregate
 {
     /**
+     * @var RouteFactory
+     */
+    private $factory;
+
+    /**
      * @var Route[]
      */
     private $routes;
 
     /**
-     * @param Route ...$routes
+     * @param RouteFactory $factory
      */
-    public function __construct(Route ...$routes)
+    public function __construct(?RouteFactory $factory = null)
     {
-        $this->routes = $routes;
+        $this->factory = $factory ?? new RouteFactory();
+        $this->routes = [];
     }
 
     /**
@@ -30,6 +36,7 @@ class RouteCollection implements IteratorAggregate
      *
      * @param string $path
      * @param string $handlerName
+     * @throws InvalidRoute
      */
     public function get(string $path, string $handlerName): void
     {
@@ -41,6 +48,7 @@ class RouteCollection implements IteratorAggregate
      *
      * @param string $path
      * @param string $handlerName
+     * @throws InvalidRoute
      */
     public function post(string $path, string $handlerName): void
     {
@@ -52,6 +60,7 @@ class RouteCollection implements IteratorAggregate
      *
      * @param string $path
      * @param string $handlerName
+     * @throws InvalidRoute
      */
     public function put(string $path, string $handlerName): void
     {
@@ -63,6 +72,7 @@ class RouteCollection implements IteratorAggregate
      *
      * @param string $path
      * @param string $handlerName
+     * @throws InvalidRoute
      */
     public function patch(string $path, string $handlerName): void
     {
@@ -74,6 +84,7 @@ class RouteCollection implements IteratorAggregate
      *
      * @param string $path
      * @param string $handlerName
+     * @throws InvalidRoute
      */
     public function delete(string $path, string $handlerName): void
     {
@@ -86,10 +97,11 @@ class RouteCollection implements IteratorAggregate
      * @param string $method
      * @param string $path
      * @param string $handlerName
+     * @throws InvalidRoute
      */
     public function route(string $method, string $path, string $handlerName): void
     {
-        $this->routes[] = new Route($method, $path, $handlerName);
+        $this->routes[] = $this->factory->createRoute($method, $path, $handlerName);
     }
 
     /**

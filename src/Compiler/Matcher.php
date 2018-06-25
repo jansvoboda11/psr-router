@@ -10,7 +10,7 @@ use Svoboda\PsrRouter\Match;
 /**
  * Matches the incoming request and provides the result.
  */
-interface MatcherInterface
+interface Matcher
 {
     /**
      * Matches the incoming request.

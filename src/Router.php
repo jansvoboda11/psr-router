@@ -6,9 +6,9 @@ namespace Svoboda\PsrRouter;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Svoboda\PsrRouter\Compiler\CompilationContext;
-use Svoboda\PsrRouter\Compiler\CompilerInterface;
+use Svoboda\PsrRouter\Compiler\Compiler;
+use Svoboda\PsrRouter\Compiler\Matcher;
 use Svoboda\PsrRouter\Compiler\NaiveCompiler;
-use Svoboda\PsrRouter\Parser\Parser;
 
 /**
  * Routes an incoming HTTP requests based on given collection of routes.
@@ -16,30 +16,18 @@ use Svoboda\PsrRouter\Parser\Parser;
 class Router
 {
     /**
-     * @var Compiler\MatcherInterface
+     * @var Matcher
      */
     private $matcher;
 
     /**
      * @param RouteCollection $routes
-     * @param Parser $parser
-     * @param CompilerInterface $compiler
+     * @param Compiler $compiler
      * @param CompilationContext $context
-     * @throws InvalidRoute
      */
-    public function __construct(
-        RouteCollection $routes,
-        Parser $parser,
-        CompilerInterface $compiler,
-        CompilationContext $context
-    ) {
-        $parsed = [];
-
-        foreach ($routes as $route) {
-            $parsed[] = $parser->parse($route);
-        }
-
-        $this->matcher = $compiler->compile($parsed, $context);
+    public function __construct(RouteCollection $routes, Compiler $compiler, CompilationContext $context)
+    {
+        $this->matcher = $compiler->compile($routes, $context);
     }
 
     /**
@@ -48,15 +36,13 @@ class Router
      * @param RouteCollection $routes
      * @param null|CompilationContext $context
      * @return self
-     * @throws InvalidRoute
      */
     public static function create(RouteCollection $routes, ?CompilationContext $context = null): self
     {
-        $parser = new Parser();
         $compiler = new NaiveCompiler();
         $context = $context ?? CompilationContext::createDefault();
 
-        return new self($routes, $parser, $compiler, $context);
+        return new self($routes, $compiler, $context);
     }
 
     /**

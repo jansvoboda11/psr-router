@@ -5,9 +5,6 @@ declare(strict_types=1);
 namespace Svoboda\PsrRouter\Parser\Parts;
 
 use Svoboda\PsrRouter\Compiler\PartsVisitor;
-use Svoboda\PsrRouter\InvalidRoute;
-use function array_intersect_key;
-use function array_merge;
 
 /**
  * Main part of the route consisting of static part, attributes and the next route part (usually main or optional).
@@ -63,10 +60,10 @@ class MainPart implements RoutePart
         $attributes = [];
 
         foreach ($this->attributes as $attribute) {
-            $attributes = $this->mergeAttributes($attributes, $attribute->getAttributes());
+            $attributes = array_merge($attributes, $attribute->getAttributes());
         }
 
-        return $this->mergeAttributes($attributes, $this->next->getAttributes());
+        return array_merge($attributes, $this->next->getAttributes());
     }
 
     /**
@@ -85,22 +82,5 @@ class MainPart implements RoutePart
         $this->next->accept($visitor);
 
         $visitor->leaveMain($this);
-    }
-
-    /**
-     * Merges two sets of attributes. Fails if both contain the same attribute.
-     *
-     * @param array $first
-     * @param array $second
-     * @return array
-     * @throws InvalidRoute
-     */
-    private function mergeAttributes(array $first, array $second): array
-    {
-        if (array_intersect_key($first, $second) !== []) {
-            throw new InvalidRoute();
-        }
-
-        return array_merge($first, $second);
     }
 }

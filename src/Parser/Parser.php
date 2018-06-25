@@ -11,7 +11,6 @@ use Svoboda\PsrRouter\Parser\Parts\MainPart;
 use Svoboda\PsrRouter\Parser\Parts\OptionalPart;
 use Svoboda\PsrRouter\Parser\Parts\RoutePart;
 use Svoboda\PsrRouter\Parser\Parts\StaticPart;
-use Svoboda\PsrRouter\Route;
 
 /**
  * Parses the user-defined route.
@@ -33,34 +32,16 @@ class Parser
     private const MAX_ATTRIBUTE_TYPE_LENGTH = 32;
 
     /**
-     * Parse the given route.
-     *
-     * @param Route $route
-     * @return ParsedRoute
-     * @throws InvalidRoute
-     */
-    public function parse(Route $route): ParsedRoute
-    {
-        $method = $route->getMethod();
-
-        $path = new Input($route->getPath());
-
-        $ast = $this->parsePath($path);
-
-        $handlerName = $route->getHandlerName();
-
-        return new ParsedRoute($method, $ast, $handlerName);
-    }
-
-    /**
      * Parse the route path specification.
      *
-     * @param Input $path
+     * @param string $path
      * @return RoutePart
      * @throws InvalidRoute
      */
-    private function parsePath(Input $path): RoutePart
+    public function parse(string $path): RoutePart
     {
+        $path = new Input($path);
+
         try {
             $part = $this->parseMain($path);
         } catch (UnexpectedCharacter $exception) {

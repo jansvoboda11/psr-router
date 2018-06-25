@@ -73,7 +73,8 @@ class AttributePart implements RoutePart
     public function getAttributes(): array
     {
         return [
-            $this->name => [
+            [
+                "name" => $this->name,
                 "type" => $this->type,
                 "required" => true,
             ]

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Svoboda\PsrRouter;
 
+use Svoboda\PsrRouter\Parser\Parts\RoutePart;
+
 /**
  * Route, duh.
  */
@@ -15,9 +17,9 @@ class Route
     private $method;
 
     /**
-     * @var string
+     * @var RoutePart
      */
-    private $path;
+    private $ast;
 
     /**
      * @var string
@@ -26,13 +28,13 @@ class Route
 
     /**
      * @param string $method
-     * @param string $path
+     * @param RoutePart $ast
      * @param string $handlerName
      */
-    public function __construct(string $method, string $path, string $handlerName)
+    public function __construct(string $method, RoutePart $ast, string $handlerName)
     {
         $this->method = $method;
-        $this->path = $path;
+        $this->ast = $ast;
         $this->handlerName = $handlerName;
     }
 
@@ -47,22 +49,42 @@ class Route
     }
 
     /**
-     * Returns the path specification.
+     * Returns the top route part.
      *
-     * @return string
+     * @return RoutePart
      */
-    public function getPath(): string
+    public function getAst(): RoutePart
     {
-        return $this->path;
+        return $this->ast;
     }
 
     /**
-     * Returns the name of the request handler.
+     * Returns the handler name.
      *
      * @return string
      */
     public function getHandlerName(): string
     {
         return $this->handlerName;
+    }
+
+    /**
+     * Rebuilds the route definition.
+     *
+     * @return string
+     */
+    public function rebuildDefinition(): string
+    {
+        return $this->ast->getDefinition();
+    }
+
+    /**
+     * Gathers all route attributes.
+     *
+     * @return array
+     */
+    public function gatherAttributes(): array
+    {
+        return $this->ast->getAttributes();
     }
 }

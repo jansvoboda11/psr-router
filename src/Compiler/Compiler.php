@@ -3,19 +3,20 @@
 declare(strict_types=1);
 
 namespace Svoboda\PsrRouter\Compiler;
-use Svoboda\PsrRouter\Parser\ParsedRoute;
+
+use Svoboda\PsrRouter\RouteCollection;
 
 /**
  * Creates a matcher from parsed routes.
  */
-interface CompilerInterface
+interface Compiler
 {
     /**
      * Compiles the parsed routes into a matcher in the given context.
      *
-     * @param ParsedRoute[] $routes
+     * @param RouteCollection $routes
      * @param CompilationContext $context
-     * @return MatcherInterface
+     * @return Matcher
      */
-    public function compile(array $routes, CompilationContext $context): MatcherInterface;
+    public function compile(RouteCollection $routes, CompilationContext $context): Matcher;
 }

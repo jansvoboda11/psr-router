@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace Svoboda\PsrRouter\Compiler;
 
 use Psr\Http\Message\ServerRequestInterface;
-use Svoboda\PsrRouter\Parser\ParsedRoute;
 use Svoboda\PsrRouter\Match;
-use function preg_match;
+use Svoboda\PsrRouter\Route;
 
 /**
  * Iterates over array of individual regular expressions and matches them one-by-one.
  */
-class NaiveMatcher implements MatcherInterface
+class NaiveMatcher implements Matcher
 {
     /**
      * @var array
@@ -52,18 +51,20 @@ class NaiveMatcher implements MatcherInterface
     /**
      * Creates a match.
      *
-     * @param ParsedRoute $route
+     * @param Route $route
      * @param ServerRequestInterface $request
      * @param array $matches
      * @return Match
      */
-    private function createResult(ParsedRoute $route, ServerRequestInterface $request, array $matches): Match
+    private function createResult(Route $route, ServerRequestInterface $request, array $matches): Match
     {
         $handlerName = $route->getHandlerName();
 
         $attributes = $route->gatherAttributes();
 
-        foreach ($attributes as $name => $info) {
+        foreach ($attributes as $attribute) {
+            $name = $attribute["name"];
+
             $value = $matches[$name] ?? null;
 
             $request = $request->withAttribute($name, $value);

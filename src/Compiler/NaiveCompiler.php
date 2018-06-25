@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Svoboda\PsrRouter\Compiler;
 
+use Svoboda\PsrRouter\RouteCollection;
+
 /**
  * Creates an array of individual regular expressions for each route.
  */
-class NaiveCompiler implements CompilerInterface
+class NaiveCompiler implements Compiler
 {
     /**
      * @var NaiveRegexVisitor
@@ -25,7 +27,7 @@ class NaiveCompiler implements CompilerInterface
     /**
      * @inheritdoc
      */
-    public function compile(array $routes, CompilationContext $context): MatcherInterface
+    public function compile(RouteCollection $routes, CompilationContext $context): Matcher
     {
         $rs = [];
 

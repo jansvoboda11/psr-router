@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Svoboda\PsrRouter\Parser\Parts;
 
 use Svoboda\PsrRouter\Compiler\PartsVisitor;
-use Svoboda\PsrRouter\InvalidRoute;
 
 /**
  * Part of the route definition.
@@ -23,7 +22,6 @@ interface RoutePart
      * Aggregates all route attributes.
      *
      * @return array
-     * @throws InvalidRoute
      */
     public function getAttributes(): array;
 

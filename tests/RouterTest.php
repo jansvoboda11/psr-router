@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SvobodaTest\PsrRouter;
 
 use PHPUnit\Framework\TestCase;
-use Svoboda\PsrRouter\Route;
 use Svoboda\PsrRouter\Router;
 use Svoboda\PsrRouter\RouteCollection;
 use Zend\Diactoros\ServerRequest;
@@ -17,9 +16,8 @@ class RouterTest extends TestCase
     {
         $request = $this->createGetRequest("/users");
 
-        $routes = new RouteCollection(
-            new Route("GET", "/users", "Users")
-        );
+        $routes = new RouteCollection();
+        $routes->get("/users", "Users");
 
         $router = Router::create($routes);
 
@@ -33,10 +31,9 @@ class RouterTest extends TestCase
     {
         $request = $this->createGetRequest("/admins");
 
-        $routes = new RouteCollection(
-            new Route("GET", "/users", "Users"),
-            new Route("GET", "/admins", "Admins")
-        );
+        $routes = new RouteCollection();
+        $routes->get("/users", "Users");
+        $routes->get("/admins", "Admins");
 
         $router = Router::create($routes);
 
@@ -50,10 +47,9 @@ class RouterTest extends TestCase
     {
         $request = $this->createGetRequest("/admins");
 
-        $routes = new RouteCollection(
-            new Route("GET", "/admins", "Admins1"),
-            new Route("GET", "/admins", "Admins2")
-        );
+        $routes = new RouteCollection();
+        $routes->get("/admins", "Admins1");
+        $routes->get("/admins", "Admins2");
 
         $router = Router::create($routes);
 
@@ -68,9 +64,9 @@ class RouterTest extends TestCase
     {
         $request = $this->createGetRequest("/admins/jan/123");
 
-        $routes = new RouteCollection(
-            new Route("GET", "/admins/{name}/{id}", "Admins")
-        );
+
+        $routes = new RouteCollection();
+        $routes->get("/admins/{name}/{id}", "Admins");
 
         $router = Router::create($routes);
 
@@ -86,10 +82,9 @@ class RouterTest extends TestCase
     {
         $request = $this->createGetRequest("/users/jan/123");
 
-        $routes = new RouteCollection(
-            new Route("GET", "/admins/{name}/{id}", "Admins"),
-            new Route("GET", "/users/{name}/{id}", "Users")
-        );
+        $routes = new RouteCollection();
+        $routes->get("/admins/{name}/{id}", "Admins");
+        $routes->get("/users/{name}/{id}", "Users");
 
         $router = Router::create($routes);
 
@@ -105,9 +100,8 @@ class RouterTest extends TestCase
     {
         $request = $this->createGetRequest("/users/jan");
 
-        $routes = new RouteCollection(
-            new Route("GET", "/users/{name}[/{id}]", "Users")
-        );
+        $routes = new RouteCollection();
+        $routes->get("/users/{name}[/{id}]", "Users");
 
         $router = Router::create($routes);
 
@@ -123,10 +117,9 @@ class RouterTest extends TestCase
     {
         $request = $this->createPostRequest("/users");
 
-        $routes = new RouteCollection(
-            new Route("GET", "/users", "Get"),
-            new Route("POST", "/users", "Post")
-        );
+        $routes = new RouteCollection();
+        $routes->get("/users", "Get");
+        $routes->post("/users", "Post");
 
         $router = Router::create($routes);
 
@@ -140,9 +133,8 @@ class RouterTest extends TestCase
     {
         $request = $this->createGetRequest("/users?key=value");
 
-        $routes = new RouteCollection(
-            new Route("GET", "/users", "Get")
-        );
+        $routes = new RouteCollection();
+        $routes->get("/users", "Get");
 
         $router = Router::create($routes);
 
@@ -156,9 +148,8 @@ class RouterTest extends TestCase
     {
         $request = $this->createGetRequest("/users#main");
 
-        $routes = new RouteCollection(
-            new Route("GET", "/users", "Get")
-        );
+        $routes = new RouteCollection();
+        $routes->get("/users", "Get");
 
         $router = Router::create($routes);
 
@@ -172,9 +163,8 @@ class RouterTest extends TestCase
     {
         $request = $this->createGetRequest("/users/jan/123");
 
-        $routes = new RouteCollection(
-            new Route("GET", "/users/{name}", "Users")
-        );
+        $routes = new RouteCollection();
+        $routes->get("/users/{name}", "Users");
 
         $router = Router::create($routes);
 
@@ -187,9 +177,8 @@ class RouterTest extends TestCase
     {
         $request = $this->createGetRequest("/api/users/jan");
 
-        $routes = new RouteCollection(
-            new Route("GET", "/users/{name}", "Users")
-        );
+        $routes = new RouteCollection();
+        $routes->get("/users/{name}", "Users");
 
         $router = Router::create($routes);
 
