@@ -112,4 +112,35 @@ class InputTest extends TestCase
 
         self::assertTrue($input->atEnd());
     }
+
+    public function test_index_initially_returns_zero()
+    {
+        $input = new Input("abc");
+
+        self::assertEquals(0, $input->getIndex());
+    }
+
+    public function test_index_returns_correct_number()
+    {
+        $input = new Input("abc");
+
+        $input->take();
+        $input->take();
+
+        self::assertEquals(2, $input->getIndex());
+    }
+
+    public function test_index_stops_after_the_last_character()
+    {
+        $input = new Input("abc");
+
+        $input->take();
+        $input->take();
+        $input->take();
+        $input->take();
+        $input->take();
+        $input->take();
+
+        self::assertEquals(3, $input->getIndex());
+    }
 }

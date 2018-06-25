@@ -17,16 +17,22 @@ class Input
     public const END = "%";
 
     /**
-     * @var string[]
+     * @var string
      */
     private $input;
+
+    /**
+     * @var int
+     */
+    private $index;
 
     /**
      * @param string $input
      */
     public function __construct(string $input)
     {
-        $this->input = empty($input) ? [] : str_split($input);
+        $this->input = $input;
+        $this->index = 0;
     }
 
     /**
@@ -40,7 +46,7 @@ class Input
             return self::END;
         }
 
-        return $this->input[0];
+        return $this->input[$this->index];
     }
 
     /**
@@ -54,24 +60,26 @@ class Input
             return self::END;
         }
 
-        return array_shift($this->input);
+        $char = $this->input[$this->index];
+
+        $this->index += 1;
+
+        return $char;
     }
 
     /**
      * Removes the specified character from the input. Fails if it does not
      * match the first character in the input.
      *
-     * @param string $chars
+     * @param string $char
      * @throws UnexpectedCharacter
      */
-    public function expect(string $chars): void
+    public function expect(string $char): void
     {
-        $expected = str_split($chars);
-
         $taken = $this->take();
 
-        if (!in_array($taken, $expected)) {
-            throw new UnexpectedCharacter();
+        if ($taken !== $char) {
+            throw new UnexpectedCharacter($this->input, $this->index, $char);
         }
     }
 
@@ -128,6 +136,26 @@ class Input
      */
     public function atEnd(): bool
     {
-        return empty($this->input);
+        return $this->index === strlen($this->input);
+    }
+
+    /**
+     * Returns the original input.
+     *
+     * @return string
+     */
+    public function getInput(): string
+    {
+        return $this->input;
+    }
+
+    /**
+     * Returns index of the current character.
+     *
+     * @return int
+     */
+    public function getIndex(): int
+    {
+        return $this->index;
     }
 }
