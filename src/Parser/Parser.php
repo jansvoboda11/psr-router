@@ -69,7 +69,11 @@ class Parser
      */
     private function parsePath(Input $path): RoutePart
     {
-        $part = $this->parseMain($path);
+        try {
+            $part = $this->parseMain($path);
+        } catch (UnexpectedCharacter $exception) {
+            throw new InvalidRoute();
+        }
 
         if (!$path->atEnd()) {
             throw new InvalidRoute();
@@ -84,6 +88,7 @@ class Parser
      * @param Input $path
      * @return MainPart
      * @throws InvalidRoute
+     * @throws UnexpectedCharacter
      */
     private function parseMain(Input $path): MainPart
     {
@@ -91,7 +96,7 @@ class Parser
 
         $attributes = $this->parseAttributes($path);
 
-        $char = $path->peek(true);
+        $char = $path->peek();
 
         if ($char === "}") {
             throw new InvalidRoute();
@@ -119,7 +124,6 @@ class Parser
      *
      * @param Input $path
      * @return StaticPart
-     * @throws InvalidRoute
      */
     private function parseStatic(Input $path): StaticPart
     {
@@ -134,12 +138,13 @@ class Parser
      * @param Input $path
      * @return AttributePart[]
      * @throws InvalidRoute
+     * @throws UnexpectedCharacter
      */
     private function parseAttributes(Input $path): array
     {
         $attributes = [];
 
-        while ($path->peek(true) === "{") {
+        while ($path->peek() === "{") {
             $attributes[] = $this->parseAttribute($path);
         }
 
@@ -152,6 +157,7 @@ class Parser
      * @param Input $path
      * @return AttributePart
      * @throws InvalidRoute
+     * @throws UnexpectedCharacter
      */
     private function parseAttribute(Input $path): AttributePart
     {
@@ -172,6 +178,7 @@ class Parser
      * @param Input $path
      * @return OptionalPart
      * @throws InvalidRoute
+     * @throws UnexpectedCharacter
      */
     private function parseOptional(Input $path): OptionalPart
     {

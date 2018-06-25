@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Svoboda\PsrRouter\Parser;
 
-use Svoboda\PsrRouter\InvalidRoute;
-
 /**
  * Provides parser-friendly methods around given string.
  */
@@ -28,44 +26,35 @@ class Input
      */
     public function __construct(string $input)
     {
-        $this->input = str_split($input);
+        $this->input = empty($input) ? [] : str_split($input);
     }
 
     /**
      * Returns the next character without removing it from the input.
      *
-     * @param bool $canBeEof
      * @return string
-     * @throws InvalidRoute
      */
-    public function peek(bool $canBeEof = false): string
+    public function peek(): string
     {
-        if (!$this->atEnd()) {
-            return $this->input[0];
+        if ($this->atEnd()) {
+            return self::END;
         }
 
-        if (!$canBeEof) {
-            throw new InvalidRoute();
-        }
-
-        return self::END;
+        return $this->input[0];
     }
 
     /**
      * Returns the next character and removes it from the input.
      *
      * @return string
-     * @throws InvalidRoute
      */
     public function take(): string
     {
-        $char = array_shift($this->input);
-
-        if (is_null($char)) {
-            throw new InvalidRoute();
+        if ($this->atEnd()) {
+            return self::END;
         }
 
-        return $char;
+        return array_shift($this->input);
     }
 
     /**
@@ -73,14 +62,16 @@ class Input
      * match the first character in the input.
      *
      * @param string $chars
-     * @throws InvalidRoute
+     * @throws UnexpectedCharacter
      */
     public function expect(string $chars): void
     {
+        $expected = str_split($chars);
+
         $taken = $this->take();
 
-        if (!in_array($taken, str_split($chars))) {
-            throw new InvalidRoute();
+        if (!in_array($taken, $expected)) {
+            throw new UnexpectedCharacter();
         }
     }
 
@@ -90,7 +81,6 @@ class Input
      *
      * @param string $allowed
      * @return string
-     * @throws InvalidRoute
      */
     public function takeAllWhile(string $allowed): string
     {
@@ -113,7 +103,6 @@ class Input
      *
      * @param string $banned
      * @return string
-     * @throws InvalidRoute
      */
     public function takeAllUntil(string $banned): string
     {
@@ -123,7 +112,7 @@ class Input
 
         $taken = "";
 
-        while (!in_array($this->peek(true), $banned)) {
+        while (!in_array($this->peek(), $banned)) {
             $char = $this->take();
 
             $taken .= $char;
