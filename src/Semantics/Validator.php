@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Svoboda\PsrRouter\Semantics;
 
-use Svoboda\PsrRouter\InvalidRoute;
-use Svoboda\PsrRouter\Parser\Parts\RoutePart;
+use Svoboda\PsrRouter\Route\InvalidRoute;
+use Svoboda\PsrRouter\Route\Parts\RoutePart;
 
 /**
  * Validates the semantics of route definitions.

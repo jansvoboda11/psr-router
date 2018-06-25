@@ -6,7 +6,7 @@ namespace SvobodaTest\PsrRouter\Parser;
 
 use PHPUnit\Framework\TestCase;
 use Svoboda\PsrRouter\Parser\Parser;
-use Svoboda\PsrRouter\InvalidRoute;
+use Svoboda\PsrRouter\Route\InvalidRoute;
 
 class ParserTest extends TestCase
 {

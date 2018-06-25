@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\PsrRouter;
+namespace Svoboda\PsrRouter\Route;
 
-use Svoboda\PsrRouter\Parser\Parts\RoutePart;
+use Svoboda\PsrRouter\Route\Parts\RoutePart;
 
 /**
  * Route, duh.

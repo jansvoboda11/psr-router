@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace SvobodaTest\PsrRouter\Semantics;
 
 use PHPStan\Testing\TestCase;
-use Svoboda\PsrRouter\InvalidRoute;
+use Svoboda\PsrRouter\Route\InvalidRoute;
 use Svoboda\PsrRouter\Parser\Parser;
 use Svoboda\PsrRouter\Semantics\Validator;
 

@@ -6,7 +6,7 @@ namespace Svoboda\PsrRouter\Compiler;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Svoboda\PsrRouter\Match;
-use Svoboda\PsrRouter\Route;
+use Svoboda\PsrRouter\Route\Route;
 
 /**
  * Iterates over array of individual regular expressions and matches them one-by-one.

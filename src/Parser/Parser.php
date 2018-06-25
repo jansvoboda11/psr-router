@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Svoboda\PsrRouter\Parser;
 
-use Svoboda\PsrRouter\InvalidRoute;
-use Svoboda\PsrRouter\Parser\Parts\AttributePart;
-use Svoboda\PsrRouter\Parser\Parts\EmptyPart;
-use Svoboda\PsrRouter\Parser\Parts\MainPart;
-use Svoboda\PsrRouter\Parser\Parts\OptionalPart;
-use Svoboda\PsrRouter\Parser\Parts\RoutePart;
-use Svoboda\PsrRouter\Parser\Parts\StaticPart;
+use Svoboda\PsrRouter\Route\InvalidRoute;
+use Svoboda\PsrRouter\Route\Parts\AttributePart;
+use Svoboda\PsrRouter\Route\Parts\EmptyPart;
+use Svoboda\PsrRouter\Route\Parts\MainPart;
+use Svoboda\PsrRouter\Route\Parts\OptionalPart;
+use Svoboda\PsrRouter\Route\Parts\RoutePart;
+use Svoboda\PsrRouter\Route\Parts\StaticPart;
 
 /**
  * Parses the user-defined route.

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\PsrRouter;
+namespace Svoboda\PsrRouter\Route;
 
 use Svoboda\PsrRouter\Parser\Parser;
 use Svoboda\PsrRouter\Semantics\Validator;

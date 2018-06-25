@@ -6,6 +6,9 @@ namespace Svoboda\PsrRouter;
 
 use ArrayIterator;
 use IteratorAggregate;
+use Svoboda\PsrRouter\Route\InvalidRoute;
+use Svoboda\PsrRouter\Route\Route;
+use Svoboda\PsrRouter\Route\RouteFactory;
 
 /**
  * Collection of routes.

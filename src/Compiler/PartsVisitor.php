@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Svoboda\PsrRouter\Compiler ;
 
-use Svoboda\PsrRouter\Parser\Parts\AttributePart;
-use Svoboda\PsrRouter\Parser\Parts\MainPart;
-use Svoboda\PsrRouter\Parser\Parts\OptionalPart;
-use Svoboda\PsrRouter\Parser\Parts\StaticPart;
+use Svoboda\PsrRouter\Route\Parts\AttributePart;
+use Svoboda\PsrRouter\Route\Parts\MainPart;
+use Svoboda\PsrRouter\Route\Parts\OptionalPart;
+use Svoboda\PsrRouter\Route\Parts\StaticPart;
 
 /**
  * Two-pass visitor of all parts of the route.

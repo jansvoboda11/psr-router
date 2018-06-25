@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\PsrRouter;
+namespace Svoboda\PsrRouter\Route;
 
+use Svoboda\PsrRouter\Exception;
 use Svoboda\PsrRouter\Parser\Input;
 
 /**

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\PsrRouter\Parser\Parts;
+namespace Svoboda\PsrRouter\Route\Parts;
 
 use Svoboda\PsrRouter\Compiler\PartsVisitor;
 

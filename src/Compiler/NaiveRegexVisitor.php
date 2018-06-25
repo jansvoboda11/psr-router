@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Svoboda\PsrRouter\Compiler;
 
-use Svoboda\PsrRouter\Parser\Parts\AttributePart;
-use Svoboda\PsrRouter\Parser\Parts\OptionalPart;
-use Svoboda\PsrRouter\Parser\Parts\RoutePart;
-use Svoboda\PsrRouter\Parser\Parts\StaticPart;
+use Svoboda\PsrRouter\Route\Parts\AttributePart;
+use Svoboda\PsrRouter\Route\Parts\OptionalPart;
+use Svoboda\PsrRouter\Route\Parts\RoutePart;
+use Svoboda\PsrRouter\Route\Parts\StaticPart;
 
 /**
  * Creates a single naive regular expression for a route.
