@@ -41,7 +41,6 @@ class ValidatorTest extends TestCase
 
     public function test_path_with_one_required_attribute()
     {
-
         $ast = $this->parser->parse("/users/{name}");
 
         $this->validator->validate($ast);
@@ -51,7 +50,6 @@ class ValidatorTest extends TestCase
 
     public function test_path_with_one_optional_attribute()
     {
-
         $ast = $this->parser->parse("/users[/{name}]");
 
         $this->validator->validate($ast);
@@ -61,7 +59,6 @@ class ValidatorTest extends TestCase
 
     public function test_path_with_two_attributes()
     {
-
         $ast = $this->parser->parse("/users/{id}/{name}");
 
         $this->validator->validate($ast);
@@ -71,7 +68,6 @@ class ValidatorTest extends TestCase
 
     public function test_path_with_required_and_optional_attribute()
     {
-
         $ast = $this->parser->parse("/users/{id}[/{name}]");
 
         $this->validator->validate($ast);
