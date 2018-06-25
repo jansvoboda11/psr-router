@@ -35,60 +35,60 @@ class RouteCollection implements IteratorAggregate
      * Creates a GET route.
      *
      * @param string $path
-     * @param string $handlerName
+     * @param mixed $handler
      * @throws InvalidRoute
      */
-    public function get(string $path, string $handlerName): void
+    public function get(string $path, $handler): void
     {
-        $this->route("GET", $path, $handlerName);
+        $this->route("GET", $path, $handler);
     }
 
     /**
      * Creates a POST route.
      *
      * @param string $path
-     * @param string $handlerName
+     * @param mixed $handler
      * @throws InvalidRoute
      */
-    public function post(string $path, string $handlerName): void
+    public function post(string $path, $handler): void
     {
-        $this->route("POST", $path, $handlerName);
+        $this->route("POST", $path, $handler);
     }
 
     /**
      * Creates a PUT route.
      *
      * @param string $path
-     * @param string $handlerName
+     * @param mixed $handler
      * @throws InvalidRoute
      */
-    public function put(string $path, string $handlerName): void
+    public function put(string $path, $handler): void
     {
-        $this->route("PUT", $path, $handlerName);
+        $this->route("PUT", $path, $handler);
     }
 
     /**
      * Creates a PATCH route.
      *
      * @param string $path
-     * @param string $handlerName
+     * @param mixed $handler
      * @throws InvalidRoute
      */
-    public function patch(string $path, string $handlerName): void
+    public function patch(string $path, $handler): void
     {
-        $this->route("PATCH", $path, $handlerName);
+        $this->route("PATCH", $path, $handler);
     }
 
     /**
      * Creates a DELETE route.
      *
      * @param string $path
-     * @param string $handlerName
+     * @param mixed $handler
      * @throws InvalidRoute
      */
-    public function delete(string $path, string $handlerName): void
+    public function delete(string $path, $handler): void
     {
-        $this->route("DELETE", $path, $handlerName);
+        $this->route("DELETE", $path, $handler);
     }
 
     /**
@@ -96,12 +96,12 @@ class RouteCollection implements IteratorAggregate
      *
      * @param string $method
      * @param string $path
-     * @param string $handlerName
+     * @param mixed $handler
      * @throws InvalidRoute
      */
-    public function route(string $method, string $path, string $handlerName): void
+    public function route(string $method, string $path, $handler): void
     {
-        $this->routes[] = $this->factory->createRoute($method, $path, $handlerName);
+        $this->routes[] = $this->factory->createRoute($method, $path, $handler);
     }
 
     /**

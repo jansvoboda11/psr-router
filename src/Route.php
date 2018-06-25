@@ -22,20 +22,20 @@ class Route
     private $ast;
 
     /**
-     * @var string
+     * @var mixed
      */
-    private $handlerName;
+    private $handler;
 
     /**
      * @param string $method
      * @param RoutePart $ast
-     * @param string $handlerName
+     * @param mixed $handler
      */
-    public function __construct(string $method, RoutePart $ast, string $handlerName)
+    public function __construct(string $method, RoutePart $ast, $handler)
     {
         $this->method = $method;
         $this->ast = $ast;
-        $this->handlerName = $handlerName;
+        $this->handler = $handler;
     }
 
     /**
@@ -59,13 +59,13 @@ class Route
     }
 
     /**
-     * Returns the handler name.
+     * Returns the handler.
      *
-     * @return string
+     * @return mixed
      */
-    public function getHandlerName(): string
+    public function getHandler()
     {
-        return $this->handlerName;
+        return $this->handler;
     }
 
     /**

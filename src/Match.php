@@ -12,9 +12,9 @@ use Psr\Http\Message\ServerRequestInterface;
 class Match
 {
     /**
-     * @var string
+     * @var mixed
      */
-    private $handlerName;
+    private $handler;
 
     /**
      * @var ServerRequestInterface
@@ -22,23 +22,23 @@ class Match
     private $request;
 
     /**
-     * @param string $handlerName
+     * @param mixed $handler
      * @param ServerRequestInterface $request
      */
-    public function __construct(string $handlerName, ServerRequestInterface $request)
+    public function __construct($handler, ServerRequestInterface $request)
     {
-        $this->handlerName = $handlerName;
+        $this->handler = $handler;
         $this->request = $request;
     }
 
     /**
      * Returns name of the request handler.
      *
-     * @return string
+     * @return mixed
      */
-    public function getHandlerName(): string
+    public function getHandler()
     {
-        return $this->handlerName;
+        return $this->handler;
     }
 
     /**

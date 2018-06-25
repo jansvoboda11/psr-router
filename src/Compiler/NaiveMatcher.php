@@ -58,7 +58,7 @@ class NaiveMatcher implements Matcher
      */
     private function createResult(Route $route, ServerRequestInterface $request, array $matches): Match
     {
-        $handlerName = $route->getHandlerName();
+        $handler = $route->getHandler();
 
         $attributes = $route->gatherAttributes();
 
@@ -70,6 +70,6 @@ class NaiveMatcher implements Matcher
             $request = $request->withAttribute($name, $value);
         }
 
-        return new Match($handlerName, $request);
+        return new Match($handler, $request);
     }
 }

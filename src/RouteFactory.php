@@ -34,16 +34,16 @@ class RouteFactory
      *
      * @param string $method
      * @param string $path
-     * @param string $handlerName
+     * @param mixed $handler
      * @return Route
      * @throws InvalidRoute
      */
-    public function createRoute(string $method, string $path, string $handlerName)
+    public function createRoute(string $method, string $path, $handler)
     {
         $ast = $this->parser->parse($path);
 
         $this->validator->validate($ast);
 
-        return new Route($method, $ast, $handlerName);
+        return new Route($method, $ast, $handler);
     }
 }
