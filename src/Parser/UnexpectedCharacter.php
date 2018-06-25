@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Svoboda\PsrRouter\Parser;
 
-use Svoboda\PsrRouter\PsrRouterException;
+use Svoboda\PsrRouter\Exception;
 
 /**
  * Unexpected character in the input.
  */
-class UnexpectedCharacter extends PsrRouterException
+class UnexpectedCharacter extends Exception
 {
     /**
      * @var Input

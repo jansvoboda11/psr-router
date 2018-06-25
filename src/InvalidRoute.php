@@ -9,7 +9,7 @@ use Svoboda\PsrRouter\Parser\Input;
 /**
  * Invalid route specification.
  */
-class InvalidRoute extends PsrRouterException
+class InvalidRoute extends Exception
 {
     /**
      * Invalid route with more attributes of the same name.
