@@ -106,6 +106,12 @@ class ParserTest extends TestCase
     public function test_path_with_missing_attribute_info()
     {
         $this->expectException(InvalidRoute::class);
+        $this->expectExceptionMessage(<<<MESSAGE
+The attribute name is missing:
+/users/{}
+        ^
+MESSAGE
+        );
 
         $route = new Route("GET", "/users/{}", "Action");
 
@@ -115,6 +121,12 @@ class ParserTest extends TestCase
     public function test_path_with_missing_attribute_name()
     {
         $this->expectException(InvalidRoute::class);
+        $this->expectExceptionMessage(<<<MESSAGE
+The attribute name is missing:
+/users/{:any}
+        ^
+MESSAGE
+        );
 
         $route = new Route("GET", "/users/{:any}", "Action");
 
@@ -124,6 +136,12 @@ class ParserTest extends TestCase
     public function test_path_with_too_long_attribute_name()
     {
         $this->expectException(InvalidRoute::class);
+        $this->expectExceptionMessage(<<<MESSAGE
+The attribute name exceeded maximum allowed length of 32 characters:
+/users/{wayTooLongAttributeNameNoOneShouldNeed:any}
+                                             ^
+MESSAGE
+        );
 
         $route = new Route("GET", "/users/{wayTooLongAttributeNameNoOneShouldNeed:any}", "Action");
 
@@ -133,6 +151,12 @@ class ParserTest extends TestCase
     public function test_path_with_malformed_attribute_name()
     {
         $this->expectException(InvalidRoute::class);
+        $this->expectExceptionMessage(<<<MESSAGE
+Unexpected character (expected ':', '}', 'alphanumeric'):
+/users/{i%d:any}
+         ^
+MESSAGE
+        );
 
         $route = new Route("GET", "/users/{i%d:any}", "Action");
 
@@ -142,6 +166,12 @@ class ParserTest extends TestCase
     public function test_path_with_missing_attribute_type()
     {
         $this->expectException(InvalidRoute::class);
+        $this->expectExceptionMessage(<<<MESSAGE
+The attribute type is missing:
+/users/{id:}
+           ^
+MESSAGE
+        );
 
         $route = new Route("GET", "/users/{id:}", "Action");
 
@@ -151,6 +181,12 @@ class ParserTest extends TestCase
     public function test_path_with_malformed_attribute_type()
     {
         $this->expectException(InvalidRoute::class);
+        $this->expectExceptionMessage(<<<MESSAGE
+Unexpected character (expected '}', 'alphanumeric'):
+/users/{id:a%ny}
+            ^
+MESSAGE
+        );
 
         $route = new Route("GET", "/users/{id:a%ny}", "Action");
 
@@ -160,6 +196,12 @@ class ParserTest extends TestCase
     public function test_path_with_too_long_attribute_type()
     {
         $this->expectException(InvalidRoute::class);
+        $this->expectExceptionMessage(<<<MESSAGE
+The attribute type exceeded maximum allowed length of 32 characters:
+/users/{id:wayTooLongAttributeTypeNoOneShouldNeed}
+                                                ^
+MESSAGE
+        );
 
         $route = new Route("GET", "/users/{id:wayTooLongAttributeTypeNoOneShouldNeed}", "Action");
 
@@ -169,6 +211,12 @@ class ParserTest extends TestCase
     public function test_path_with_missing_left_attribute_brace()
     {
         $this->expectException(InvalidRoute::class);
+        $this->expectExceptionMessage(<<<MESSAGE
+Unexpected character:
+/users/id}
+         ^
+MESSAGE
+        );
 
         $route = new Route("GET", "/users/id}", "Action");
 
@@ -178,6 +226,12 @@ class ParserTest extends TestCase
     public function test_path_with_missing_right_attribute_brace()
     {
         $this->expectException(InvalidRoute::class);
+        $this->expectExceptionMessage(<<<MESSAGE
+Unexpected end of route:
+/users/{id
+          ^
+MESSAGE
+        );
 
         $route = new Route("GET", "/users/{id", "Action");
 
@@ -187,6 +241,12 @@ class ParserTest extends TestCase
     public function test_path_with_missing_left_optional_bracket()
     {
         $this->expectException(InvalidRoute::class);
+        $this->expectExceptionMessage(<<<MESSAGE
+Unexpected character:
+/users/{id}]
+           ^
+MESSAGE
+        );
 
         $route = new Route("GET", "/users/{id}]", "Action");
 
@@ -196,6 +256,12 @@ class ParserTest extends TestCase
     public function test_path_with_missing_right_optional_bracket()
     {
         $this->expectException(InvalidRoute::class);
+        $this->expectExceptionMessage(<<<MESSAGE
+Unexpected end of route:
+/users[/{id}
+            ^
+MESSAGE
+        );
 
         $route = new Route("GET", "/users[/{id}", "Action");
 
@@ -205,6 +271,12 @@ class ParserTest extends TestCase
     public function test_path_with_optional_sequence_in_the_middle()
     {
         $this->expectException(InvalidRoute::class);
+        $this->expectExceptionMessage(<<<MESSAGE
+Optional sequence cannot be followed by anything else:
+/users[/{id}]/{name}
+             ^
+MESSAGE
+        );
 
         $route = new Route("GET", "/users[/{id}]/{name}", "Action");
 
@@ -214,6 +286,12 @@ class ParserTest extends TestCase
     public function test_path_with_mixed_brackets_one()
     {
         $this->expectException(InvalidRoute::class);
+        $this->expectExceptionMessage(<<<MESSAGE
+Unexpected character (expected ':', '}', 'alphanumeric'):
+/users[/{id]}
+           ^
+MESSAGE
+        );
 
         $route = new Route("GET", "/users[/{id]}", "Action");
 
@@ -224,6 +302,12 @@ class ParserTest extends TestCase
     {
 
         $this->expectException(InvalidRoute::class);
+        $this->expectExceptionMessage(<<<MESSAGE
+Unexpected character (expected ':', '}', 'alphanumeric'):
+/users/{id[ing}]
+          ^
+MESSAGE
+        );
 
         $route = new Route("GET", "/users/{id[ing}]", "Action");
 
@@ -233,6 +317,10 @@ class ParserTest extends TestCase
     public function test_path_with_two_required_attributes_of_same_name()
     {
         $this->expectException(InvalidRoute::class);
+        $this->expectExceptionMessage(<<<MESSAGE
+
+MESSAGE
+        );
 
         $route = new Route("GET", "/users/{name}/{name}", "Action");
 
@@ -244,6 +332,10 @@ class ParserTest extends TestCase
     public function test_path_with_required_and_optional_attribute_of_same_name()
     {
         $this->expectException(InvalidRoute::class);
+        $this->expectExceptionMessage(<<<MESSAGE
+
+MESSAGE
+        );
 
         $route = new Route("GET", "/users/{name}[/{name}]", "Action");
 

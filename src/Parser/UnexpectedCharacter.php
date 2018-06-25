@@ -6,32 +6,50 @@ namespace Svoboda\PsrRouter\Parser;
 
 use Svoboda\PsrRouter\PsrRouterException;
 
+/**
+ * Unexpected character in the input.
+ */
 class UnexpectedCharacter extends PsrRouterException
 {
     /**
-     * @var string
+     * @var Input
      */
     private $input;
 
     /**
-     * @var int
-     */
-    private $index;
-
-    /**
-     * @var string
+     * @var string[]
      */
     private $expected;
 
     /**
-     * @param string $input
-     * @param int $index
-     * @param string $expected
+     * @param Input $input
+     * @param string[] $expected
      */
-    public function __construct(string $input, int $index, string $expected)
+    public function __construct(Input $input, array $expected)
     {
         $this->input = $input;
-        $this->index = $index;
         $this->expected = $expected;
+
+        parent::__construct();
+    }
+
+    /**
+     * Returns the input.
+     *
+     * @return Input
+     */
+    public function getInput(): Input
+    {
+        return $this->input;
+    }
+
+    /**
+     * Returns the expected characters.
+     *
+     * @return string[]
+     */
+    public function getExpected(): array
+    {
+        return $this->expected;
     }
 }

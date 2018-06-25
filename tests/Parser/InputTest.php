@@ -50,21 +50,21 @@ class InputTest extends TestCase
     {
         $input = new Input("abc");
 
-        self::assertEquals("abc", $input->takeAllWhile("cba"));
+        self::assertEquals("abc", $input->takeAllAlphaNumUntil(Input::END));
     }
 
     public function test_take_all_while_stops_at_bad_character()
     {
-        $input = new Input("abc");
+        $input = new Input("ab_c");
 
-        self::assertEquals("ab", $input->takeAllWhile("ba"));
+        self::assertEquals("ab", $input->takeAllAlphaNumUntil("_"));
     }
 
     public function test_take_all_while_can_return_empty_string()
     {
-        $input = new Input("abc");
+        $input = new Input("_abc");
 
-        self::assertEquals("", $input->takeAllWhile("bc"));
+        self::assertEquals("", $input->takeAllAlphaNumUntil("_"));
     }
 
     public function test_take_all_until_can_take_whole_string()

@@ -10,11 +10,11 @@ namespace Svoboda\PsrRouter\Parser;
 class Input
 {
     /**
-     * Symbol representing the end of the input.
+     * Character representing the end of the input.
      *
      * @var string
      */
-    public const END = "%";
+    public const END = ";";
 
     /**
      * @var string
@@ -27,12 +27,28 @@ class Input
     private $index;
 
     /**
+     * The last character that was successfully taken from the input.
+     *
+     * @var null|string
+     */
+    private $lastTaken;
+
+    /**
+     * Characters that were expected in the last call with specified expectations.
+     *
+     * @var string[]
+     */
+    private $latestExpectations;
+
+    /**
      * @param string $input
      */
     public function __construct(string $input)
     {
         $this->input = $input;
         $this->index = 0;
+        $this->lastTaken = null;
+        $this->latestExpectations = [];
     }
 
     /**
@@ -57,12 +73,16 @@ class Input
     public function take(): string
     {
         if ($this->atEnd()) {
+            $this->lastTaken = self::END;
+
             return self::END;
         }
 
         $char = $this->input[$this->index];
 
         $this->index += 1;
+
+        $this->lastTaken = $char;
 
         return $char;
     }
@@ -76,10 +96,14 @@ class Input
      */
     public function expect(string $char): void
     {
+        $this->latestExpectations = [$char];
+
         $taken = $this->take();
 
         if ($taken !== $char) {
-            throw new UnexpectedCharacter($this->input, $this->index, $char);
+            $this->lastTaken = null;
+
+            throw new UnexpectedCharacter($this, [$char]);
         }
     }
 
@@ -87,19 +111,28 @@ class Input
      * Returns a string from the front of the input that consists of characters
      * in the allowed set. Removes the string from the input as well.
      *
-     * @param string $allowed
+     * @param string $ends
      * @return string
+     * @throws UnexpectedCharacter
      */
-    public function takeAllWhile(string $allowed): string
+    public function takeAllAlphaNumUntil(string $ends): string
     {
-        $allowed = str_split($allowed);
+        $ends = str_split($ends);
+
+        $ends[] = "alphanumeric";
 
         $taken = "";
 
-        while (in_array($this->peek(), $allowed)) {
+        while (ctype_alnum($this->peek())) {
             $char = $this->take();
 
             $taken .= $char;
+        }
+
+        $this->latestExpectations = $ends;
+
+        if (!in_array($this->peek(), $ends)) {
+            throw new UnexpectedCharacter($this, $ends);
         }
 
         return $taken;
@@ -109,18 +142,18 @@ class Input
      * Returns a string from the front of the input that does not contain the
      * characters in the banned set. Removes the string from the input as well.
      *
-     * @param string $banned
+     * @param string $ends
      * @return string
      */
-    public function takeAllUntil(string $banned): string
+    public function takeAllUntil(string $ends): string
     {
-        $banned = str_split($banned);
+        $ends = str_split($ends);
 
-        $banned[] = self::END;
+        $ends[] = self::END;
 
         $taken = "";
 
-        while (!in_array($this->peek(), $banned)) {
+        while (!in_array($this->peek(), $ends)) {
             $char = $this->take();
 
             $taken .= $char;
@@ -157,5 +190,25 @@ class Input
     public function getIndex(): int
     {
         return $this->index;
+    }
+
+    /**
+     * Returns the last character that was successfully taken.
+     *
+     * @return null|string
+     */
+    public function getLastTaken(): ?string
+    {
+        return $this->lastTaken;
+    }
+
+    /**
+     * Returns the characters that were expected in the last call.
+     *
+     * @return string[]
+     */
+    public function getLatestExpectations(): array
+    {
+        return $this->latestExpectations;
     }
 }

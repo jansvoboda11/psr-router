@@ -12,20 +12,12 @@ use Svoboda\PsrRouter\Parser\Parts\OptionalPart;
 use Svoboda\PsrRouter\Parser\Parts\RoutePart;
 use Svoboda\PsrRouter\Parser\Parts\StaticPart;
 use Svoboda\PsrRouter\Route;
-use function strlen;
 
 /**
  * Parses the user-defined route.
  */
 class Parser
 {
-    /**
-     * Alphanumeric characters.
-     *
-     * @string
-     */
-    private const ALPHA_NUMERIC = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUV01234567890";
-
     /**
      * Maximum allowed length of attribute name.
      *
@@ -72,11 +64,19 @@ class Parser
         try {
             $part = $this->parseMain($path);
         } catch (UnexpectedCharacter $exception) {
-            throw new InvalidRoute();
+            if ($path->peek() === Input::END) {
+                throw InvalidRoute::unexpectedEnd($path);
+            }
+
+            throw InvalidRoute::unexpectedCharacter($path, $exception->getExpected());
         }
 
         if (!$path->atEnd()) {
-            throw new InvalidRoute();
+            if ($path->getLastTaken() === "]" && $path->peek() !== "]") {
+                throw InvalidRoute::optionalIsNotSuffix($path);
+            }
+
+            throw InvalidRoute::unexpectedCharacter($path);
         }
 
         return $part;
@@ -99,7 +99,7 @@ class Parser
         $char = $path->peek();
 
         if ($char === "}") {
-            throw new InvalidRoute();
+            throw InvalidRoute::unexpectedCharacter($path);
         }
 
         if ($char === "[") {
@@ -197,17 +197,18 @@ class Parser
      * @param Input $path
      * @return string
      * @throws InvalidRoute
+     * @throws UnexpectedCharacter
      */
     private function parseAttributeName(Input $path): string
     {
-        $name = $path->takeAllWhile(self::ALPHA_NUMERIC);
+        $name = $path->takeAllAlphaNumUntil(":}");
 
         if (empty($name)) {
-            throw new InvalidRoute();
+            throw InvalidRoute::emptyAttributeName($path);
         }
 
         if (strlen($name) > self::MAX_ATTRIBUTE_NAME_LENGTH) {
-            throw new InvalidRoute();
+            throw InvalidRoute::tooLongAttributeName($path, self::MAX_ATTRIBUTE_NAME_LENGTH);
         }
 
         return $name;
@@ -219,6 +220,7 @@ class Parser
      * @param Input $path
      * @return null|string
      * @throws InvalidRoute
+     * @throws UnexpectedCharacter
      */
     private function parseAttributeType(Input $path): ?string
     {
@@ -228,14 +230,14 @@ class Parser
 
         $path->take();
 
-        $type = $path->takeAllWhile(self::ALPHA_NUMERIC);
+        $type = $path->takeAllAlphaNumUntil("}");
 
         if (empty($type)) {
-            throw new InvalidRoute();
+            throw InvalidRoute::emptyAttributeType($path);
         }
 
         if (strlen($type) > self::MAX_ATTRIBUTE_TYPE_LENGTH) {
-            throw new InvalidRoute();
+            throw InvalidRoute::tooLongAttributeType($path, self::MAX_ATTRIBUTE_TYPE_LENGTH);
         }
 
         return $type;
