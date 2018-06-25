@@ -33,7 +33,7 @@
         }
     },
     "scripts": {
-        "analyse": "phpstan analyse src/ --level=5",
+        "analyse": "phpstan analyse src/ --level=7",
         "bench": "phpbench run benchmarks/ --report=aggregate",
         "test": "phpunit tests/"
     }

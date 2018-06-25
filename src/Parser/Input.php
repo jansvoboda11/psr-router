@@ -117,7 +117,7 @@ class Input
      */
     public function takeAllAlphaNumUntil(string $ends): string
     {
-        $ends = str_split($ends);
+        $ends = self::split($ends);
 
         $ends[] = "alphanumeric";
 
@@ -147,7 +147,7 @@ class Input
      */
     public function takeAllUntil(string $ends): string
     {
-        $ends = str_split($ends);
+        $ends = self::split($ends);
 
         $ends[] = self::END;
 
@@ -210,5 +210,23 @@ class Input
     public function getLatestExpectations(): array
     {
         return $this->latestExpectations;
+    }
+
+    /**
+     * Splits the string into array of characters.
+     * Type-sane version for PHPStan.
+     *
+     * @param string $string
+     * @return string[]
+     */
+    private static function split(string $string): array
+    {
+        $characters = [];
+
+        for ($i = 0; $i < strlen($string); $i++) {
+            $characters[] = $string[$i];
+        }
+
+        return $characters;
     }
 }
