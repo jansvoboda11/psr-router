@@ -26,7 +26,7 @@ class AttributePart implements RoutePart
      * @param string $name
      * @param null|string $type
      */
-    public function __construct(string $name, ?string $type)
+    public function __construct(string $name, ?string $type = null)
     {
         $this->name = $name;
         $this->type = $type;
