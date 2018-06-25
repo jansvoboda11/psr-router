@@ -12,10 +12,6 @@ use Svoboda\PsrRouter\Parser\Parts\OptionalPart;
 use Svoboda\PsrRouter\Parser\Parts\RoutePart;
 use Svoboda\PsrRouter\Parser\Parts\StaticPart;
 use Svoboda\PsrRouter\Route;
-use function array_shift;
-use function in_array;
-use function is_null;
-use function str_split;
 use function strlen;
 
 /**
@@ -23,13 +19,6 @@ use function strlen;
  */
 class Parser
 {
-    /**
-     * Character returned when the end of route definition is encountered.
-     *
-     * @string
-     */
-    private const EOF = "%";
-
     /**
      * Alphanumeric characters.
      *
@@ -62,7 +51,9 @@ class Parser
     {
         $method = $route->getMethod();
 
-        $ast = $this->parsePath(str_split($route->getPath()));
+        $path = new Input($route->getPath());
+
+        $ast = $this->parsePath($path);
 
         $handlerName = $route->getHandlerName();
 
@@ -72,15 +63,15 @@ class Parser
     /**
      * Parse the route path specification.
      *
-     * @param string[] $path
+     * @param Input $path
      * @return RoutePart
      * @throws InvalidRoute
      */
-    private function parsePath(array $path): RoutePart
+    private function parsePath(Input $path): RoutePart
     {
         $part = $this->parseMain($path);
 
-        if (!empty($path)) {
+        if (!$path->atEnd()) {
             throw new InvalidRoute();
         }
 
@@ -90,17 +81,17 @@ class Parser
     /**
      * Parse the main part of the route specification.
      *
-     * @param string[] $path
+     * @param Input $path
      * @return MainPart
      * @throws InvalidRoute
      */
-    private function parseMain(array &$path): MainPart
+    private function parseMain(Input $path): MainPart
     {
         $static = $this->parseStatic($path);
 
         $attributes = $this->parseAttributes($path);
 
-        $char = $this->peek($path, true);
+        $char = $path->peek(true);
 
         if ($char === "}") {
             throw new InvalidRoute();
@@ -112,7 +103,7 @@ class Parser
             return new MainPart($static, $attributes, $next);
         }
 
-        if ($char === "]" || $char === self::EOF) {
+        if ($char === "]" || $char === Input::END) {
             $next = new EmptyPart();
 
             return new MainPart($static, $attributes, $next);
@@ -126,15 +117,13 @@ class Parser
     /**
      * Parse the static part of the route specification.
      *
-     * @param string[] $path
+     * @param Input $path
      * @return StaticPart
      * @throws InvalidRoute
      */
-    private function parseStatic(array &$path): StaticPart
+    private function parseStatic(Input $path): StaticPart
     {
-        $eof = self::EOF;
-
-        $static = $this->takeAllUntil("{}[]$eof", $path);
+        $static = $path->takeAllUntil("{}[]");
 
         return new StaticPart($static);
     }
@@ -142,15 +131,15 @@ class Parser
     /**
      * Parse attributes of the route specification.
      *
-     * @param string[] $path
+     * @param Input $path
      * @return AttributePart[]
      * @throws InvalidRoute
      */
-    private function parseAttributes(array &$path): array
+    private function parseAttributes(Input $path): array
     {
         $attributes = [];
 
-        while ($this->peek($path, true) === "{") {
+        while ($path->peek(true) === "{") {
             $attributes[] = $this->parseAttribute($path);
         }
 
@@ -160,19 +149,19 @@ class Parser
     /**
      * Parse a single attribute of the route specification.
      *
-     * @param string[] $path
+     * @param Input $path
      * @return AttributePart
      * @throws InvalidRoute
      */
-    private function parseAttribute(array &$path): AttributePart
+    private function parseAttribute(Input $path): AttributePart
     {
-        $this->expect("{", $path);
+        $path->expect("{");
 
         $name = $this->parseAttributeName($path);
 
         $type = $this->parseAttributeType($path);
 
-        $this->expect("}", $path);
+        $path->expect("}");
 
         return new AttributePart($name, $type);
     }
@@ -180,17 +169,17 @@ class Parser
     /**
      * Parse an optional part of the route specification.
      *
-     * @param string[] $path
+     * @param Input $path
      * @return OptionalPart
      * @throws InvalidRoute
      */
-    private function parseOptional(array &$path): OptionalPart
+    private function parseOptional(Input $path): OptionalPart
     {
-        $this->expect("[", $path);
+        $path->expect("[");
 
         $optional = $this->parseMain($path);
 
-        $this->expect("]", $path);
+        $path->expect("]");
 
         return new OptionalPart($optional);
     }
@@ -198,13 +187,13 @@ class Parser
     /**
      * Parse the attribute name.
      *
-     * @param string[] $path
+     * @param Input $path
      * @return string
      * @throws InvalidRoute
      */
-    private function parseAttributeName(array &$path): string
+    private function parseAttributeName(Input $path): string
     {
-        $name = $this->takeAllIn(self::ALPHA_NUMERIC, $path);
+        $name = $path->takeAllWhile(self::ALPHA_NUMERIC);
 
         if (empty($name)) {
             throw new InvalidRoute();
@@ -220,19 +209,19 @@ class Parser
     /**
      * Parse the attribute type.
      *
-     * @param string[] $path
+     * @param Input $path
      * @return null|string
      * @throws InvalidRoute
      */
-    private function parseAttributeType(array &$path): ?string
+    private function parseAttributeType(Input $path): ?string
     {
-        if ($this->peek($path) !== ":") {
+        if ($path->peek() !== ":") {
             return null;
         }
 
-        $this->take($path);
+        $path->take();
 
-        $type = $this->takeAllIn(self::ALPHA_NUMERIC, $path);
+        $type = $path->takeAllWhile(self::ALPHA_NUMERIC);
 
         if (empty($type)) {
             throw new InvalidRoute();
@@ -243,110 +232,5 @@ class Parser
         }
 
         return $type;
-    }
-
-    /**
-     * Returns the next character without removing it from the input.
-     *
-     * @param string[] $input
-     * @param bool $canBeEof
-     * @return string
-     * @throws InvalidRoute
-     */
-    private function peek(array $input, bool $canBeEof = false): string
-    {
-        if (!empty($input)) {
-            return $input[0];
-        }
-
-        if (!$canBeEof) {
-            throw new InvalidRoute();
-        }
-
-        return self::EOF;
-    }
-
-    /**
-     * Returns the next character and removes it from the input.
-     *
-     * @param string[] $input
-     * @return string
-     * @throws InvalidRoute
-     */
-    private function take(array &$input): string
-    {
-        $char = array_shift($input);
-
-        if (is_null($char)) {
-            throw new InvalidRoute();
-        }
-
-        return $char;
-    }
-
-    /**
-     * Removes the specified character from the input. Fails if it does not match the first character in the input.
-     *
-     * @param string $chars
-     * @param string[] $input
-     * @throws InvalidRoute
-     */
-    private function expect(string $chars, array &$input): void
-    {
-        $taken = $this->take($input);
-
-        if (!in_array($taken, str_split($chars))) {
-            throw new InvalidRoute();
-        }
-    }
-
-    /**
-     * Returns a string from the front of the input that consists of characters
-     * in the allowed set. Removes the string from the input as well.
-     *
-     * @param string $allowed
-     * @param string[] $input
-     * @return string
-     * @throws InvalidRoute
-     */
-    private function takeAllIn(string $allowed, array &$input): string
-    {
-        $allowed = str_split($allowed);
-
-        $taken = "";
-
-        while (in_array($this->peek($input), $allowed)) {
-            $char = $this->take($input);
-
-            $taken .= $char;
-        }
-
-        return $taken;
-    }
-
-    /**
-     * Returns a string from the front of the input that does not contain the
-     * characters in the banned set. Removes the string from the input as well.
-     *
-     * @param string $banned
-     * @param string[] $input
-     * @return string
-     * @throws InvalidRoute
-     */
-    private function takeAllUntil(string $banned, array &$input): string
-    {
-        $banned = str_split($banned);
-
-        $canBeEof = in_array(self::EOF, $banned);
-
-        $taken = "";
-
-        while (!in_array($this->peek($input, $canBeEof), $banned)) {
-            $char = $this->take($input);
-
-            $taken .= $char;
-        }
-
-        return $taken;
     }
 }
