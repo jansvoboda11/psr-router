@@ -99,7 +99,7 @@ class RouteCollection implements IteratorAggregate
     }
 
     /**
-     * Creates a new route.
+     * Creates new route.
      *
      * @param string $method
      * @param string $path
