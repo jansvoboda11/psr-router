@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Svoboda\PsrRouter;
 
-use ArrayIterator;
-use IteratorAggregate;
 use Svoboda\PsrRouter\Route\InvalidRoute;
 use Svoboda\PsrRouter\Route\Route;
 use Svoboda\PsrRouter\Route\RouteFactory;
@@ -13,7 +11,7 @@ use Svoboda\PsrRouter\Route\RouteFactory;
 /**
  * Collection of routes.
  */
-class RouteCollection implements IteratorAggregate
+class RouteCollection
 {
     /**
      * The factory for creating new routes.
@@ -112,10 +110,12 @@ class RouteCollection implements IteratorAggregate
     }
 
     /**
-     * @inheritdoc
+     * Returns all registered routes.
+     *
+     * @return Route[]
      */
-    public function getIterator()
+    public function all(): array
     {
-        return new ArrayIterator($this->routes);
+        return $this->routes;
     }
 }

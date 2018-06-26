@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Svoboda\PsrRouter\Compiler;
 
-use Svoboda\PsrRouter\Route\Route;
 use Svoboda\PsrRouter\RouteCollection;
 
 /**
@@ -34,8 +33,7 @@ class MultiPatternCompiler implements Compiler
     {
         $records = [];
 
-        /** @var Route $route */
-        foreach ($routes as $route) {
+        foreach ($routes->all() as $route) {
             $method = $route->getMethod();
             $path = $route->getPath();
 
