@@ -10,20 +10,9 @@ use Svoboda\PsrRouter\Route\InvalidRoute;
 
 class ParserTest extends TestCase
 {
-    /** @var Parser */
-    private $parser;
-
-    /**
-     * @inheritdoc
-     */
-    public function setUp()
-    {
-        $this->parser = new Parser();
-    }
-
     public function test_static_path()
     {
-        $path = $this->parser->parse("/users/all");
+        $path = (new Parser())->parse("/users/all");
 
         self::assertEquals("/users/all", $path->getDefinition());
         self::assertEquals([], $path->getAttributes());
@@ -31,7 +20,7 @@ class ParserTest extends TestCase
 
     public function test_path_with_attribute_without_type()
     {
-        $path = $this->parser->parse("/users/{id}");
+        $path = (new Parser())->parse("/users/{id}");
 
         self::assertEquals("/users/{id}", $path->getDefinition());
         self::assertEquals([
@@ -39,9 +28,9 @@ class ParserTest extends TestCase
         ], $path->getAttributes());
     }
 
-    public function test_path_with_attribute_of_all_type()
+    public function test_path_with_attribute_of_any_type()
     {
-        $path = $this->parser->parse("/users/{id:any}");
+        $path = (new Parser())->parse("/users/{id:any}");
 
         self::assertEquals("/users/{id:any}", $path->getDefinition());
         self::assertEquals([
@@ -51,7 +40,7 @@ class ParserTest extends TestCase
 
     public function test_path_with_multiple_attributes()
     {
-        $path = $this->parser->parse("/users/{name}/{id:num}");
+        $path = (new Parser())->parse("/users/{name}/{id:num}");
 
         self::assertEquals("/users/{name}/{id:num}", $path->getDefinition());
         self::assertEquals([
@@ -62,7 +51,7 @@ class ParserTest extends TestCase
 
     public function test_path_with_optional_attribute()
     {
-        $path = $this->parser->parse("/users[/{name}]");
+        $path = (new Parser())->parse("/users[/{name}]");
 
         self::assertEquals("/users[/{name}]", $path->getDefinition());
         self::assertEquals([
@@ -72,7 +61,7 @@ class ParserTest extends TestCase
 
     public function test_path_with_required_and_optional_attributes()
     {
-        $path = $this->parser->parse("/users/{name}[/{id:num}]");
+        $path = (new Parser())->parse("/users/{name}[/{id:num}]");
 
         self::assertEquals("/users/{name}[/{id:num}]", $path->getDefinition());
         self::assertEquals([
@@ -91,7 +80,7 @@ The attribute name is missing:
 MESSAGE
         );
 
-        $this->parser->parse("/users/{}");
+        (new Parser())->parse("/users/{}");
     }
 
     public function test_path_with_missing_attribute_name()
@@ -104,7 +93,7 @@ The attribute name is missing:
 MESSAGE
         );
 
-        $this->parser->parse("/users/{:any}");
+        (new Parser())->parse("/users/{:any}");
     }
 
     public function test_path_with_too_long_attribute_name()
@@ -117,7 +106,7 @@ The attribute name exceeded maximum allowed length of 32 characters:
 MESSAGE
         );
 
-        $this->parser->parse("/users/{wayTooLongAttributeNameNoOneShouldNeed:any}");
+        (new Parser())->parse("/users/{wayTooLongAttributeNameNoOneShouldNeed:any}");
     }
 
     public function test_path_with_malformed_attribute_name()
@@ -130,7 +119,7 @@ Unexpected character (expected ':', '}', 'alphanumeric'):
 MESSAGE
         );
 
-        $this->parser->parse("/users/{i%d:any}");
+        (new Parser())->parse("/users/{i%d:any}");
     }
 
     public function test_path_with_missing_attribute_type()
@@ -143,7 +132,7 @@ The attribute type is missing:
 MESSAGE
         );
 
-        $this->parser->parse("/users/{id:}");
+        (new Parser())->parse("/users/{id:}");
     }
 
     public function test_path_with_malformed_attribute_type()
@@ -156,7 +145,7 @@ Unexpected character (expected '}', 'alphanumeric'):
 MESSAGE
         );
 
-        $this->parser->parse("/users/{id:a%ny}");
+        (new Parser())->parse("/users/{id:a%ny}");
     }
 
     public function test_path_with_too_long_attribute_type()
@@ -169,7 +158,7 @@ The attribute type exceeded maximum allowed length of 32 characters:
 MESSAGE
         );
 
-        $this->parser->parse("/users/{id:wayTooLongAttributeTypeNoOneShouldNeed}");
+        (new Parser())->parse("/users/{id:wayTooLongAttributeTypeNoOneShouldNeed}");
     }
 
     public function test_path_with_missing_left_attribute_brace()
@@ -182,7 +171,7 @@ Unexpected character:
 MESSAGE
         );
 
-        $this->parser->parse("/users/id}");
+        (new Parser())->parse("/users/id}");
     }
 
     public function test_path_with_missing_right_attribute_brace()
@@ -195,7 +184,7 @@ Unexpected end of route:
 MESSAGE
         );
 
-        $this->parser->parse("/users/{id");
+        (new Parser())->parse("/users/{id");
     }
 
     public function test_path_with_missing_left_optional_bracket()
@@ -208,7 +197,7 @@ Unexpected character:
 MESSAGE
         );
 
-        $this->parser->parse("/users/{id}]");
+        (new Parser())->parse("/users/{id}]");
     }
 
     public function test_path_with_missing_right_optional_bracket()
@@ -221,7 +210,7 @@ Unexpected end of route:
 MESSAGE
         );
 
-        $this->parser->parse("/users[/{id}");
+        (new Parser())->parse("/users[/{id}");
     }
 
     public function test_path_with_optional_sequence_in_the_middle()
@@ -234,7 +223,7 @@ Optional sequence cannot be followed by anything else:
 MESSAGE
         );
 
-        $this->parser->parse("/users[/{id}]/{name}");
+        (new Parser())->parse("/users[/{id}]/{name}");
     }
 
     public function test_path_with_mixed_brackets_one()
@@ -247,12 +236,11 @@ Unexpected character (expected ':', '}', 'alphanumeric'):
 MESSAGE
         );
 
-        $this->parser->parse("/users[/{id]}");
+        (new Parser())->parse("/users[/{id]}");
     }
 
     public function test_path_with_mixed_brackets_two()
     {
-
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
 Unexpected character (expected ':', '}', 'alphanumeric'):
@@ -261,6 +249,6 @@ Unexpected character (expected ':', '}', 'alphanumeric'):
 MESSAGE
         );
 
-        $this->parser->parse("/users/{id[ing}]");
+        (new Parser())->parse("/users/{id[ing}]");
     }
 }
