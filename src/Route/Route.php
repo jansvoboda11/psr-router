@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Svoboda\PsrRouter\Route;
 
-use Svoboda\PsrRouter\Route\Parts\RoutePart;
+use Svoboda\PsrRouter\Route\Path\RoutePath;
 
 /**
  * Route, duh.
@@ -12,29 +12,35 @@ use Svoboda\PsrRouter\Route\Parts\RoutePart;
 class Route
 {
     /**
+     * The HTTP method.
+     *
      * @var string
      */
     private $method;
 
     /**
-     * @var RoutePart
+     * The path definition.
+     *
+     * @var RoutePath
      */
-    private $ast;
+    private $path;
 
     /**
+     * The handler.
+     *
      * @var mixed
      */
     private $handler;
 
     /**
      * @param string $method
-     * @param RoutePart $ast
+     * @param RoutePath $path
      * @param mixed $handler
      */
-    public function __construct(string $method, RoutePart $ast, $handler)
+    public function __construct(string $method, RoutePath $path, $handler)
     {
         $this->method = $method;
-        $this->ast = $ast;
+        $this->path = $path;
         $this->handler = $handler;
     }
 
@@ -49,13 +55,13 @@ class Route
     }
 
     /**
-     * Returns the top route part.
+     * Returns the route path.
      *
-     * @return RoutePart
+     * @return RoutePath
      */
-    public function getAst(): RoutePart
+    public function getPath(): RoutePath
     {
-        return $this->ast;
+        return $this->path;
     }
 
     /**
@@ -75,16 +81,16 @@ class Route
      */
     public function rebuildDefinition(): string
     {
-        return $this->ast->getDefinition();
+        return $this->path->getDefinition();
     }
 
     /**
-     * Gathers all route attributes.
+     * Returns all route attributes.
      *
      * @return array
      */
-    public function gatherAttributes(): array
+    public function getAttributes(): array
     {
-        return $this->ast->getAttributes();
+        return $this->path->getAttributes();
     }
 }

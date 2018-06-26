@@ -19,9 +19,7 @@ class RouterTest extends TestCase
         $routes = new RouteCollection();
         $routes->get("/users", "Users");
 
-        $router = Router::create($routes);
-
-        $match = $router->match($request);
+        $match = Router::create($routes)->match($request);
 
         self::assertNotNull($match);
         self::assertEquals("Users", $match->getHandler());
@@ -35,9 +33,7 @@ class RouterTest extends TestCase
         $routes->get("/users", "Users");
         $routes->get("/admins", "Admins");
 
-        $router = Router::create($routes);
-
-        $match = $router->match($request);
+        $match = Router::create($routes)->match($request);
 
         self::assertNotNull($match);
         self::assertEquals("Admins", $match->getHandler());
@@ -51,9 +47,7 @@ class RouterTest extends TestCase
         $routes->get("/admins", "Admins1");
         $routes->get("/admins", "Admins2");
 
-        $router = Router::create($routes);
-
-        $match = $router->match($request);
+        $match = Router::create($routes)->match($request);
 
         self::assertNotNull($match);
         self::assertEquals("Admins1", $match->getHandler());
@@ -68,9 +62,7 @@ class RouterTest extends TestCase
         $routes = new RouteCollection();
         $routes->get("/admins/{name}/{id}", "Admins");
 
-        $router = Router::create($routes);
-
-        $match = $router->match($request);
+        $match = Router::create($routes)->match($request);
 
         self::assertNotNull($match);
         self::assertEquals("Admins", $match->getHandler());
@@ -86,9 +78,7 @@ class RouterTest extends TestCase
         $routes->get("/admins/{name}/{id}", "Admins");
         $routes->get("/users/{name}/{id}", "Users");
 
-        $router = Router::create($routes);
-
-        $match = $router->match($request);
+        $match = Router::create($routes)->match($request);
 
         self::assertNotNull($match);
         self::assertEquals("Users", $match->getHandler());
@@ -103,9 +93,7 @@ class RouterTest extends TestCase
         $routes = new RouteCollection();
         $routes->get("/users/{name}[/{id}]", "Users");
 
-        $router = Router::create($routes);
-
-        $match = $router->match($request);
+        $match = Router::create($routes)->match($request);
 
         self::assertNotNull($match);
         self::assertEquals("Users", $match->getHandler());
@@ -121,9 +109,7 @@ class RouterTest extends TestCase
         $routes->get("/users", "Get");
         $routes->post("/users", "Post");
 
-        $router = Router::create($routes);
-
-        $match = $router->match($request);
+        $match = Router::create($routes)->match($request);
 
         self::assertNotNull($match);
         self::assertEquals("Post", $match->getHandler());
@@ -136,9 +122,7 @@ class RouterTest extends TestCase
         $routes = new RouteCollection();
         $routes->get("/users", "Get");
 
-        $router = Router::create($routes);
-
-        $match = $router->match($request);
+        $match = Router::create($routes)->match($request);
 
         self::assertNotNull($match);
         self::assertEquals("Get", $match->getHandler());
@@ -151,9 +135,7 @@ class RouterTest extends TestCase
         $routes = new RouteCollection();
         $routes->get("/users", "Get");
 
-        $router = Router::create($routes);
-
-        $match = $router->match($request);
+        $match = Router::create($routes)->match($request);
 
         self::assertNotNull($match);
         self::assertEquals("Get", $match->getHandler());
@@ -166,9 +148,7 @@ class RouterTest extends TestCase
         $routes = new RouteCollection();
         $routes->get("/users/{name}", "Users");
 
-        $router = Router::create($routes);
-
-        $match = $router->match($request);
+        $match = Router::create($routes)->match($request);
 
         self::assertNull($match);
     }
@@ -180,18 +160,28 @@ class RouterTest extends TestCase
         $routes = new RouteCollection();
         $routes->get("/users/{name}", "Users");
 
-        $router = Router::create($routes);
-
-        $match = $router->match($request);
+        $match = Router::create($routes)->match($request);
 
         self::assertNull($match);
     }
 
+    /**
+     * Creates a GET request with the given URI.
+     *
+     * @param string $uri
+     * @return ServerRequest
+     */
     private function createGetRequest(string $uri)
     {
         return (new ServerRequest())->withUri(new Uri($uri));
     }
 
+    /**
+     * Creates a POST request with the given URI.
+     *
+     * @param string $uri
+     * @return ServerRequest
+     */
     private function createPostRequest(string $uri)
     {
         return (new ServerRequest())->withMethod("POST")->withUri(new Uri($uri));

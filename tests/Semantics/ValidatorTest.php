@@ -32,52 +32,52 @@ class ValidatorTest extends TestCase
 
     public function test_path_without_attributes()
     {
-        $ast = $this->parser->parse("/users");
+        $path = $this->parser->parse("/users");
 
-        $this->validator->validate($ast);
+        $this->validator->validate($path);
 
         self::assertTrue(true);
     }
 
     public function test_path_with_one_required_attribute()
     {
-        $ast = $this->parser->parse("/users/{name}");
+        $path = $this->parser->parse("/users/{name}");
 
-        $this->validator->validate($ast);
+        $this->validator->validate($path);
 
         self::assertTrue(true);
     }
 
     public function test_path_with_one_optional_attribute()
     {
-        $ast = $this->parser->parse("/users[/{name}]");
+        $path = $this->parser->parse("/users[/{name}]");
 
-        $this->validator->validate($ast);
+        $this->validator->validate($path);
 
         self::assertTrue(true);
     }
 
     public function test_path_with_two_attributes()
     {
-        $ast = $this->parser->parse("/users/{id}/{name}");
+        $path = $this->parser->parse("/users/{id}/{name}");
 
-        $this->validator->validate($ast);
+        $this->validator->validate($path);
 
         self::assertTrue(true);
     }
 
     public function test_path_with_required_and_optional_attribute()
     {
-        $ast = $this->parser->parse("/users/{id}[/{name}]");
+        $path = $this->parser->parse("/users/{id}[/{name}]");
 
-        $this->validator->validate($ast);
+        $this->validator->validate($path);
 
         self::assertTrue(true);
     }
 
     public function test_path_with_two_required_attributes_of_same_name()
     {
-        $ast = $this->parser->parse("/users/{id}/{id}");
+        $path = $this->parser->parse("/users/{id}/{id}");
 
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
@@ -86,12 +86,12 @@ Multiple attributes with name 'id':
 MESSAGE
         );
 
-        $this->validator->validate($ast);
+        $this->validator->validate($path);
     }
 
     public function test_path_with_required_and_optional_attribute_of_same_name()
     {
-        $ast = $this->parser->parse("/users/{id}[/{id}]");
+        $path = $this->parser->parse("/users/{id}[/{id}]");
 
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
@@ -100,6 +100,6 @@ Multiple attributes with name 'id':
 MESSAGE
         );
 
-        $this->validator->validate($ast);
+        $this->validator->validate($path);
     }
 }

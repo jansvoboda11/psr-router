@@ -2,36 +2,43 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\PsrRouter\Route\Parts;
+namespace Svoboda\PsrRouter\Route\Path;
 
 use Svoboda\PsrRouter\Compiler\PartsVisitor;
 
 /**
- * Main part of the route consisting of static part, attributes and the next route part (usually main or optional).
+ * Main part of the route consisting of static part, attributes and the next
+ * route part (usually main or optional).
  */
-class MainPart implements RoutePart
+class MainPath implements RoutePath
 {
     /**
-     * @var StaticPart
+     * The static part of the path.
+     *
+     * @var StaticPath
      */
     private $static;
 
     /**
-     * @var AttributePart[]
+     * Path attributes.
+     *
+     * @var AttributePath[]
      */
     private $attributes;
 
     /**
-     * @var RoutePart
+     * The next part of route path.
+     *
+     * @var RoutePath
      */
     private $next;
 
     /**
-     * @param StaticPart $static
-     * @param AttributePart[] $attributes
-     * @param RoutePart $next
+     * @param StaticPath $static
+     * @param AttributePath[] $attributes
+     * @param RoutePath $next
      */
-    public function __construct(StaticPart $static, array $attributes, RoutePart $next)
+    public function __construct(StaticPath $static, array $attributes, RoutePath $next)
     {
         $this->static = $static;
         $this->attributes = $attributes;

@@ -4,92 +4,92 @@ declare(strict_types=1);
 
 namespace Svoboda\PsrRouter\Compiler ;
 
-use Svoboda\PsrRouter\Route\Parts\AttributePart;
-use Svoboda\PsrRouter\Route\Parts\MainPart;
-use Svoboda\PsrRouter\Route\Parts\OptionalPart;
-use Svoboda\PsrRouter\Route\Parts\StaticPart;
+use Svoboda\PsrRouter\Route\Path\AttributePath;
+use Svoboda\PsrRouter\Route\Path\MainPath;
+use Svoboda\PsrRouter\Route\Path\OptionalPath;
+use Svoboda\PsrRouter\Route\Path\StaticPath;
 
 /**
- * Two-pass visitor of all parts of the route.
+ * Two-pass visitor of all types of route path.
  */
 abstract class PartsVisitor
 {
     /**
-     * Enters the attribute part.
+     * Enters the attribute path.
      *
-     * @param AttributePart $part
+     * @param AttributePath $path
      */
-    public function enterAttribute(AttributePart $part): void
+    public function enterAttribute(AttributePath $path): void
     {
         //
     }
 
     /**
-     * Leaves the attribute part.
+     * Leaves the attribute path.
      *
-     * @param AttributePart $part
+     * @param AttributePath $path
      */
-    public function leaveAttribute(AttributePart $part): void
+    public function leaveAttribute(AttributePath $path): void
     {
         //
     }
 
     /**
-     * Enters the main part.
+     * Enters the main path.
      *
-     * @param MainPart $part
+     * @param MainPath $path
      */
-    public function enterMain(MainPart $part): void
+    public function enterMain(MainPath $path): void
     {
         //
     }
 
     /**
-     * Leaves the main part.
+     * Leaves the main path.
      *
-     * @param MainPart $part
+     * @param MainPath $path
      */
-    public function leaveMain(MainPart $part): void
+    public function leaveMain(MainPath $path): void
     {
         //
     }
 
     /**
-     * Enters the optional part.
+     * Enters the optional path.
      *
-     * @param OptionalPart $part
+     * @param OptionalPath $path
      */
-    public function enterOptional(OptionalPart $part): void
+    public function enterOptional(OptionalPath $path): void
     {
         //
     }
 
     /**
-     * Leaves the optional part.
+     * Leaves the optional path.
      *
-     * @param OptionalPart $part
+     * @param OptionalPath $path
      */
-    public function leaveOptional(OptionalPart $part): void
+    public function leaveOptional(OptionalPath $path): void
     {
         //
     }
 
     /**
-     * Enters the static part.
+     * Enters the static path.
      *
-     * @param StaticPart $part
+     * @param StaticPath $path
      */
-    public function enterStatic(StaticPart $part): void
+    public function enterStatic(StaticPath $path): void
     {
         //
     }
 
     /**
-     * Leaves the static part.
+     * Leaves the static path.
      *
-     * @param StaticPart $part
+     * @param StaticPath $path
      */
-    public function leaveStatic(StaticPart $part): void
+    public function leaveStatic(StaticPath $path): void
     {
         //
     }

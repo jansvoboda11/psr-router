@@ -8,12 +8,12 @@ use Psr\Http\Message\ServerRequestInterface;
 use Svoboda\PsrRouter\Match;
 
 /**
- * Matches the incoming request and provides the result.
+ * Matches the incoming request.
  */
 interface Matcher
 {
     /**
-     * Matches the incoming request.
+     * Matches the incoming request and on success provides a match.
      *
      * @param ServerRequestInterface $request
      * @return null|Match

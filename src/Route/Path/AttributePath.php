@@ -2,21 +2,25 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\PsrRouter\Route\Parts;
+namespace Svoboda\PsrRouter\Route\Path;
 
 use Svoboda\PsrRouter\Compiler\PartsVisitor;
 
 /**
  * Route part that represents user-defined attribute.
  */
-class AttributePart implements RoutePart
+class AttributePath implements RoutePath
 {
     /**
+     * The attribute name.
+     *
      * @var string
      */
     private $name;
 
     /**
+     * The attribute type.
+     *
      * @var null|string
      */
     private $type;

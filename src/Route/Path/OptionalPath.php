@@ -2,24 +2,26 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\PsrRouter\Route\Parts;
+namespace Svoboda\PsrRouter\Route\Path;
 
 use Svoboda\PsrRouter\Compiler\PartsVisitor;
 
 /**
- * Wrapper for the optional part of the route.
+ * Wrapper for the optional part of the route path.
  */
-class OptionalPart implements RoutePart
+class OptionalPath implements RoutePath
 {
     /**
-     * @var RoutePart
+     * The optional part of route path.
+     *
+     * @var RoutePath
      */
     private $optional;
 
     /**
-     * @param RoutePart $optional
+     * @param RoutePath $optional
      */
-    public function __construct(RoutePart $optional)
+    public function __construct(RoutePath $optional)
     {
         $this->optional = $optional;
     }

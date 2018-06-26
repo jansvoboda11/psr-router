@@ -9,21 +9,24 @@ use Svoboda\PsrRouter\Match;
 use Svoboda\PsrRouter\Route\Route;
 
 /**
- * Iterates over array of individual regular expressions and matches them one-by-one.
+ * Iterates over array of individual regular expressions and matches them
+ * one-by-one.
  */
-class NaiveMatcher implements Matcher
+class MultiPatternMatcher implements Matcher
 {
     /**
+     * Array of routes and their regular expressions.
+     *
      * @var array
      */
-    private $routes;
+    private $records;
 
     /**
-     * @param array $routes
+     * @param array $records
      */
-    public function __construct(array $routes)
+    public function __construct(array $records)
     {
-        $this->routes = $routes;
+        $this->records = $records;
     }
 
     /**
@@ -33,16 +36,16 @@ class NaiveMatcher implements Matcher
     {
         $path = $request->getMethod() . $request->getUri()->getPath();
 
-        foreach ($this->routes as $route) {
+        foreach ($this->records as $record) {
             $matches = [];
 
-            [$pattern, $parsed] = $route;
+            [$pattern, $route] = $record;
 
             if (!preg_match($pattern, $path, $matches)) {
                 continue;
             }
 
-            return $this->createResult($parsed, $request, $matches);
+            return $this->createResult($route, $request, $matches);
         }
 
         return null;
@@ -59,8 +62,7 @@ class NaiveMatcher implements Matcher
     private function createResult(Route $route, ServerRequestInterface $request, array $matches): Match
     {
         $handler = $route->getHandler();
-
-        $attributes = $route->gatherAttributes();
+        $attributes = $route->getAttributes();
 
         foreach ($attributes as $attribute) {
             $name = $attribute["name"];

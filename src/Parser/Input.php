@@ -17,11 +17,15 @@ class Input
     public const END = ";";
 
     /**
+     * The underlying string input.
+     *
      * @var string
      */
     private $input;
 
     /**
+     * Index of the next character.
+     *
      * @var int
      */
     private $index;
@@ -88,11 +92,11 @@ class Input
     }
 
     /**
-     * Removes the specified character from the input. Fails if it does not
-     * match the first character in the input.
+     * Removes the next character from the input. Fails if it's not the
+     * expected one.
      *
      * @param string $char
-     * @throws UnexpectedCharacter
+     * @throws UnexpectedChar
      */
     public function expect(string $char): void
     {
@@ -103,17 +107,17 @@ class Input
         if ($taken !== $char) {
             $this->lastTaken = null;
 
-            throw new UnexpectedCharacter($this, [$char]);
+            throw new UnexpectedChar($this, [$char]);
         }
     }
 
     /**
-     * Returns a string from the front of the input that consists of characters
-     * in the allowed set. Removes the string from the input as well.
+     * Removes all alphanumeric characters from the input until one of the end
+     * characters is encountered. Returns the removed alphanumeric string.
      *
      * @param string $ends
      * @return string
-     * @throws UnexpectedCharacter
+     * @throws UnexpectedChar
      */
     public function takeAllAlphaNumUntil(string $ends): string
     {
@@ -132,15 +136,15 @@ class Input
         $this->latestExpectations = $ends;
 
         if (!in_array($this->peek(), $ends)) {
-            throw new UnexpectedCharacter($this, $ends);
+            throw new UnexpectedChar($this, $ends);
         }
 
         return $taken;
     }
 
     /**
-     * Returns a string from the front of the input that does not contain the
-     * characters in the banned set. Removes the string from the input as well.
+     * Removes all characters from the input until one of the end characters is
+     * encountered. Returns the read removed.
      *
      * @param string $ends
      * @return string
@@ -183,7 +187,7 @@ class Input
     }
 
     /**
-     * Returns index of the current character.
+     * Returns index of the next character.
      *
      * @return int
      */
@@ -213,20 +217,20 @@ class Input
     }
 
     /**
-     * Splits the string into array of characters.
-     * Type-sane version for PHPStan.
+     * Splits the string into array of characters. Type-sane version for
+     * PHPStan.
      *
      * @param string $string
      * @return string[]
      */
     private static function split(string $string): array
     {
-        $characters = [];
+        $chars = [];
 
         for ($i = 0; $i < strlen($string); $i++) {
-            $characters[] = $string[$i];
+            $chars[] = $string[$i];
         }
 
-        return $characters;
+        return $chars;
     }
 }

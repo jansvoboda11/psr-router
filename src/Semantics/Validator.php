@@ -5,22 +5,22 @@ declare(strict_types=1);
 namespace Svoboda\PsrRouter\Semantics;
 
 use Svoboda\PsrRouter\Route\InvalidRoute;
-use Svoboda\PsrRouter\Route\Parts\RoutePart;
+use Svoboda\PsrRouter\Route\Path\RoutePath;
 
 /**
- * Validates the semantics of route definitions.
+ * Validates the semantics of route path.
  */
 class Validator
 {
     /**
-     * Check the semantic validity of given route.
+     * Checks the semantic validity of given route path.
      *
-     * @param RoutePart $ast
+     * @param RoutePath $path
      * @throws InvalidRoute
      */
-    public function validate(RoutePart $ast): void
+    public function validate(RoutePath $path): void
     {
-        $attributes = $ast->getAttributes();
+        $attributes = $path->getAttributes();
 
         $names = array_column($attributes, "name");
 
@@ -31,9 +31,9 @@ class Validator
         }));
 
         if (!empty($duplicates)) {
-            $path = $ast->getDefinition();
+            $definition = $path->getDefinition();
 
-            throw InvalidRoute::ambiguousAttribute($path, $duplicates);
+            throw InvalidRoute::ambiguousAttribute($definition, $duplicates);
         }
     }
 }

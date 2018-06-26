@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Svoboda\PsrRouter;
 
 use Psr\Http\Message\ServerRequestInterface;
-use Svoboda\PsrRouter\Compiler\CompilationContext;
+use Svoboda\PsrRouter\Compiler\Context;
 use Svoboda\PsrRouter\Compiler\Compiler;
 use Svoboda\PsrRouter\Compiler\Matcher;
-use Svoboda\PsrRouter\Compiler\NaiveCompiler;
+use Svoboda\PsrRouter\Compiler\MultiPatternCompiler;
 
 /**
  * Routes an incoming HTTP requests based on given collection of routes.
@@ -16,6 +16,8 @@ use Svoboda\PsrRouter\Compiler\NaiveCompiler;
 class Router
 {
     /**
+     * The request matcher.
+     *
      * @var Matcher
      */
     private $matcher;
@@ -23,9 +25,9 @@ class Router
     /**
      * @param RouteCollection $routes
      * @param Compiler $compiler
-     * @param CompilationContext $context
+     * @param Context $context
      */
-    public function __construct(RouteCollection $routes, Compiler $compiler, CompilationContext $context)
+    public function __construct(RouteCollection $routes, Compiler $compiler, Context $context)
     {
         $this->matcher = $compiler->compile($routes, $context);
     }
@@ -34,13 +36,13 @@ class Router
      * Creates new router for given routes with default settings.
      *
      * @param RouteCollection $routes
-     * @param null|CompilationContext $context
+     * @param null|Context $context
      * @return self
      */
-    public static function create(RouteCollection $routes, ?CompilationContext $context = null): self
+    public static function create(RouteCollection $routes, ?Context $context = null): self
     {
-        $compiler = new NaiveCompiler();
-        $context = $context ?? CompilationContext::createDefault();
+        $compiler = new MultiPatternCompiler();
+        $context = $context ?? Context::createDefault();
 
         return new self($routes, $compiler, $context);
     }

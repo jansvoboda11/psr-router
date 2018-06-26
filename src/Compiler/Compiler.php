@@ -7,16 +7,16 @@ namespace Svoboda\PsrRouter\Compiler;
 use Svoboda\PsrRouter\RouteCollection;
 
 /**
- * Creates a matcher from parsed routes.
+ * Creates a matcher from route collection.
  */
 interface Compiler
 {
     /**
-     * Compiles the parsed routes into a matcher in the given context.
+     * Compiles the route collection into a matcher in the given context.
      *
      * @param RouteCollection $routes
-     * @param CompilationContext $context
+     * @param Context $context
      * @return Matcher
      */
-    public function compile(RouteCollection $routes, CompilationContext $context): Matcher;
+    public function compile(RouteCollection $routes, Context $context): Matcher;
 }

@@ -16,11 +16,15 @@ use Svoboda\PsrRouter\Route\RouteFactory;
 class RouteCollection implements IteratorAggregate
 {
     /**
+     * The factory for creating new routes.
+     *
      * @var RouteFactory
      */
     private $factory;
 
     /**
+     * The routes.
+     *
      * @var Route[]
      */
     private $routes;

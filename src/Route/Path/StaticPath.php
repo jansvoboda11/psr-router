@@ -2,16 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\PsrRouter\Route\Parts;
+namespace Svoboda\PsrRouter\Route\Path;
 
 use Svoboda\PsrRouter\Compiler\PartsVisitor;
 
 /**
  * Static part of the route.
  */
-class StaticPart implements RoutePart
+class StaticPath implements RoutePath
 {
     /**
+     * The static string in route.
+     *
      * @var string
      */
     private $static;

@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Svoboda\PsrRouter\Parser;
 
 use Svoboda\PsrRouter\Route\InvalidRoute;
-use Svoboda\PsrRouter\Route\Parts\AttributePart;
-use Svoboda\PsrRouter\Route\Parts\EmptyPart;
-use Svoboda\PsrRouter\Route\Parts\MainPart;
-use Svoboda\PsrRouter\Route\Parts\OptionalPart;
-use Svoboda\PsrRouter\Route\Parts\RoutePart;
-use Svoboda\PsrRouter\Route\Parts\StaticPart;
+use Svoboda\PsrRouter\Route\Path\AttributePath;
+use Svoboda\PsrRouter\Route\Path\EmptyPath;
+use Svoboda\PsrRouter\Route\Path\MainPath;
+use Svoboda\PsrRouter\Route\Path\OptionalPath;
+use Svoboda\PsrRouter\Route\Path\RoutePath;
+use Svoboda\PsrRouter\Route\Path\StaticPath;
 
 /**
  * Parses the user-defined route.
@@ -35,16 +35,16 @@ class Parser
      * Parse the route path specification.
      *
      * @param string $path
-     * @return RoutePart
+     * @return RoutePath
      * @throws InvalidRoute
      */
-    public function parse(string $path): RoutePart
+    public function parse(string $path): RoutePath
     {
         $path = new Input($path);
 
         try {
-            $part = $this->parseMain($path);
-        } catch (UnexpectedCharacter $exception) {
+            $parsed = $this->parseMain($path);
+        } catch (UnexpectedChar $exception) {
             if ($path->peek() === Input::END) {
                 throw InvalidRoute::unexpectedEnd($path);
             }
@@ -60,18 +60,18 @@ class Parser
             throw InvalidRoute::unexpectedCharacter($path);
         }
 
-        return $part;
+        return $parsed;
     }
 
     /**
      * Parse the main part of the route specification.
      *
      * @param Input $path
-     * @return MainPart
+     * @return MainPath
      * @throws InvalidRoute
-     * @throws UnexpectedCharacter
+     * @throws UnexpectedChar
      */
-    private function parseMain(Input $path): MainPart
+    private function parseMain(Input $path): MainPath
     {
         $static = $this->parseStatic($path);
 
@@ -86,40 +86,40 @@ class Parser
         if ($char === "[") {
             $next = $this->parseOptional($path);
 
-            return new MainPart($static, $attributes, $next);
+            return new MainPath($static, $attributes, $next);
         }
 
         if ($char === "]" || $char === Input::END) {
-            $next = new EmptyPart();
+            $next = new EmptyPath();
 
-            return new MainPart($static, $attributes, $next);
+            return new MainPath($static, $attributes, $next);
         }
 
         $next = $this->parseMain($path);
 
-        return new MainPart($static, $attributes, $next);
+        return new MainPath($static, $attributes, $next);
     }
 
     /**
      * Parse the static part of the route specification.
      *
      * @param Input $path
-     * @return StaticPart
+     * @return StaticPath
      */
-    private function parseStatic(Input $path): StaticPart
+    private function parseStatic(Input $path): StaticPath
     {
         $static = $path->takeAllUntil("{}[]");
 
-        return new StaticPart($static);
+        return new StaticPath($static);
     }
 
     /**
      * Parse attributes of the route specification.
      *
      * @param Input $path
-     * @return AttributePart[]
+     * @return AttributePath[]
      * @throws InvalidRoute
-     * @throws UnexpectedCharacter
+     * @throws UnexpectedChar
      */
     private function parseAttributes(Input $path): array
     {
@@ -136,11 +136,11 @@ class Parser
      * Parse a single attribute of the route specification.
      *
      * @param Input $path
-     * @return AttributePart
+     * @return AttributePath
      * @throws InvalidRoute
-     * @throws UnexpectedCharacter
+     * @throws UnexpectedChar
      */
-    private function parseAttribute(Input $path): AttributePart
+    private function parseAttribute(Input $path): AttributePath
     {
         $path->expect("{");
 
@@ -150,18 +150,18 @@ class Parser
 
         $path->expect("}");
 
-        return new AttributePart($name, $type);
+        return new AttributePath($name, $type);
     }
 
     /**
-     * Parse an optional part of the route specification.
+     * Parse the optional part of the route specification.
      *
      * @param Input $path
-     * @return OptionalPart
+     * @return OptionalPath
      * @throws InvalidRoute
-     * @throws UnexpectedCharacter
+     * @throws UnexpectedChar
      */
-    private function parseOptional(Input $path): OptionalPart
+    private function parseOptional(Input $path): OptionalPath
     {
         $path->expect("[");
 
@@ -169,7 +169,7 @@ class Parser
 
         $path->expect("]");
 
-        return new OptionalPart($optional);
+        return new OptionalPath($optional);
     }
 
     /**
@@ -178,7 +178,7 @@ class Parser
      * @param Input $path
      * @return string
      * @throws InvalidRoute
-     * @throws UnexpectedCharacter
+     * @throws UnexpectedChar
      */
     private function parseAttributeName(Input $path): string
     {
@@ -201,7 +201,7 @@ class Parser
      * @param Input $path
      * @return null|string
      * @throws InvalidRoute
-     * @throws UnexpectedCharacter
+     * @throws UnexpectedChar
      */
     private function parseAttributeType(Input $path): ?string
     {

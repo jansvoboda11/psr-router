@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\PsrRouter\Route\Parts;
+namespace Svoboda\PsrRouter\Route\Path;
 
 use Svoboda\PsrRouter\Compiler\PartsVisitor;
 
 /**
  * Part of the route definition.
  */
-interface RoutePart
+interface RoutePath
 {
     /**
      * Builds the original route definition.

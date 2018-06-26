@@ -6,7 +6,7 @@ namespace SvobodaTest\PsrRouter\Parser;
 
 use PHPStan\Testing\TestCase;
 use Svoboda\PsrRouter\Parser\Input;
-use Svoboda\PsrRouter\Parser\UnexpectedCharacter;
+use Svoboda\PsrRouter\Parser\UnexpectedChar;
 
 class InputTest extends TestCase
 {
@@ -41,7 +41,7 @@ class InputTest extends TestCase
         $input->expect("a");
         $input->expect("b");
 
-        $this->expectException(UnexpectedCharacter::class);
+        $this->expectException(UnexpectedChar::class);
 
         $input->expect("d");
     }

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\PsrRouter\Route\Parts;
+namespace Svoboda\PsrRouter\Route\Path;
 
 use Svoboda\PsrRouter\Compiler\PartsVisitor;
 
 /**
  * The null object for route part.
  */
-class EmptyPart implements RoutePart
+class EmptyPath implements RoutePath
 {
     /**
      * @inheritdoc

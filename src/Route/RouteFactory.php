@@ -7,14 +7,21 @@ namespace Svoboda\PsrRouter\Route;
 use Svoboda\PsrRouter\Parser\Parser;
 use Svoboda\PsrRouter\Semantics\Validator;
 
+/**
+ * Creates parsed and validated routes.
+ */
 class RouteFactory
 {
     /**
+     * Path parser.
+     *
      * @var Parser
      */
     private $parser;
 
     /**
+     * Route validator.
+     *
      * @var Validator
      */
     private $validator;
@@ -30,7 +37,7 @@ class RouteFactory
     }
 
     /**
-     * Create new route.
+     * Creates new route.
      *
      * @param string $method
      * @param string $path
@@ -40,10 +47,10 @@ class RouteFactory
      */
     public function createRoute(string $method, string $path, $handler)
     {
-        $ast = $this->parser->parse($path);
+        $path = $this->parser->parse($path);
 
-        $this->validator->validate($ast);
+        $this->validator->validate($path);
 
-        return new Route($method, $ast, $handler);
+        return new Route($method, $path, $handler);
     }
 }

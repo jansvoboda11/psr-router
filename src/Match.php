@@ -12,11 +12,15 @@ use Psr\Http\Message\ServerRequestInterface;
 class Match
 {
     /**
+     * The registered handler.
+     *
      * @var mixed
      */
     private $handler;
 
     /**
+     * The matched request with all route attributes.
+     *
      * @var ServerRequestInterface
      */
     private $request;

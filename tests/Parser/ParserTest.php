@@ -23,62 +23,62 @@ class ParserTest extends TestCase
 
     public function test_static_path()
     {
-        $ast = $this->parser->parse("/users/all");
+        $path = $this->parser->parse("/users/all");
 
-        self::assertEquals("/users/all", $ast->getDefinition());
-        self::assertEquals([], $ast->getAttributes());
+        self::assertEquals("/users/all", $path->getDefinition());
+        self::assertEquals([], $path->getAttributes());
     }
 
     public function test_path_with_attribute_without_type()
     {
-        $ast = $this->parser->parse("/users/{id}");
+        $path = $this->parser->parse("/users/{id}");
 
-        self::assertEquals("/users/{id}", $ast->getDefinition());
+        self::assertEquals("/users/{id}", $path->getDefinition());
         self::assertEquals([
             ["name" => "id", "type" => null, "required" => true],
-        ], $ast->getAttributes());
+        ], $path->getAttributes());
     }
 
     public function test_path_with_attribute_of_all_type()
     {
-        $ast = $this->parser->parse("/users/{id:any}");
+        $path = $this->parser->parse("/users/{id:any}");
 
-        self::assertEquals("/users/{id:any}", $ast->getDefinition());
+        self::assertEquals("/users/{id:any}", $path->getDefinition());
         self::assertEquals([
             ["name" => "id", "type" => "any", "required" => true],
-        ], $ast->getAttributes());
+        ], $path->getAttributes());
     }
 
     public function test_path_with_multiple_attributes()
     {
-        $ast = $this->parser->parse("/users/{name}/{id:num}");
+        $path = $this->parser->parse("/users/{name}/{id:num}");
 
-        self::assertEquals("/users/{name}/{id:num}", $ast->getDefinition());
+        self::assertEquals("/users/{name}/{id:num}", $path->getDefinition());
         self::assertEquals([
             ["name" => "name", "type" => null, "required" => true],
             ["name" => "id", "type" => "num", "required" => true],
-        ], $ast->getAttributes());
+        ], $path->getAttributes());
     }
 
     public function test_path_with_optional_attribute()
     {
-        $ast = $this->parser->parse("/users[/{name}]");
+        $path = $this->parser->parse("/users[/{name}]");
 
-        self::assertEquals("/users[/{name}]", $ast->getDefinition());
+        self::assertEquals("/users[/{name}]", $path->getDefinition());
         self::assertEquals([
             ["name" => "name", "type" => null, "required" => false],
-        ], $ast->getAttributes());
+        ], $path->getAttributes());
     }
 
     public function test_path_with_required_and_optional_attributes()
     {
-        $ast = $this->parser->parse("/users/{name}[/{id:num}]");
+        $path = $this->parser->parse("/users/{name}[/{id:num}]");
 
-        self::assertEquals("/users/{name}[/{id:num}]", $ast->getDefinition());
+        self::assertEquals("/users/{name}[/{id:num}]", $path->getDefinition());
         self::assertEquals([
             ["name" => "name", "type" => null, "required" => true],
             ["name" => "id", "type" => "num", "required" => false],
-        ], $ast->getAttributes());
+        ], $path->getAttributes());
     }
 
     public function test_path_with_missing_attribute_info()

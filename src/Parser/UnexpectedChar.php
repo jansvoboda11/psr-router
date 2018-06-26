@@ -9,14 +9,18 @@ use Svoboda\PsrRouter\Exception;
 /**
  * Unexpected character in the input.
  */
-class UnexpectedCharacter extends Exception
+class UnexpectedChar extends Exception
 {
     /**
+     * The input with unexpected character.
+     *
      * @var Input
      */
     private $input;
 
     /**
+     * Characters that were expected instead.
+     *
      * @var string[]
      */
     private $expected;
