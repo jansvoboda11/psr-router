@@ -10,7 +10,7 @@ use Svoboda\PsrRouter\Parser\UnexpectedChar;
 
 class InputTest extends TestCase
 {
-    public function test_peek_returns_character_without_consuming()
+    public function test_peek_returns_character_without_consuming_it()
     {
         $input = new Input("abc");
 
@@ -18,7 +18,7 @@ class InputTest extends TestCase
         self::assertEquals("a", $input->peek());
     }
 
-    public function test_peek_returns_eof_when_input_empty()
+    public function test_peek_returns_eof_for_input_empty()
     {
         $input = new Input("");
 
@@ -34,33 +34,39 @@ class InputTest extends TestCase
         self::assertEquals("c", $input->take());
     }
 
-    public function test_expect_fails_on_unexpected_character()
+    public function test_expect_consumes_correct_characters()
     {
         $input = new Input("abc");
 
         $input->expect("a");
-        $input->expect("b");
+
+        self::assertEquals("b", $input->take());
+    }
+
+    public function test_expect_fails_on_unexpected_character()
+    {
+        $input = new Input("abc");
 
         $this->expectException(UnexpectedChar::class);
 
-        $input->expect("d");
+        $input->expect("b");
     }
 
-    public function test_take_all_while_can_take_whole_string()
+    public function test_take_all_alpha_num_can_return_whole_string()
     {
         $input = new Input("abc");
 
         self::assertEquals("abc", $input->takeAllAlphaNumUntil(Input::END));
     }
 
-    public function test_take_all_while_stops_at_bad_character()
+    public function test_take_all_alpha_num_stops_at_end_character()
     {
         $input = new Input("ab_c");
 
         self::assertEquals("ab", $input->takeAllAlphaNumUntil("_"));
     }
 
-    public function test_take_all_while_can_return_empty_string()
+    public function test_take_all_alpha_num_can_return_empty_string()
     {
         $input = new Input("_abc");
 
@@ -95,14 +101,14 @@ class InputTest extends TestCase
         self::assertTrue($input->atEnd());
     }
 
-    public function test_non_empty_string_not_at_end()
+    public function test_non_empty_string_is_not_at_end()
     {
         $input = new Input("abc");
 
         self::assertFalse($input->atEnd());
     }
 
-    public function test_consumed_string_is_at_end()
+    public function test_completely_consumed_string_is_at_end()
     {
         $input = new Input("abc");
 
@@ -113,14 +119,14 @@ class InputTest extends TestCase
         self::assertTrue($input->atEnd());
     }
 
-    public function test_index_initially_returns_zero()
+    public function test_index_initially_points_at_first_character()
     {
         $input = new Input("abc");
 
         self::assertEquals(0, $input->getIndex());
     }
 
-    public function test_index_returns_correct_number()
+    public function test_index_points_to_next_character_after_take()
     {
         $input = new Input("abc");
 
