@@ -20,11 +20,11 @@ class MultiPatternCompiler implements Compiler
     private $patternBuilder;
 
     /**
-     * @param null|PatternBuilder $visitor
+     * @param null|PatternBuilder $patternBuilder
      */
-    public function __construct(?PatternBuilder $visitor = null)
+    public function __construct(?PatternBuilder $patternBuilder = null)
     {
-        $this->patternBuilder = $visitor ?? new PatternBuilder();
+        $this->patternBuilder = $patternBuilder ?? new PatternBuilder();
     }
 
     /**
