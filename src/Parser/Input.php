@@ -217,8 +217,8 @@ class Input
     }
 
     /**
-     * Splits the string into array of characters. Type-sane version for
-     * PHPStan.
+     * Splits the string into array of characters. Type-sane version of
+     * str_split for PHPStan.
      *
      * @param string $string
      * @return string[]

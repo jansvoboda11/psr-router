@@ -145,7 +145,6 @@ class Parser
         $path->expect("{");
 
         $name = $this->parseAttributeName($path);
-
         $type = $this->parseAttributeType($path);
 
         $path->expect("}");
