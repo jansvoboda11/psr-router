@@ -14,7 +14,7 @@ class RouterTest extends TestCase
 {
     public function test_it_matches_single_static_route()
     {
-        $request = $this->createGetRequest("/users");
+        $request = self::createGetRequest("/users");
 
         $routes = new RouteCollection();
         $routes->get("/users", "Users");
@@ -27,7 +27,7 @@ class RouterTest extends TestCase
 
     public function test_it_matches_second_from_two_static_routes()
     {
-        $request = $this->createGetRequest("/admins");
+        $request = self::createGetRequest("/admins");
 
         $routes = new RouteCollection();
         $routes->get("/users", "Users");
@@ -41,7 +41,7 @@ class RouterTest extends TestCase
 
     public function test_it_matches_first_from_two_ambiguous_routes()
     {
-        $request = $this->createGetRequest("/admins");
+        $request = self::createGetRequest("/admins");
 
         $routes = new RouteCollection();
         $routes->get("/admins", "Admins1");
@@ -56,8 +56,7 @@ class RouterTest extends TestCase
 
     public function test_it_matches_single_route_with_attributes()
     {
-        $request = $this->createGetRequest("/admins/jan/123");
-
+        $request = self::createGetRequest("/admins/jan/123");
 
         $routes = new RouteCollection();
         $routes->get("/admins/{name}/{id}", "Admins");
@@ -72,7 +71,7 @@ class RouterTest extends TestCase
 
     public function test_it_matches_second_from_two_routes_with_attributes()
     {
-        $request = $this->createGetRequest("/users/jan/123");
+        $request = self::createGetRequest("/users/jan/123");
 
         $routes = new RouteCollection();
         $routes->get("/admins/{name}/{id}", "Admins");
@@ -88,7 +87,7 @@ class RouterTest extends TestCase
 
     public function test_it_matches_request_with_optional_attribute()
     {
-        $request = $this->createGetRequest("/users/jan");
+        $request = self::createGetRequest("/users/jan");
 
         $routes = new RouteCollection();
         $routes->get("/users/{name}[/{id}]", "Users");
@@ -103,7 +102,7 @@ class RouterTest extends TestCase
 
     public function test_it_matches_based_on_request_method()
     {
-        $request = $this->createPostRequest("/users");
+        $request = self::createPostRequest("/users");
 
         $routes = new RouteCollection();
         $routes->get("/users", "Get");
@@ -115,9 +114,33 @@ class RouterTest extends TestCase
         self::assertEquals("Post", $match->getHandler());
     }
 
+    public function test_it_does_not_match_route_with_extra_suffix()
+    {
+        $request = self::createGetRequest("/users/jan/123");
+
+        $routes = new RouteCollection();
+        $routes->get("/users/{name}", "Users");
+
+        $match = Router::create($routes)->match($request);
+
+        self::assertNull($match);
+    }
+
+    public function test_it_does_not_match_route_with_extra_prefix()
+    {
+        $request = self::createGetRequest("/api/users/jan");
+
+        $routes = new RouteCollection();
+        $routes->get("/users/{name}", "Users");
+
+        $match = Router::create($routes)->match($request);
+
+        self::assertNull($match);
+    }
+
     public function test_it_ignores_query_string()
     {
-        $request = $this->createGetRequest("/users?key=value");
+        $request = self::createGetRequest("/users?key=value");
 
         $routes = new RouteCollection();
         $routes->get("/users", "Get");
@@ -130,7 +153,7 @@ class RouterTest extends TestCase
 
     public function test_it_ignores_hash()
     {
-        $request = $this->createGetRequest("/users#main");
+        $request = self::createGetRequest("/users#main");
 
         $routes = new RouteCollection();
         $routes->get("/users", "Get");
@@ -141,37 +164,13 @@ class RouterTest extends TestCase
         self::assertEquals("Get", $match->getHandler());
     }
 
-    public function test_it_does_not_match_route_with_extra_suffix()
-    {
-        $request = $this->createGetRequest("/users/jan/123");
-
-        $routes = new RouteCollection();
-        $routes->get("/users/{name}", "Users");
-
-        $match = Router::create($routes)->match($request);
-
-        self::assertNull($match);
-    }
-
-    public function test_it_does_not_match_route_with_extra_prefix()
-    {
-        $request = $this->createGetRequest("/api/users/jan");
-
-        $routes = new RouteCollection();
-        $routes->get("/users/{name}", "Users");
-
-        $match = Router::create($routes)->match($request);
-
-        self::assertNull($match);
-    }
-
     /**
      * Creates a GET request with the given URI.
      *
      * @param string $uri
      * @return ServerRequest
      */
-    private function createGetRequest(string $uri)
+    private static function createGetRequest(string $uri)
     {
         return (new ServerRequest())->withUri(new Uri($uri));
     }
@@ -182,7 +181,7 @@ class RouterTest extends TestCase
      * @param string $uri
      * @return ServerRequest
      */
-    private function createPostRequest(string $uri)
+    private static function createPostRequest(string $uri)
     {
         return (new ServerRequest())->withMethod("POST")->withUri(new Uri($uri));
     }
