@@ -2,8 +2,8 @@
 
 namespace SvobodaTest\PsrRouter\Route\Path;
 
-use PHPUnit\Framework\TestCase;
 use Svoboda\PsrRouter\Route\Path\StaticPath;
+use SvobodaTest\PsrRouter\TestCase;
 
 class StaticPathTest extends TestCase
 {

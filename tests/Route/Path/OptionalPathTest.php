@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace SvobodaTest\PsrRouter\Route\Path;
 
 use Mockery;
-use PHPUnit\Framework\TestCase;
 use Svoboda\PsrRouter\Route\Path\OptionalPath;
 use Svoboda\PsrRouter\Route\Path\RoutePath;
+use SvobodaTest\PsrRouter\TestCase;
 
 class OptionalPathTest extends TestCase
 {

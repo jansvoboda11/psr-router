@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SvobodaTest\PsrRouter;
 
-use PHPUnit\Framework\TestCase;
 use Svoboda\PsrRouter\Router;
 use Svoboda\PsrRouter\RouteCollection;
 use Zend\Diactoros\ServerRequest;

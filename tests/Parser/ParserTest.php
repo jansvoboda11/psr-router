@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace SvobodaTest\PsrRouter\Parser;
 
-use PHPUnit\Framework\TestCase;
 use Svoboda\PsrRouter\Parser\Parser;
 use Svoboda\PsrRouter\Route\InvalidRoute;
+use SvobodaTest\PsrRouter\TestCase;
 
 class ParserTest extends TestCase
 {

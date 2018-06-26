@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace SvobodaTest\PsrRouter\Route\Path;
 
-use PHPUnit\Framework\TestCase;
 use Svoboda\PsrRouter\Route\Path\AttributePath;
+use SvobodaTest\PsrRouter\TestCase;
 
 class AttributePathTest extends TestCase
 {

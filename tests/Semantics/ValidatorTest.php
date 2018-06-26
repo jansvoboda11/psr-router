@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace SvobodaTest\PsrRouter\Semantics;
 
-use PHPUnit\Framework\TestCase;
 use Svoboda\PsrRouter\Route\InvalidRoute;
 use Svoboda\PsrRouter\Parser\Parser;
 use Svoboda\PsrRouter\Semantics\Validator;
+use SvobodaTest\PsrRouter\TestCase;
 
 class ValidatorTest extends TestCase
 {

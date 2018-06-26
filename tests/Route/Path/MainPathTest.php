@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace SvobodaTest\PsrRouter\Route\Path;
 
 use Mockery;
-use PHPUnit\Framework\TestCase;
 use Svoboda\PsrRouter\Route\Path\AttributePath;
 use Svoboda\PsrRouter\Route\Path\MainPath;
 use Svoboda\PsrRouter\Route\Path\RoutePath;
 use Svoboda\PsrRouter\Route\Path\StaticPath;
+use SvobodaTest\PsrRouter\TestCase;
 
 class MainPathTest extends TestCase
 {
