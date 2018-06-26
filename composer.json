@@ -35,7 +35,7 @@
     },
     "scripts": {
         "analyse": "phpstan analyse src/ --level=7",
-        "bench": "phpbench run benchmarks/ --report=aggregate",
+        "bench": "phpbench run benchmarks/ --bootstrap=vendor/autoload.php --report=aggregate",
         "test": "phpunit tests/"
     }
 }
