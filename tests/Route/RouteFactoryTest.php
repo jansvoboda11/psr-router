@@ -16,7 +16,7 @@ use SvobodaTest\PsrRouter\TestCase;
 
 class RouteFactoryTest extends TestCase
 {
-    public function test_it_parses_and_validates_path()
+    public function test_it_parses_and_validates_definition()
     {
         $path = new MainPath(
             new StaticPath("/path"),
