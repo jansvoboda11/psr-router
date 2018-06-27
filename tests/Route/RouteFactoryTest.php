@@ -7,6 +7,8 @@ namespace SvobodaTest\PsrRouter\Route;
 use Mockery;
 use Svoboda\PsrRouter\Parser\Parser;
 use Svoboda\PsrRouter\Route\InvalidRoute;
+use Svoboda\PsrRouter\Route\Path\EmptyPath;
+use Svoboda\PsrRouter\Route\Path\MainPath;
 use Svoboda\PsrRouter\Route\Path\StaticPath;
 use Svoboda\PsrRouter\Route\RouteFactory;
 use Svoboda\PsrRouter\Semantics\Validator;
@@ -16,7 +18,11 @@ class RouteFactoryTest extends TestCase
 {
     public function test_it_parses_and_validates_path()
     {
-        $path = new StaticPath("/path");
+        $path = new MainPath(
+            new StaticPath("/path"),
+            [],
+            new EmptyPath()
+        );
 
         $parser = Mockery::mock(Parser::class);
         $parser->shouldReceive("parse")
@@ -58,7 +64,11 @@ class RouteFactoryTest extends TestCase
 
     public function test_it_fails_when_validator_fails()
     {
-        $path = new StaticPath("/path");
+        $path = new MainPath(
+            new StaticPath("/path"),
+            [],
+            new EmptyPath()
+        );
 
         $parser = Mockery::mock(Parser::class);
         $parser->shouldReceive("parse")

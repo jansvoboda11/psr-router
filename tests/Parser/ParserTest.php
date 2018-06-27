@@ -10,17 +10,21 @@ use SvobodaTest\PsrRouter\TestCase;
 
 class ParserTest extends TestCase
 {
-    public function test_static_path()
+    public function test_parse_static_path()
     {
-        $path = (new Parser())->parse("/users/all");
+        $definition = "/users/all";
+
+        $path = (new Parser())->parse($definition);
 
         self::assertEquals("/users/all", $path->getDefinition());
         self::assertEquals([], $path->getAttributes());
     }
 
-    public function test_path_with_attribute_without_type()
+    public function test_parse_path_with_attribute_without_type()
     {
-        $path = (new Parser())->parse("/users/{id}");
+        $definition = "/users/{id}";
+
+        $path = (new Parser())->parse($definition);
 
         self::assertEquals("/users/{id}", $path->getDefinition());
         self::assertEquals([
@@ -28,9 +32,11 @@ class ParserTest extends TestCase
         ], $path->getAttributes());
     }
 
-    public function test_path_with_attribute_of_any_type()
+    public function test_parse_path_with_attribute_of_any_type()
     {
-        $path = (new Parser())->parse("/users/{id:any}");
+        $definition = "/users/{id:any}";
+
+        $path = (new Parser())->parse($definition);
 
         self::assertEquals("/users/{id:any}", $path->getDefinition());
         self::assertEquals([
@@ -38,9 +44,11 @@ class ParserTest extends TestCase
         ], $path->getAttributes());
     }
 
-    public function test_path_with_multiple_attributes()
+    public function test_parse_path_with_multiple_attributes()
     {
-        $path = (new Parser())->parse("/users/{name}/{id:num}");
+        $definition = "/users/{name}/{id:num}";
+
+        $path = (new Parser())->parse($definition);
 
         self::assertEquals("/users/{name}/{id:num}", $path->getDefinition());
         self::assertEquals([
@@ -49,9 +57,11 @@ class ParserTest extends TestCase
         ], $path->getAttributes());
     }
 
-    public function test_path_with_optional_attribute()
+    public function test_parse_path_with_optional_attribute()
     {
-        $path = (new Parser())->parse("/users[/{name}]");
+        $definition = "/users[/{name}]";
+
+        $path = (new Parser())->parse($definition);
 
         self::assertEquals("/users[/{name}]", $path->getDefinition());
         self::assertEquals([
@@ -59,9 +69,11 @@ class ParserTest extends TestCase
         ], $path->getAttributes());
     }
 
-    public function test_path_with_required_and_optional_attributes()
+    public function test_parse_path_with_required_and_optional_attributes()
     {
-        $path = (new Parser())->parse("/users/{name}[/{id:num}]");
+        $definition = "/users/{name}[/{id:num}]";
+
+        $path = (new Parser())->parse($definition);
 
         self::assertEquals("/users/{name}[/{id:num}]", $path->getDefinition());
         self::assertEquals([
@@ -70,8 +82,10 @@ class ParserTest extends TestCase
         ], $path->getAttributes());
     }
 
-    public function test_path_with_missing_attribute_info()
+    public function test_parse_path_with_missing_attribute_info()
     {
+        $definition = "/users/{}";
+
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
 The attribute name is missing:
@@ -80,11 +94,13 @@ The attribute name is missing:
 MESSAGE
         );
 
-        (new Parser())->parse("/users/{}");
+        (new Parser())->parse($definition);
     }
 
-    public function test_path_with_missing_attribute_name()
+    public function test_parse_path_with_missing_attribute_name()
     {
+        $definition = "/users/{:any}";
+
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
 The attribute name is missing:
@@ -93,11 +109,13 @@ The attribute name is missing:
 MESSAGE
         );
 
-        (new Parser())->parse("/users/{:any}");
+        (new Parser())->parse($definition);
     }
 
-    public function test_path_with_too_long_attribute_name()
+    public function test_parse_path_with_too_long_attribute_name()
     {
+        $definition = "/users/{wayTooLongAttributeNameNoOneShouldNeed:any}";
+
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
 The attribute name exceeded maximum allowed length of 32 characters:
@@ -106,11 +124,13 @@ The attribute name exceeded maximum allowed length of 32 characters:
 MESSAGE
         );
 
-        (new Parser())->parse("/users/{wayTooLongAttributeNameNoOneShouldNeed:any}");
+        (new Parser())->parse($definition);
     }
 
-    public function test_path_with_malformed_attribute_name()
+    public function test_parse_path_with_malformed_attribute_name()
     {
+        $definition = "/users/{i%d:any}";
+
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
 Unexpected character (expected ':', '}', 'alphanumeric'):
@@ -119,11 +139,13 @@ Unexpected character (expected ':', '}', 'alphanumeric'):
 MESSAGE
         );
 
-        (new Parser())->parse("/users/{i%d:any}");
+        (new Parser())->parse($definition);
     }
 
-    public function test_path_with_missing_attribute_type()
+    public function test_parse_path_with_missing_attribute_type()
     {
+        $definition = "/users/{id:}";
+
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
 The attribute type is missing:
@@ -132,11 +154,13 @@ The attribute type is missing:
 MESSAGE
         );
 
-        (new Parser())->parse("/users/{id:}");
+        (new Parser())->parse($definition);
     }
 
-    public function test_path_with_malformed_attribute_type()
+    public function test_parse_path_with_malformed_attribute_type()
     {
+        $definition = "/users/{id:a%ny}";
+
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
 Unexpected character (expected '}', 'alphanumeric'):
@@ -145,11 +169,13 @@ Unexpected character (expected '}', 'alphanumeric'):
 MESSAGE
         );
 
-        (new Parser())->parse("/users/{id:a%ny}");
+        (new Parser())->parse($definition);
     }
 
-    public function test_path_with_too_long_attribute_type()
+    public function test_parse_path_with_too_long_attribute_type()
     {
+        $definition = "/users/{id:wayTooLongAttributeTypeNoOneShouldNeed}";
+
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
 The attribute type exceeded maximum allowed length of 32 characters:
@@ -158,11 +184,13 @@ The attribute type exceeded maximum allowed length of 32 characters:
 MESSAGE
         );
 
-        (new Parser())->parse("/users/{id:wayTooLongAttributeTypeNoOneShouldNeed}");
+        (new Parser())->parse($definition);
     }
 
-    public function test_path_with_missing_left_attribute_brace()
+    public function test_parse_path_with_missing_left_attribute_brace()
     {
+        $definition = "/users/id}";
+
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
 Unexpected character:
@@ -171,11 +199,13 @@ Unexpected character:
 MESSAGE
         );
 
-        (new Parser())->parse("/users/id}");
+        (new Parser())->parse($definition);
     }
 
-    public function test_path_with_missing_right_attribute_brace()
+    public function test_parse_path_with_missing_right_attribute_brace()
     {
+        $definition = "/users/{id";
+
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
 Unexpected end of route:
@@ -184,11 +214,13 @@ Unexpected end of route:
 MESSAGE
         );
 
-        (new Parser())->parse("/users/{id");
+        (new Parser())->parse($definition);
     }
 
-    public function test_path_with_missing_left_optional_bracket()
+    public function test_parse_path_with_missing_left_optional_bracket()
     {
+        $definition = "/users/{id}]";
+
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
 Unexpected character:
@@ -197,11 +229,13 @@ Unexpected character:
 MESSAGE
         );
 
-        (new Parser())->parse("/users/{id}]");
+        (new Parser())->parse($definition);
     }
 
-    public function test_path_with_missing_right_optional_bracket()
+    public function test_parse_path_with_missing_right_optional_bracket()
     {
+        $definition = "/users[/{id}";
+
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
 Unexpected end of route:
@@ -210,11 +244,13 @@ Unexpected end of route:
 MESSAGE
         );
 
-        (new Parser())->parse("/users[/{id}");
+        (new Parser())->parse($definition);
     }
 
-    public function test_path_with_optional_sequence_in_the_middle()
+    public function test_parse_path_with_optional_sequence_in_the_middle()
     {
+        $definition = "/users[/{id}]/{name}";
+
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
 Optional sequence cannot be followed by anything else:
@@ -223,11 +259,13 @@ Optional sequence cannot be followed by anything else:
 MESSAGE
         );
 
-        (new Parser())->parse("/users[/{id}]/{name}");
+        (new Parser())->parse($definition);
     }
 
-    public function test_path_with_mixed_brackets_one()
+    public function test_parse_path_with_mixed_brackets_one()
     {
+        $definition = "/users[/{id]}";
+
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
 Unexpected character (expected ':', '}', 'alphanumeric'):
@@ -236,11 +274,13 @@ Unexpected character (expected ':', '}', 'alphanumeric'):
 MESSAGE
         );
 
-        (new Parser())->parse("/users[/{id]}");
+        (new Parser())->parse($definition);
     }
 
-    public function test_path_with_mixed_brackets_two()
+    public function test_parse_path_with_mixed_brackets_two()
     {
+        $definition = "/users/{id[ing}]";
+
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
 Unexpected character (expected ':', '}', 'alphanumeric'):
@@ -249,6 +289,6 @@ Unexpected character (expected ':', '}', 'alphanumeric'):
 MESSAGE
         );
 
-        (new Parser())->parse("/users/{id[ing}]");
+        (new Parser())->parse($definition);
     }
 }

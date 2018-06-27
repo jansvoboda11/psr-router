@@ -11,13 +11,17 @@ class StaticPathTest extends TestCase
     {
         $path = new StaticPath("/api/users");
 
-        self::assertEquals("/api/users", $path->getDefinition());
+        $definition = $path->getDefinition();
+
+        self::assertEquals("/api/users", $definition);
     }
 
     public function test_it_returns_no_attributes()
     {
         $path = new StaticPath("/api/users");
 
-        self::assertEquals([], $path->getAttributes());
+        $attributes = $path->getAttributes();
+
+        self::assertEquals([], $attributes);
     }
 }
