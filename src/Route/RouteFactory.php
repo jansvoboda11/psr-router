@@ -40,14 +40,14 @@ class RouteFactory
      * Creates new route.
      *
      * @param string $method
-     * @param string $path
+     * @param string $definition
      * @param mixed $handler
      * @return Route
      * @throws InvalidRoute
      */
-    public function createRoute(string $method, string $path, $handler)
+    public function createRoute(string $method, string $definition, $handler)
     {
-        $path = $this->parser->parse($path);
+        $path = $this->parser->parse($definition);
 
         $this->validator->validate($path);
 

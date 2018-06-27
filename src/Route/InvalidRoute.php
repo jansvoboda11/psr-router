@@ -8,18 +8,18 @@ use Svoboda\PsrRouter\Exception;
 use Svoboda\PsrRouter\Parser\Input;
 
 /**
- * Invalid route specification.
+ * Invalid route definition.
  */
 class InvalidRoute extends Exception
 {
     /**
      * Invalid route with more attributes of the same name.
      *
-     * @param string $path
+     * @param string $definition
      * @param string[] $names
      * @return InvalidRoute
      */
-    public static function ambiguousAttribute(string $path, array $names): self
+    public static function ambiguousAttribute(string $definition, array $names): self
     {
         $names = array_map(function ($name) {
             return "'$name'";
@@ -27,38 +27,38 @@ class InvalidRoute extends Exception
 
         $names = implode(", ", $names);
 
-        return new self("Multiple attributes with name $names:\n$path");
+        return new self("Multiple attributes with name $names:\n$definition");
     }
 
     /**
-     * Invalid route with unexpected end.
+     * Invalid route definition with unexpected end.
      *
-     * @param Input $path
+     * @param Input $definition
      * @return InvalidRoute
      */
-    public static function unexpectedEnd(Input $path): self
+    public static function unexpectedEnd(Input $definition): self
     {
-        $pointer = self::createPointerString($path->getInput(), $path->getIndex());
+        $pointer = self::createPointerString($definition->getInput(), $definition->getIndex());
 
         return new self("Unexpected end of route:\n$pointer");
     }
 
     /**
-     * Invalid route with unexpected character.
+     * Invalid route definition with unexpected character.
      *
-     * @param Input $path
+     * @param Input $definition
      * @param string[] $expected
      * @return InvalidRoute
      */
-    public static function unexpectedCharacter(Input $path, array $expected = []): self
+    public static function unexpectedCharacter(Input $definition, array $expected = []): self
     {
-        $pointer = self::createPointerString($path->getInput(), $path->getIndex());
+        $pointer = self::createPointerString($definition->getInput(), $definition->getIndex());
 
         if (empty($expected)) {
             return new self("Unexpected character:\n$pointer");
         }
 
-        $expected = $expected ?? $path->getLatestExpectations();
+        $expected = $expected ?? $definition->getLatestExpectations();
 
         $expected = array_map(function (string $e) {
             return "'$e'";
@@ -70,89 +70,89 @@ class InvalidRoute extends Exception
     }
 
     /**
-     * Invalid route where optional part is not at the very end.
+     * Invalid route definition where optional part is not at the very end.
      *
-     * @param Input $path
+     * @param Input $definition
      * @return InvalidRoute
      */
-    public static function optionalIsNotSuffix(Input $path): self
+    public static function optionalIsNotSuffix(Input $definition): self
     {
-        $pointer = self::createPointerString($path->getInput(), $path->getIndex());
+        $pointer = self::createPointerString($definition->getInput(), $definition->getIndex());
 
         return new self("Optional sequence cannot be followed by anything else:\n$pointer");
     }
 
     /**
-     * Invalid route with empty attribute name.
+     * Invalid route definition with empty attribute name.
      *
-     * @param Input $path
+     * @param Input $definition
      * @return InvalidRoute
      */
-    public static function emptyAttributeName(Input $path): self
+    public static function emptyAttributeName(Input $definition): self
     {
-        return self::emptyAttributeParameter($path, "name");
+        return self::emptyAttributeParameter($definition, "name");
     }
 
     /**
-     * Invalid route with too long attribute name.
+     * Invalid route definition with too long attribute name.
      *
-     * @param Input $path
+     * @param Input $definition
      * @param int $maxLength
      * @return InvalidRoute
      */
-    public static function tooLongAttributeName(Input $path, int $maxLength): self
+    public static function longAttributeName(Input $definition, int $maxLength): self
     {
-        return self::tooLongAttributeParameter($path, $maxLength, "name");
+        return self::longAttributeParameter($definition, $maxLength, "name");
     }
 
     /**
-     * Invalid route with empty attribute type.
+     * Invalid route definition with empty attribute type.
      *
-     * @param Input $path
+     * @param Input $definition
      * @return InvalidRoute
      */
-    public static function emptyAttributeType(Input $path): self
+    public static function emptyAttributeType(Input $definition): self
     {
-        return self::emptyAttributeParameter($path, "type");
+        return self::emptyAttributeParameter($definition, "type");
     }
 
     /**
-     * Invalid route with too long attribute type.
+     * Invalid route definition with too long attribute type.
      *
-     * @param Input $path
+     * @param Input $definition
      * @param int $maxLength
      * @return InvalidRoute
      */
-    public static function tooLongAttributeType(Input $path, int $maxLength): self
+    public static function longAttributeType(Input $definition, int $maxLength): self
     {
-        return self::tooLongAttributeParameter($path, $maxLength, "type");
+        return self::longAttributeParameter($definition, $maxLength, "type");
     }
 
     /**
-     * Invalid route with invalid attribute parameter.
+     * Invalid route definition with invalid attribute parameter.
      *
-     * @param Input $path
+     * @param Input $definition
      * @param string $parameter
      * @return InvalidRoute
      */
-    private static function emptyAttributeParameter(Input $path, string $parameter): self
+    private static function emptyAttributeParameter(Input $definition, string $parameter): self
     {
-        $pointer = self::createPointerString($path->getInput(), $path->getIndex());
+        $pointer = self::createPointerString($definition->getInput(), $definition->getIndex());
 
         return new self("The attribute $parameter is missing:\n$pointer");
     }
 
     /**
-     * Invalid route with too long attribute parameter.
+     * Invalid route definition with too long attribute parameter.
      *
-     * @param Input $path
+     * @param Input $definition
      * @param int $maxLength
      * @param string $parameter
      * @return InvalidRoute
      */
-    private static function tooLongAttributeParameter(Input $path, int $maxLength, string $parameter): self
+    private static function longAttributeParameter(Input $definition, int $maxLength, string $parameter): self
     {
-        $pointer = self::createPointerString($path->getInput(), $path->getIndex() - 1);
+        $pointer = self::createPointerString($definition->getInput(), $definition->getIndex() - 1);
 
         return new self("The attribute $parameter exceeded maximum allowed length of $maxLength characters:\n$pointer");
     }
@@ -160,14 +160,14 @@ class InvalidRoute extends Exception
     /**
      * Creates a string with an arrow pointing to the character after padding.
      *
-     * @param string $path
+     * @param string $string
      * @param int $padding
      * @return string
      */
-    private static function createPointerString(string $path, int $padding): string
+    private static function createPointerString(string $string, int $padding): string
     {
         $pointer = str_repeat(" ", $padding) . "^";
 
-        return $path . "\n" . $pointer;
+        return $string . "\n" . $pointer;
     }
 }

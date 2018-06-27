@@ -39,74 +39,74 @@ class RouteCollection
     /**
      * Creates a GET route.
      *
-     * @param string $path
+     * @param string $definition
      * @param mixed $handler
      * @throws InvalidRoute
      */
-    public function get(string $path, $handler): void
+    public function get(string $definition, $handler): void
     {
-        $this->route("GET", $path, $handler);
+        $this->route("GET", $definition, $handler);
     }
 
     /**
      * Creates a POST route.
      *
-     * @param string $path
+     * @param string $definition
      * @param mixed $handler
      * @throws InvalidRoute
      */
-    public function post(string $path, $handler): void
+    public function post(string $definition, $handler): void
     {
-        $this->route("POST", $path, $handler);
+        $this->route("POST", $definition, $handler);
     }
 
     /**
      * Creates a PUT route.
      *
-     * @param string $path
+     * @param string $definition
      * @param mixed $handler
      * @throws InvalidRoute
      */
-    public function put(string $path, $handler): void
+    public function put(string $definition, $handler): void
     {
-        $this->route("PUT", $path, $handler);
+        $this->route("PUT", $definition, $handler);
     }
 
     /**
      * Creates a PATCH route.
      *
-     * @param string $path
+     * @param string $definition
      * @param mixed $handler
      * @throws InvalidRoute
      */
-    public function patch(string $path, $handler): void
+    public function patch(string $definition, $handler): void
     {
-        $this->route("PATCH", $path, $handler);
+        $this->route("PATCH", $definition, $handler);
     }
 
     /**
      * Creates a DELETE route.
      *
-     * @param string $path
+     * @param string $definition
      * @param mixed $handler
      * @throws InvalidRoute
      */
-    public function delete(string $path, $handler): void
+    public function delete(string $definition, $handler): void
     {
-        $this->route("DELETE", $path, $handler);
+        $this->route("DELETE", $definition, $handler);
     }
 
     /**
      * Creates new route.
      *
      * @param string $method
-     * @param string $path
+     * @param string $definition
      * @param mixed $handler
      * @throws InvalidRoute
      */
-    public function route(string $method, string $path, $handler): void
+    public function route(string $method, string $definition, $handler): void
     {
-        $this->routes[] = $this->factory->createRoute($method, $path, $handler);
+        $this->routes[] = $this->factory->createRoute($method, $definition, $handler);
     }
 
     /**

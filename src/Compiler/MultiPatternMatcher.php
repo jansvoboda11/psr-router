@@ -34,14 +34,14 @@ class MultiPatternMatcher implements Matcher
      */
     public function match(ServerRequestInterface $request): ?Match
     {
-        $path = $request->getMethod() . $request->getUri()->getPath();
+        $requestPath = $request->getMethod() . $request->getUri()->getPath();
 
         foreach ($this->records as $record) {
             $matches = [];
 
             [$pattern, $route] = $record;
 
-            if (!preg_match($pattern, $path, $matches)) {
+            if (!preg_match($pattern, $requestPath, $matches)) {
                 continue;
             }
 

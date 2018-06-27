@@ -13,7 +13,7 @@ use Svoboda\PsrRouter\Route\Path\RoutePath;
 use Svoboda\PsrRouter\Route\Path\StaticPath;
 
 /**
- * Parses the user-defined route.
+ * Parses route definitions.
  */
 class Parser
 {
@@ -32,59 +32,61 @@ class Parser
     private const MAX_ATTRIBUTE_TYPE_LENGTH = 32;
 
     /**
-     * Parse the route path specification.
+     * Parse the route path definition.
      *
-     * @param string $path
+     * @param string $definition
      * @return RoutePath
      * @throws InvalidRoute
      */
-    public function parse(string $path): RoutePath
+    public function parse(string $definition): RoutePath
     {
-        $path = new Input($path);
+        $definition = new Input($definition);
 
         try {
-            $parsed = $this->parseMain($path);
+            $parsed = $this->parseMain($definition);
         } catch (UnexpectedChar $exception) {
-            if ($path->peek() === Input::END) {
-                throw InvalidRoute::unexpectedEnd($path);
+            if ($definition->peek() === Input::END) {
+                throw InvalidRoute::unexpectedEnd($definition);
             }
 
-            throw InvalidRoute::unexpectedCharacter($path, $exception->getExpected());
+            $expected = $exception->getExpected();
+
+            throw InvalidRoute::unexpectedCharacter($definition, $expected);
         }
 
-        if (!$path->atEnd()) {
-            if ($path->getLastTaken() === "]" && $path->peek() !== "]") {
-                throw InvalidRoute::optionalIsNotSuffix($path);
+        if (!$definition->atEnd()) {
+            if ($definition->getLastTaken() === "]" && $definition->peek() !== "]") {
+                throw InvalidRoute::optionalIsNotSuffix($definition);
             }
 
-            throw InvalidRoute::unexpectedCharacter($path);
+            throw InvalidRoute::unexpectedCharacter($definition);
         }
 
         return $parsed;
     }
 
     /**
-     * Parse the main part of the route specification.
+     * Parse the main part of the route definition.
      *
-     * @param Input $path
+     * @param Input $definition
      * @return MainPath
      * @throws InvalidRoute
      * @throws UnexpectedChar
      */
-    private function parseMain(Input $path): MainPath
+    private function parseMain(Input $definition): MainPath
     {
-        $static = $this->parseStatic($path);
+        $static = $this->parseStatic($definition);
 
-        $attributes = $this->parseAttributes($path);
+        $attributes = $this->parseAttributes($definition);
 
-        $char = $path->peek();
+        $char = $definition->peek();
 
         if ($char === "}") {
-            throw InvalidRoute::unexpectedCharacter($path);
+            throw InvalidRoute::unexpectedCharacter($definition);
         }
 
         if ($char === "[") {
-            $next = $this->parseOptional($path);
+            $next = $this->parseOptional($definition);
 
             return new MainPath($static, $attributes, $next);
         }
@@ -95,78 +97,78 @@ class Parser
             return new MainPath($static, $attributes, $next);
         }
 
-        $next = $this->parseMain($path);
+        $next = $this->parseMain($definition);
 
         return new MainPath($static, $attributes, $next);
     }
 
     /**
-     * Parse the static part of the route specification.
+     * Parse the static part of the route definition.
      *
-     * @param Input $path
+     * @param Input $definition
      * @return StaticPath
      */
-    private function parseStatic(Input $path): StaticPath
+    private function parseStatic(Input $definition): StaticPath
     {
-        $static = $path->takeAllUntil("{}[]");
+        $static = $definition->takeAllUntil("{}[]");
 
         return new StaticPath($static);
     }
 
     /**
-     * Parse attributes of the route specification.
+     * Parse attributes of the route definition.
      *
-     * @param Input $path
+     * @param Input $definition
      * @return AttributePath[]
      * @throws InvalidRoute
      * @throws UnexpectedChar
      */
-    private function parseAttributes(Input $path): array
+    private function parseAttributes(Input $definition): array
     {
         $attributes = [];
 
-        while ($path->peek() === "{") {
-            $attributes[] = $this->parseAttribute($path);
+        while ($definition->peek() === "{") {
+            $attributes[] = $this->parseAttribute($definition);
         }
 
         return $attributes;
     }
 
     /**
-     * Parse a single attribute of the route specification.
+     * Parse a single attribute of the route definition.
      *
-     * @param Input $path
+     * @param Input $definition
      * @return AttributePath
      * @throws InvalidRoute
      * @throws UnexpectedChar
      */
-    private function parseAttribute(Input $path): AttributePath
+    private function parseAttribute(Input $definition): AttributePath
     {
-        $path->expect("{");
+        $definition->expect("{");
 
-        $name = $this->parseAttributeName($path);
-        $type = $this->parseAttributeType($path);
+        $name = $this->parseAttributeName($definition);
+        $type = $this->parseAttributeType($definition);
 
-        $path->expect("}");
+        $definition->expect("}");
 
         return new AttributePath($name, $type);
     }
 
     /**
-     * Parse the optional part of the route specification.
+     * Parse the optional part of the route definition.
      *
-     * @param Input $path
+     * @param Input $definition
      * @return OptionalPath
      * @throws InvalidRoute
      * @throws UnexpectedChar
      */
-    private function parseOptional(Input $path): OptionalPath
+    private function parseOptional(Input $definition): OptionalPath
     {
-        $path->expect("[");
+        $definition->expect("[");
 
-        $optional = $this->parseMain($path);
+        $optional = $this->parseMain($definition);
 
-        $path->expect("]");
+        $definition->expect("]");
 
         return new OptionalPath($optional);
     }
@@ -174,21 +176,23 @@ class Parser
     /**
      * Parse the attribute name.
      *
-     * @param Input $path
+     * @param Input $definition
      * @return string
      * @throws InvalidRoute
      * @throws UnexpectedChar
      */
-    private function parseAttributeName(Input $path): string
+    private function parseAttributeName(Input $definition): string
     {
-        $name = $path->takeAllAlphaNumUntil(":}");
+        $maxLength = self::MAX_ATTRIBUTE_NAME_LENGTH;
+        
+        $name = $definition->takeAllAlphaNumUntil(":}");
 
         if (empty($name)) {
-            throw InvalidRoute::emptyAttributeName($path);
+            throw InvalidRoute::emptyAttributeName($definition);
         }
 
-        if (strlen($name) > self::MAX_ATTRIBUTE_NAME_LENGTH) {
-            throw InvalidRoute::tooLongAttributeName($path, self::MAX_ATTRIBUTE_NAME_LENGTH);
+        if (strlen($name) > $maxLength) {
+            throw InvalidRoute::longAttributeName($definition, $maxLength);
         }
 
         return $name;
@@ -197,27 +201,29 @@ class Parser
     /**
      * Parse the attribute type.
      *
-     * @param Input $path
+     * @param Input $definition
      * @return null|string
      * @throws InvalidRoute
      * @throws UnexpectedChar
      */
-    private function parseAttributeType(Input $path): ?string
+    private function parseAttributeType(Input $definition): ?string
     {
-        if ($path->peek() !== ":") {
+        $maxLength = self::MAX_ATTRIBUTE_TYPE_LENGTH;
+        
+        if ($definition->peek() !== ":") {
             return null;
         }
 
-        $path->take();
+        $definition->take();
 
-        $type = $path->takeAllAlphaNumUntil("}");
+        $type = $definition->takeAllAlphaNumUntil("}");
 
         if (empty($type)) {
-            throw InvalidRoute::emptyAttributeType($path);
+            throw InvalidRoute::emptyAttributeType($definition);
         }
 
-        if (strlen($type) > self::MAX_ATTRIBUTE_TYPE_LENGTH) {
-            throw InvalidRoute::tooLongAttributeType($path, self::MAX_ATTRIBUTE_TYPE_LENGTH);
+        if (strlen($type) > $maxLength) {
+            throw InvalidRoute::longAttributeType($definition, $maxLength);
         }
 
         return $type;
