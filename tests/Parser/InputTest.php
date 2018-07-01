@@ -32,6 +32,7 @@ class InputTest extends TestCase
         self::assertEquals("a", $input->take());
         self::assertEquals("b", $input->take());
         self::assertEquals("c", $input->take());
+        self::assertEquals(Input::END, $input->take());
     }
 
     public function test_expect_consumes_correct_characters()
