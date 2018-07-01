@@ -6,6 +6,9 @@ namespace SvobodaTest\PsrRouter\Parser;
 
 use Svoboda\PsrRouter\Parser\Parser;
 use Svoboda\PsrRouter\Route\InvalidRoute;
+use Svoboda\PsrRouter\Route\Path\AttributePath;
+use Svoboda\PsrRouter\Route\Path\OptionalPath;
+use Svoboda\PsrRouter\Route\Path\StaticPath;
 use SvobodaTest\PsrRouter\TestCase;
 
 class ParserTest extends TestCase
@@ -16,8 +19,9 @@ class ParserTest extends TestCase
 
         $path = (new Parser())->parse($definition);
 
-        self::assertEquals("/users/all", $path->getDefinition());
-        self::assertEquals([], $path->getAttributes());
+        $expectedPath = new StaticPath("/users/all");
+
+        self::assertEquals($expectedPath, $path);
     }
 
     public function test_parse_path_with_attribute_without_type()
@@ -26,10 +30,15 @@ class ParserTest extends TestCase
 
         $path = (new Parser())->parse($definition);
 
-        self::assertEquals("/users/{id}", $path->getDefinition());
-        self::assertEquals([
-            ["name" => "id", "type" => null, "required" => true],
-        ], $path->getAttributes());
+        $expectedPath = new StaticPath(
+            "/users/",
+            new AttributePath(
+                "id",
+                null
+            )
+        );
+
+        self::assertEquals($expectedPath, $path);
     }
 
     public function test_parse_path_with_attribute_of_any_type()
@@ -38,10 +47,15 @@ class ParserTest extends TestCase
 
         $path = (new Parser())->parse($definition);
 
-        self::assertEquals("/users/{id:any}", $path->getDefinition());
-        self::assertEquals([
-            ["name" => "id", "type" => "any", "required" => true],
-        ], $path->getAttributes());
+        $expectedPath = new StaticPath(
+            "/users/",
+            new AttributePath(
+                "id",
+                "any"
+            )
+        );
+
+        self::assertEquals($expectedPath, $path);
     }
 
     public function test_parse_path_with_multiple_attributes()
@@ -50,11 +64,22 @@ class ParserTest extends TestCase
 
         $path = (new Parser())->parse($definition);
 
-        self::assertEquals("/users/{name}/{id:num}", $path->getDefinition());
-        self::assertEquals([
-            ["name" => "name", "type" => null, "required" => true],
-            ["name" => "id", "type" => "num", "required" => true],
-        ], $path->getAttributes());
+        $expectedPath = new StaticPath(
+            "/users/",
+            new AttributePath(
+                "name",
+                null,
+                new StaticPath(
+                    "/",
+                    new AttributePath(
+                        "id",
+                        "num"
+                    )
+                )
+            )
+        );
+
+        self::assertEquals($expectedPath, $path);
     }
 
     public function test_parse_path_with_optional_attribute()
@@ -63,10 +88,20 @@ class ParserTest extends TestCase
 
         $path = (new Parser())->parse($definition);
 
-        self::assertEquals("/users[/{name}]", $path->getDefinition());
-        self::assertEquals([
-            ["name" => "name", "type" => null, "required" => false],
-        ], $path->getAttributes());
+        $expectedPath = new StaticPath(
+            "/users",
+            new OptionalPath(
+                new StaticPath(
+                    "/",
+                    new AttributePath(
+                        "name",
+                        null
+                    )
+                )
+            )
+        );
+
+        self::assertEquals($expectedPath, $path);
     }
 
     public function test_parse_path_with_required_and_optional_attributes()
@@ -75,11 +110,24 @@ class ParserTest extends TestCase
 
         $path = (new Parser())->parse($definition);
 
-        self::assertEquals("/users/{name}[/{id:num}]", $path->getDefinition());
-        self::assertEquals([
-            ["name" => "name", "type" => null, "required" => true],
-            ["name" => "id", "type" => "num", "required" => false],
-        ], $path->getAttributes());
+        $expectedPath = new StaticPath(
+            "/users/",
+            new AttributePath(
+                "name",
+                null,
+                new OptionalPath(
+                    new StaticPath(
+                        "/",
+                        new AttributePath(
+                            "id",
+                            "num"
+                        )
+                    )
+                )
+            )
+        );
+
+        self::assertEquals($expectedPath, $path);
     }
 
     public function test_parse_path_with_missing_attribute_info()

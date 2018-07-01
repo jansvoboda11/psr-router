@@ -19,11 +19,20 @@ class StaticPath implements RoutePath
     private $static;
 
     /**
-     * @param string $static
+     * The next part of the route.
+     *
+     * @var RoutePath
      */
-    public function __construct(string $static)
+    private $next;
+
+    /**
+     * @param string $static
+     * @param null|RoutePath $next
+     */
+    public function __construct(string $static, ?RoutePath $next = null)
     {
         $this->static = $static;
+        $this->next = $next ?? new EmptyPath();
     }
 
     /**
@@ -41,7 +50,9 @@ class StaticPath implements RoutePath
      */
     public function getDefinition(): string
     {
-        return $this->static;
+        $nextDefinition = $this->next->getDefinition();
+
+        return $this->static . $nextDefinition;
     }
 
     /**
@@ -49,7 +60,7 @@ class StaticPath implements RoutePath
      */
     public function getAttributes(): array
     {
-        return [];
+        return $this->next->getAttributes();
     }
 
     /**
@@ -58,6 +69,8 @@ class StaticPath implements RoutePath
     public function accept(PartsVisitor $visitor): void
     {
         $visitor->enterStatic($this);
+
+        $this->next->accept($visitor);
 
         $visitor->leaveStatic($this);
     }

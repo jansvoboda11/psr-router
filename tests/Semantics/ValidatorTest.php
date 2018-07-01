@@ -6,8 +6,6 @@ namespace SvobodaTest\PsrRouter\Semantics;
 
 use Svoboda\PsrRouter\Route\InvalidRoute;
 use Svoboda\PsrRouter\Route\Path\AttributePath;
-use Svoboda\PsrRouter\Route\Path\EmptyPath;
-use Svoboda\PsrRouter\Route\Path\MainPath;
 use Svoboda\PsrRouter\Route\Path\OptionalPath;
 use Svoboda\PsrRouter\Route\Path\StaticPath;
 use Svoboda\PsrRouter\Semantics\Validator;
@@ -20,11 +18,7 @@ class ValidatorTest extends TestCase
      */
     public function test_path_without_attributes()
     {
-        $path = new MainPath(
-            new StaticPath(""),
-            [],
-            new EmptyPath()
-        );
+        $path = new StaticPath("");
 
         (new Validator())->validate($path);
     }
@@ -34,13 +28,7 @@ class ValidatorTest extends TestCase
      */
     public function test_path_with_one_required_attribute()
     {
-        $path = new MainPath(
-            new StaticPath(""),
-            [
-                new AttributePath("name")
-            ],
-            new EmptyPath()
-        );
+        $path = new AttributePath("name", null);
 
         (new Validator())->validate($path);
     }
@@ -50,17 +38,10 @@ class ValidatorTest extends TestCase
      */
     public function test_path_with_one_optional_attribute()
     {
-        $path = new MainPath(
-            new StaticPath(""),
-            [],
-            new OptionalPath(
-                new MainPath(
-                    new StaticPath(""),
-                    [
-                        new AttributePath("name"),
-                    ],
-                    new EmptyPath()
-                )
+        $path = new OptionalPath(
+            new AttributePath(
+                "name",
+                null
             )
         );
 
@@ -72,13 +53,13 @@ class ValidatorTest extends TestCase
      */
     public function test_path_with_two_attributes()
     {
-        $path = new MainPath(
-            new StaticPath(""),
-            [
-                new AttributePath("id"),
-                new AttributePath("name"),
-            ],
-            new EmptyPath()
+        $path = new AttributePath(
+            "id",
+            null,
+            new AttributePath(
+                "name",
+                null
+            )
         );
 
         (new Validator())->validate($path);
@@ -89,18 +70,13 @@ class ValidatorTest extends TestCase
      */
     public function test_path_with_required_and_optional_attribute()
     {
-        $path = new MainPath(
-            new StaticPath(""),
-            [
-                new AttributePath("id"),
-            ],
+        $path = new AttributePath(
+            "id",
+            null,
             new OptionalPath(
-                new MainPath(
-                    new StaticPath(""),
-                    [
-                        new AttributePath("name"),
-                    ],
-                    new EmptyPath()
+                new AttributePath(
+                    "name",
+                    null
                 )
             )
         );
@@ -110,13 +86,16 @@ class ValidatorTest extends TestCase
 
     public function test_path_with_two_required_attributes_of_same_name()
     {
-        $path = new MainPath(
-            new StaticPath("/users/"),
-            [
-                new AttributePath("id"),
-                new AttributePath("id"),
-            ],
-            new EmptyPath()
+        $path = new StaticPath(
+            "/users/",
+            new AttributePath(
+                "id",
+                null,
+                new AttributePath(
+                    "id",
+                    null
+                )
+            )
         );
 
         $this->expectException(InvalidRoute::class);
@@ -131,18 +110,16 @@ MESSAGE
 
     public function test_path_with_required_and_optional_attribute_of_same_name()
     {
-        $path = new MainPath(
-            new StaticPath("/users/"),
-            [
-                new AttributePath("id"),
-            ],
-            new OptionalPath(
-                new MainPath(
-                    new StaticPath(""),
-                    [
-                        new AttributePath("id"),
-                    ],
-                    new EmptyPath()
+        $path = new StaticPath(
+            "/users/",
+            new AttributePath(
+                "id",
+                null,
+                new OptionalPath(
+                    new AttributePath(
+                        "id",
+                        null
+                    )
                 )
             )
         );

@@ -7,8 +7,6 @@ namespace SvobodaTest\PsrRouter\Compiler;
 use Svoboda\PsrRouter\Compiler\Context;
 use Svoboda\PsrRouter\Compiler\PatternBuilder;
 use Svoboda\PsrRouter\Route\Path\AttributePath;
-use Svoboda\PsrRouter\Route\Path\EmptyPath;
-use Svoboda\PsrRouter\Route\Path\MainPath;
 use Svoboda\PsrRouter\Route\Path\OptionalPath;
 use Svoboda\PsrRouter\Route\Path\StaticPath;
 use SvobodaTest\PsrRouter\TestCase;
@@ -35,7 +33,7 @@ class PatternBuilderTest extends TestCase
 
     public function test_build_pattern_for_attribute_path_without_type()
     {
-        $attribute = new AttributePath("foo");
+        $attribute = new AttributePath("foo", null);
 
         $pattern = (new PatternBuilder())->buildPattern($attribute, self::context());
 
@@ -53,33 +51,17 @@ class PatternBuilderTest extends TestCase
         self::assertEquals("(?:/users)?", $pattern);
     }
 
-    public function test_build_pattern_for_main_path()
-    {
-        $main = new MainPath(
-            new StaticPath("/users/"),
-            [
-                new AttributePath("id", "num"),
-            ],
-            new EmptyPath()
-        );
-
-        $pattern = (new PatternBuilder())->buildPattern($main, self::context());
-
-        self::assertEquals("/users/(?'id'\d+)", $pattern);
-    }
-
     public function test_build_pattern_for_complex_path()
     {
-        $complex = new MainPath(
-            new StaticPath("/users"),
-            [],
+        $complex = new StaticPath(
+            "/users",
             new OptionalPath(
-                new MainPath(
-                    new StaticPath("/"),
-                    [
-                        new AttributePath("id", "num"),
-                    ],
-                    new EmptyPath()
+                new StaticPath(
+                    "/",
+                    new AttributePath(
+                        "id",
+                        "num"
+                    )
                 )
             )
         );
@@ -91,7 +73,7 @@ class PatternBuilderTest extends TestCase
 
     /**
      * Returns the testing context.
-     * 
+     *
      * @return Context
      */
     private function context()

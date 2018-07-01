@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Svoboda\PsrRouter\Compiler ;
 
 use Svoboda\PsrRouter\Route\Path\AttributePath;
-use Svoboda\PsrRouter\Route\Path\MainPath;
 use Svoboda\PsrRouter\Route\Path\OptionalPath;
 use Svoboda\PsrRouter\Route\Path\StaticPath;
 
@@ -30,26 +29,6 @@ abstract class PartsVisitor
      * @param AttributePath $path
      */
     public function leaveAttribute(AttributePath $path): void
-    {
-        //
-    }
-
-    /**
-     * Enters the main path.
-     *
-     * @param MainPath $path
-     */
-    public function enterMain(MainPath $path): void
-    {
-        //
-    }
-
-    /**
-     * Leaves the main path.
-     *
-     * @param MainPath $path
-     */
-    public function leaveMain(MainPath $path): void
     {
         //
     }

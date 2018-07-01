@@ -26,13 +26,22 @@ class AttributePath implements RoutePath
     private $type;
 
     /**
+     * The next part of the route.
+     *
+     * @var RoutePath
+     */
+    private $next;
+
+    /**
      * @param string $name
      * @param null|string $type
+     * @param null|RoutePath $next
      */
-    public function __construct(string $name, ?string $type = null)
+    public function __construct(string $name, ?string $type, ?RoutePath $next = null)
     {
         $this->name = $name;
         $this->type = $type;
+        $this->next = $next ?? new EmptyPath();
     }
 
     /**
@@ -63,11 +72,11 @@ class AttributePath implements RoutePath
         $name = $this->name;
         $type = $this->type;
 
-        if (is_null($type)) {
-            return "{" . $name . "}";
-        }
+        $typeDefinition = is_null($type) ? "" : ":$type";
 
-        return "{" . $name . ":" . $type . "}";
+        $nextDefinition = $this->next->getDefinition();
+
+        return "{" . $name . $typeDefinition . "}" . $nextDefinition;
     }
 
     /**
@@ -75,13 +84,15 @@ class AttributePath implements RoutePath
      */
     public function getAttributes(): array
     {
-        return [
-            [
-                "name" => $this->name,
-                "type" => $this->type,
-                "required" => true,
-            ]
+        $attribute = [
+            "name" => $this->name,
+            "type" => $this->type,
+            "required" => true,
         ];
+
+        $nextAttributes = $this->next->getAttributes();
+
+        return array_merge([$attribute], $nextAttributes);
     }
 
     /**
@@ -90,6 +101,8 @@ class AttributePath implements RoutePath
     public function accept(PartsVisitor $visitor): void
     {
         $visitor->enterAttribute($this);
+
+        $this->next->accept($visitor);
 
         $visitor->leaveAttribute($this);
     }
