@@ -52,7 +52,6 @@ class RouterTest extends TestCase
         self::assertEquals("Admins1", $match->getHandler());
     }
 
-
     public function test_it_matches_single_route_with_attributes()
     {
         $request = self::createGetRequest("/admins/jan/123");

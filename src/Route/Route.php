@@ -33,6 +33,8 @@ class Route
     private $handler;
 
     /**
+     * Constructor.
+     *
      * @param string $method
      * @param RoutePath $path
      * @param mixed $handler

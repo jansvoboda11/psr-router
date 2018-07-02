@@ -26,6 +26,8 @@ class StaticPath implements RoutePath
     private $next;
 
     /**
+     * Constructor.
+     *
      * @param string $static
      * @param null|RoutePath $next
      */

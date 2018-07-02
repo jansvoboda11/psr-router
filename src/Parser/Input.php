@@ -45,6 +45,8 @@ class Input
     private $latestExpectations;
 
     /**
+     * Constructor.
+     *
      * @param string $input
      */
     public function __construct(string $input)

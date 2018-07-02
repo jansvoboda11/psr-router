@@ -28,6 +28,8 @@ class RouteCollection
     private $routes;
 
     /**
+     * Constructor.
+     *
      * @param RouteFactory $factory
      */
     public function __construct(?RouteFactory $factory = null)

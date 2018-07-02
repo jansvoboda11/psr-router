@@ -42,6 +42,8 @@ class Context
     private $implicitType;
 
     /**
+     * Constructor.
+     *
      * @param string[] $typePatterns
      * @param string $defaultType
      */

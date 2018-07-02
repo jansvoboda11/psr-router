@@ -23,6 +23,8 @@ class Router
     private $matcher;
 
     /**
+     * Constructor.
+     *
      * @param RouteCollection $routes
      * @param Compiler $compiler
      * @param Context $context

@@ -26,6 +26,8 @@ class UnexpectedChar extends Exception
     private $expected;
 
     /**
+     * Constructor.
+     *
      * @param Input $input
      * @param string[] $expected
      */

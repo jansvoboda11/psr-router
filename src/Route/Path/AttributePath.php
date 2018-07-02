@@ -33,6 +33,8 @@ class AttributePath implements RoutePath
     private $next;
 
     /**
+     * Constructor.
+     *
      * @param string $name
      * @param null|string $type
      * @param null|RoutePath $next

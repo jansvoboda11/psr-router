@@ -19,6 +19,8 @@ class MultiPatternCompiler implements Compiler
     private $patternBuilder;
 
     /**
+     * Constructor.
+     *
      * @param null|PatternBuilder $patternBuilder
      */
     public function __construct(?PatternBuilder $patternBuilder = null)

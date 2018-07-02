@@ -27,6 +27,8 @@ class RouteFactory
     private $validator;
 
     /**
+     * Constructor.
+     *
      * @param null|Parser $parser
      * @param null|Validator $validator
      */

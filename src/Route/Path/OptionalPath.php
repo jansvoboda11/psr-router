@@ -19,6 +19,8 @@ class OptionalPath implements RoutePath
     private $optional;
 
     /**
+     * Constructor.
+     *
      * @param RoutePath $optional
      */
     public function __construct(RoutePath $optional)

@@ -22,6 +22,8 @@ class MultiPatternMatcher implements Matcher
     private $records;
 
     /**
+     * Constructor.
+     *
      * @param array $records
      */
     public function __construct(array $records)

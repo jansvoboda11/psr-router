@@ -26,6 +26,8 @@ class Match
     private $request;
 
     /**
+     * Constructor.
+     *
      * @param mixed $handler
      * @param ServerRequestInterface $request
      */
