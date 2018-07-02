@@ -67,7 +67,7 @@ class MultiPatternMatcher implements Matcher
         $attributes = $route->getAttributes();
 
         foreach ($attributes as $attribute) {
-            $name = $attribute["name"];
+            $name = $attribute->getName();
 
             $value = $matches[$name] ?? null;
 

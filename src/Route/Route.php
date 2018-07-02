@@ -89,7 +89,7 @@ class Route
     /**
      * Returns all route attributes.
      *
-     * @return array
+     * @return Attribute[]
      */
     public function getAttributes(): array
     {

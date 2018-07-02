@@ -2,6 +2,7 @@
 
 namespace SvobodaTest\PsrRouter\Route\Path;
 
+use Svoboda\PsrRouter\Route\Attribute;
 use Svoboda\PsrRouter\Route\Path\AttributePath;
 use Svoboda\PsrRouter\Route\Path\StaticPath;
 use SvobodaTest\PsrRouter\TestCase;
@@ -54,7 +55,7 @@ class StaticPathTest extends TestCase
         $attributes = $path->getAttributes();
 
         self::assertEquals([
-            ["name" => "foo", "type" => "num", "required" => true],
+            new Attribute("foo", "num", true),
         ], $attributes);
     }
 }

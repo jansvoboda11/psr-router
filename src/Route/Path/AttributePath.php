@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Svoboda\PsrRouter\Route\Path;
 
 use Svoboda\PsrRouter\Compiler\PartsVisitor;
+use Svoboda\PsrRouter\Route\Attribute;
 
 /**
  * Route part that represents user-defined attribute.
@@ -86,11 +87,7 @@ class AttributePath implements RoutePath
      */
     public function getAttributes(): array
     {
-        $attribute = [
-            "name" => $this->name,
-            "type" => $this->type,
-            "required" => true,
-        ];
+        $attribute = new Attribute($this->name, $this->type, true);
 
         $nextAttributes = $this->next->getAttributes();
 

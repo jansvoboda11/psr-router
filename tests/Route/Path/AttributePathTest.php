@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SvobodaTest\PsrRouter\Route\Path;
 
+use Svoboda\PsrRouter\Route\Attribute;
 use Svoboda\PsrRouter\Route\Path\AttributePath;
 use SvobodaTest\PsrRouter\TestCase;
 
@@ -50,7 +51,7 @@ class AttributePathTest extends TestCase
         $attributes = $path->getAttributes();
 
         self::assertEquals([
-            ["name" => "foo", "type" => null, "required" => true],
+            new Attribute("foo", null, true),
         ], $attributes);
     }
 
@@ -61,7 +62,7 @@ class AttributePathTest extends TestCase
         $attributes = $path->getAttributes();
 
         self::assertEquals([
-            ["name" => "foo", "type" => "any", "required" => true],
+            new Attribute("foo", "any", true),
         ], $attributes);
     }
 
@@ -79,8 +80,8 @@ class AttributePathTest extends TestCase
         $attributes = $path->getAttributes();
 
         self::assertEquals([
-            ["name" => "foo", "type" => "num", "required" => true],
-            ["name" => "bar", "type" => null, "required" => true],
+            new Attribute("foo", "num", true),
+            new Attribute("bar", null, true),
         ], $attributes);
     }
 }

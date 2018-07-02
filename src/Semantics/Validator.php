@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Svoboda\PsrRouter\Semantics;
 
+use Svoboda\PsrRouter\Route\Attribute;
 use Svoboda\PsrRouter\Route\InvalidRoute;
 use Svoboda\PsrRouter\Route\Path\RoutePath;
 
@@ -22,7 +23,9 @@ class Validator
     {
         $attributes = $path->getAttributes();
 
-        $names = array_column($attributes, "name");
+        $names = array_map(function (Attribute $attribute) {
+            return $attribute->getName();
+        }, $attributes);
 
         $counts = array_count_values($names);
 

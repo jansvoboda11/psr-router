@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Svoboda\PsrRouter\Route\Path;
 
 use Svoboda\PsrRouter\Compiler\PartsVisitor;
+use Svoboda\PsrRouter\Route\Attribute;
 
 /**
  * Wrapper for the optional part of the route path.
@@ -45,8 +46,8 @@ class OptionalPath implements RoutePath
     {
         $attributes = $this->optional->getAttributes();
 
-        return array_map(function ($attribute) {
-            $attribute["required"] = false;
+        return array_map(function (Attribute $attribute) {
+            $attribute->makeOptional();
 
             return $attribute;
         }, $attributes);

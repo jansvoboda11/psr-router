@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Svoboda\PsrRouter\Route\Path;
 
 use Svoboda\PsrRouter\Compiler\PartsVisitor;
+use Svoboda\PsrRouter\Route\Attribute;
 
 /**
  * Part of the route definition.
@@ -21,7 +22,7 @@ interface RoutePath
     /**
      * Aggregates all route attributes.
      *
-     * @return array
+     * @return Attribute[]
      */
     public function getAttributes(): array;
 

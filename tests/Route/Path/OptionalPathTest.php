@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SvobodaTest\PsrRouter\Route\Path;
 
+use Svoboda\PsrRouter\Route\Attribute;
 use Svoboda\PsrRouter\Route\Path\AttributePath;
 use Svoboda\PsrRouter\Route\Path\OptionalPath;
 use Svoboda\PsrRouter\Route\Path\StaticPath;
@@ -36,7 +37,7 @@ class OptionalPathTest extends TestCase
         $attributes = $path->getAttributes();
 
         self::assertEquals([
-            ["name" => "foo", "type" => "any", "required" => false],
+            new Attribute("foo", "any", false),
         ], $attributes);
     }
 
@@ -54,7 +55,7 @@ class OptionalPathTest extends TestCase
         $attributes = $path->getAttributes();
 
         self::assertEquals([
-            ["name" => "foo", "type" => "any", "required" => false],
+            new Attribute("foo", "any", false),
         ], $attributes);
     }
 }
