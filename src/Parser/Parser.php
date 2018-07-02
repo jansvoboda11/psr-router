@@ -76,11 +76,11 @@ class Parser
     {
         $char = $definition->peek();
 
-        if ($char === '{') {
+        if ($char === "{") {
             return $this->parseAttribute($definition);
         }
 
-        if ($char === '[') {
+        if ($char === "[") {
             return $this->parseOptional($definition);
         }
 
