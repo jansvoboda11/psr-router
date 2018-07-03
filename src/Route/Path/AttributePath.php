@@ -96,12 +96,12 @@ class AttributePath implements RoutePath
     /**
      * @inheritdoc
      */
-    public function accept(PathVisitor $visitor): void
+    public function accept(PathVisitor $visitor, &$data = null): void
     {
-        $visitor->enterAttribute($this);
+        $visitor->enterAttribute($this, $data);
 
-        $this->next->accept($visitor);
+        $this->next->accept($visitor, $data);
 
-        $visitor->leaveAttribute($this);
+        $visitor->leaveAttribute($this, $data);
     }
 }

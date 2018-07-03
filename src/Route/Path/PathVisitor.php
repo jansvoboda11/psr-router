@@ -13,8 +13,9 @@ abstract class PathVisitor
      * Enters the attribute path.
      *
      * @param AttributePath $path
+     * @param null|mixed $data
      */
-    public function enterAttribute(AttributePath $path): void
+    public function enterAttribute(AttributePath $path, &$data = null): void
     {
         //
     }
@@ -23,8 +24,9 @@ abstract class PathVisitor
      * Leaves the attribute path.
      *
      * @param AttributePath $path
+     * @param null|mixed $data
      */
-    public function leaveAttribute(AttributePath $path): void
+    public function leaveAttribute(AttributePath $path, &$data = null): void
     {
         //
     }
@@ -33,8 +35,9 @@ abstract class PathVisitor
      * Enters the optional path.
      *
      * @param OptionalPath $path
+     * @param null|mixed $data
      */
-    public function enterOptional(OptionalPath $path): void
+    public function enterOptional(OptionalPath $path, &$data = null): void
     {
         //
     }
@@ -43,8 +46,9 @@ abstract class PathVisitor
      * Leaves the optional path.
      *
      * @param OptionalPath $path
+     * @param null|mixed $data
      */
-    public function leaveOptional(OptionalPath $path): void
+    public function leaveOptional(OptionalPath $path, &$data = null): void
     {
         //
     }
@@ -53,8 +57,9 @@ abstract class PathVisitor
      * Enters the static path.
      *
      * @param StaticPath $path
+     * @param null|mixed $data
      */
-    public function enterStatic(StaticPath $path): void
+    public function enterStatic(StaticPath $path, &$data = null): void
     {
         //
     }
@@ -63,8 +68,9 @@ abstract class PathVisitor
      * Leaves the static path.
      *
      * @param StaticPath $path
+     * @param null|mixed $data
      */
-    public function leaveStatic(StaticPath $path): void
+    public function leaveStatic(StaticPath $path, &$data = null): void
     {
         //
     }

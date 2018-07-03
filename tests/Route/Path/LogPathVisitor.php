@@ -7,6 +7,7 @@ namespace SvobodaTest\PsrRouter\Route\Path;
 use Svoboda\PsrRouter\Route\Path\AttributePath;
 use Svoboda\PsrRouter\Route\Path\OptionalPath;
 use Svoboda\PsrRouter\Route\Path\PathVisitor;
+use Svoboda\PsrRouter\Route\Path\RoutePath;
 use Svoboda\PsrRouter\Route\Path\StaticPath;
 
 /**
@@ -15,85 +16,65 @@ use Svoboda\PsrRouter\Route\Path\StaticPath;
 class LogPathVisitor extends PathVisitor
 {
     /**
-     * Holds the logged messages.
+     * Visits the route path and returns a log of every encountered node.
      *
-     * @var string[]
+     * @param RoutePath $path
+     * @return array
      */
-    private $log;
-
-    /**
-     * Constructor.
-     */
-    public function __construct()
+    public function visit(RoutePath $path)
     {
-        $this->log = [];
+        $logs = [];
+
+        $path->accept($this, $logs);
+
+        return $logs;
     }
 
     /**
      * @inheritdoc
      */
-    public function enterAttribute(AttributePath $path): void
+    public function enterAttribute(AttributePath $path, &$data = null): void
     {
-        $this->addLog("Entering attribute " . $path->getName());
+        $data[] = "Entering attribute " . $path->getName();
     }
 
     /**
      * @inheritdoc
      */
-    public function leaveAttribute(AttributePath $path): void
+    public function leaveAttribute(AttributePath $path, &$data = null): void
     {
-        $this->addLog("Leaving attribute " . $path->getName());
+        $data[] = "Leaving attribute " . $path->getName();
     }
 
     /**
      * @inheritdoc
      */
-    public function enterOptional(OptionalPath $path): void
+    public function enterOptional(OptionalPath $path, &$data = null): void
     {
-        $this->addLog("Entering optional");
+        $data[] = "Entering optional";
     }
 
     /**
      * @inheritdoc
      */
-    public function leaveOptional(OptionalPath $path): void
+    public function leaveOptional(OptionalPath $path, &$data = null): void
     {
-        $this->addLog("Leaving optional");
+        $data[] = "Leaving optional";
     }
 
     /**
      * @inheritdoc
      */
-    public function enterStatic(StaticPath $path): void
+    public function enterStatic(StaticPath $path, &$data = null): void
     {
-        $this->addLog("Entering static " . $path->getStatic());
+        $data[] = "Entering static " . $path->getStatic();
     }
 
     /**
      * @inheritdoc
      */
-    public function leaveStatic(StaticPath $path): void
+    public function leaveStatic(StaticPath $path, &$data = null): void
     {
-        $this->addLog("Leaving static " . $path->getStatic());
-    }
-
-    /**
-     * Returns the path log.
-     *
-     * @return string[]
-     */
-    public function getLog(): array
-    {
-        return $this->log;
-    }
-
-    /**
-     * Adds the message to the log.
-     *
-     * @param string $message
-     */
-    private function addLog(string $message): void
-    {
-        $this->log[] = $message;
+        $data[] = "Leaving static " . $path->getStatic();
     }
 }

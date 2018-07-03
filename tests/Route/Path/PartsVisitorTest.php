@@ -28,7 +28,7 @@ class PartsVisitorTest extends TestCase
 
         $visitor = new LogPathVisitor();
 
-        $path->accept($visitor);
+        $log = $visitor->visit($path);
 
         self::assertEquals([
             "Entering static /users",
@@ -39,6 +39,6 @@ class PartsVisitorTest extends TestCase
             "Leaving static /",
             "Leaving optional",
             "Leaving static /users",
-        ], $visitor->getLog());
+        ], $log);
     }
 }

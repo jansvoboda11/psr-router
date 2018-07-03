@@ -16,27 +16,6 @@ use Svoboda\PsrRouter\Route\Path\StaticPath;
 class PatternBuilder extends PathVisitor
 {
     /**
-     * Regular expressions for attribute types.
-     *
-     * @var string[]
-     */
-    private $typePatterns;
-
-    /**
-     * The implicit attribute type.
-     *
-     * @var string
-     */
-    private $implicitType;
-
-    /**
-     * The built regular expression.
-     *
-     * @var string
-     */
-    private $pattern;
-
-    /**
      * Creates regular expression for the route part.
      *
      * @param RoutePath $path
@@ -45,49 +24,51 @@ class PatternBuilder extends PathVisitor
      */
     public function buildPattern(RoutePath $path, Context $context)
     {
-        $this->pattern = "";
-        $this->typePatterns = $context->getTypePatterns();
-        $this->implicitType = $context->getImplicitType();
+        $data = [
+            "pattern" => "",
+            "typePatterns" => $context->getTypePatterns(),
+            "implicitType" => $context->getImplicitType(),
+        ];
 
-        $path->accept($this);
+        $path->accept($this, $data);
 
-        return $this->pattern;
+        return $data["pattern"];
     }
 
     /**
      * @inheritdoc
      */
-    public function enterAttribute(AttributePath $path): void
+    public function enterAttribute(AttributePath $path, &$data = null): void
     {
         $name = $path->getName();
-        $type = $path->getType() ?? $this->implicitType;
+        $type = $path->getType() ?? $data["implicitType"];
 
-        $typePattern = $this->typePatterns[$type];
+        $typePattern = $data["typePatterns"][$type];
 
-        $this->pattern .= "(?'$name'$typePattern)";
+        $data["pattern"] .= "(?'$name'$typePattern)";
     }
 
     /**
      * @inheritdoc
      */
-    public function enterOptional(OptionalPath $path): void
+    public function enterOptional(OptionalPath $path, &$data = null): void
     {
-        $this->pattern .= "(?:";
+        $data["pattern"] .= "(?:";
     }
 
     /**
      * @inheritdoc
      */
-    public function leaveOptional(OptionalPath $path): void
+    public function leaveOptional(OptionalPath $path, &$data = null): void
     {
-        $this->pattern .= ")?";
+        $data["pattern"] .= ")?";
     }
 
     /**
      * @inheritdoc
      */
-    public function enterStatic(StaticPath $path): void
+    public function enterStatic(StaticPath $path, &$data = null): void
     {
-        $this->pattern .= $path->getStatic();
+        $data["pattern"] .= $path->getStatic();
     }
 }

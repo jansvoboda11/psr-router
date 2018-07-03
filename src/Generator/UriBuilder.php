@@ -18,34 +18,6 @@ use Svoboda\PsrRouter\Route\Path\StaticPath;
 class UriBuilder extends PathVisitor
 {
     /**
-     * The URI.
-     *
-     * @var string
-     */
-    private $uri;
-
-    /**
-     * True if all given attributes were already put into the URI.
-     *
-     * @var bool
-     */
-    private $done;
-
-    /**
-     * Route path.
-     *
-     * @var RoutePath
-     */
-    private $path;
-
-    /**
-     * Path attributes.
-     *
-     * @var array
-     */
-    private $attributes;
-
-    /**
      * Builds the URI for route with given attributes.
      *
      * @param RoutePath $path
@@ -56,74 +28,77 @@ class UriBuilder extends PathVisitor
      */
     public function buildUri(RoutePath $path, array $attributes, Context $context): string
     {
-        $this->uri = "";
-        $this->done = false;
-        $this->path = $path;
-        $this->attributes = $attributes;
+        $data = [
+            "uri" => "",
+            "done" => false,
+            "attributes" => $attributes,
+            "context" => $context,
+        ];
 
-        $this->checkAttributesExist($attributes);
-        $this->checkRequiredAttributesExist($attributes);
-        $this->checkOptionalAttributesAreContinuous($attributes);
-        $this->checkAttributesType($attributes, $context);
+        $this->checkAttributesExist($path, $attributes);
+        $this->checkRequiredAttributesExist($path, $attributes);
+        $this->checkOptionalAttributesAreContinuous($path, $attributes);
+        $this->checkAttributesType($path, $attributes, $context);
 
-        $path->accept($this);
+        $path->accept($this, $data);
 
-        return $this->uri;
+        return $data["uri"];
     }
 
     /**
      * @inheritdoc
      */
-    public function enterAttribute(AttributePath $path): void
+    public function enterAttribute(AttributePath $path, &$data = null): void
     {
-        if ($this->done) {
+        if ($data["done"]) {
             return;
         }
 
         $name = $path->getName();
 
-        $this->uri .= $this->attributes[$name];
+        $data["uri"] .= $data["attributes"][$name];
     }
 
     /**
      * @inheritdoc
      */
-    public function enterOptional(OptionalPath $path): void
+    public function enterOptional(OptionalPath $path, &$data = null): void
     {
         $pathAttributes = array_map(function (Attribute $attribute) {
             return $attribute->getName();
         }, $path->getAttributes());
 
-        $specifiedAttributes = array_keys($this->attributes);
+        $specifiedAttributes = array_keys($data["attributes"]);
 
         $unfilledAttributes = array_intersect($pathAttributes, $specifiedAttributes);
 
         if (empty($unfilledAttributes)) {
-            $this->done = true;
+            $data["done"] = true;
         }
     }
 
     /**
      * @inheritdoc
      */
-    public function enterStatic(StaticPath $path): void
+    public function enterStatic(StaticPath $path, &$data = null): void
     {
-        if ($this->done) {
+        if ($data["done"]) {
             return;
         }
 
-        $this->uri .= $path->getStatic();
+        $data["uri"] .= $path->getStatic();
     }
 
     /**
      * Checks that all provided attributes exist in the route path.
      *
+     * @param RoutePath $path
      * @param array $attributes
      * @throws InvalidAttribute
      */
-    private function checkAttributesExist(array $attributes): void
+    private function checkAttributesExist(RoutePath $path, array $attributes): void
     {
-        $pathAttributes = $this->path->getAttributes();
+        $pathAttributes = $path->getAttributes();
 
         $pathAttributeNames = array_map(function (Attribute $attribute) {
             return $attribute->getName();
@@ -139,12 +114,13 @@ class UriBuilder extends PathVisitor
     /**
      * Checks that all required attributes are provided.
      *
+     * @param RoutePath $path
      * @param array $attributes
      * @throws InvalidAttribute
      */
-    private function checkRequiredAttributesExist(array $attributes): void
+    private function checkRequiredAttributesExist(RoutePath $path, array $attributes): void
     {
-        $pathAttributes = $this->path->getAttributes();
+        $pathAttributes = $path->getAttributes();
 
         $requiredAttributes = array_filter($pathAttributes, function (Attribute $attribute) {
             return $attribute->isRequired();
@@ -163,12 +139,13 @@ class UriBuilder extends PathVisitor
      * Checks that if optional attribute is provided, all preceding attributes
      * are also provided.
      *
+     * @param RoutePath $path
      * @param array $attributes
      * @throws InvalidAttribute
      */
-    private function checkOptionalAttributesAreContinuous(array $attributes): void
+    private function checkOptionalAttributesAreContinuous(RoutePath $path, array $attributes): void
     {
-        $pathAttributes = $this->path->getAttributes();
+        $pathAttributes = $path->getAttributes();
 
         $optionalAttributes = array_filter($pathAttributes, function (Attribute $attribute) {
             return !$attribute->isRequired();
@@ -192,13 +169,14 @@ class UriBuilder extends PathVisitor
     /**
      * Checks that all provided attributes have the correct type.
      *
+     * @param RoutePath $path
      * @param array $attributes
      * @param Context $context
      * @throws InvalidAttribute
      */
-    private function checkAttributesType(array $attributes, Context $context): void
+    private function checkAttributesType(RoutePath $path, array $attributes, Context $context): void
     {
-        $pathAttributes = $this->path->getAttributes();
+        $pathAttributes = $path->getAttributes();
 
         foreach ($pathAttributes as $pathAttribute) {
             $name = $pathAttribute->getName();

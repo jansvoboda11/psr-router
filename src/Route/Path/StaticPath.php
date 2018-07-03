@@ -66,12 +66,12 @@ class StaticPath implements RoutePath
     /**
      * @inheritdoc
      */
-    public function accept(PathVisitor $visitor): void
+    public function accept(PathVisitor $visitor, &$data = null): void
     {
-        $visitor->enterStatic($this);
+        $visitor->enterStatic($this, $data);
 
-        $this->next->accept($visitor);
+        $this->next->accept($visitor, $data);
 
-        $visitor->leaveStatic($this);
+        $visitor->leaveStatic($this, $data);
     }
 }
