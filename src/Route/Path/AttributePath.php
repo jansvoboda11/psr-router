@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Svoboda\PsrRouter\Route\Path;
 
-use Svoboda\PsrRouter\Compiler\PartsVisitor;
 use Svoboda\PsrRouter\Route\Attribute;
 
 /**
@@ -97,7 +96,7 @@ class AttributePath implements RoutePath
     /**
      * @inheritdoc
      */
-    public function accept(PartsVisitor $visitor): void
+    public function accept(PathVisitor $visitor): void
     {
         $visitor->enterAttribute($this);
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SvobodaTest\PsrRouter\Compiler;
+namespace SvobodaTest\PsrRouter\Route\Path;
 
 use Svoboda\PsrRouter\Route\Path\AttributePath;
 use Svoboda\PsrRouter\Route\Path\OptionalPath;

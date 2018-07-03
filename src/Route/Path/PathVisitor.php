@@ -2,16 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\PsrRouter\Compiler ;
-
-use Svoboda\PsrRouter\Route\Path\AttributePath;
-use Svoboda\PsrRouter\Route\Path\OptionalPath;
-use Svoboda\PsrRouter\Route\Path\StaticPath;
+namespace Svoboda\PsrRouter\Route\Path;
 
 /**
  * Two-pass visitor of all types of route path.
  */
-abstract class PartsVisitor
+abstract class PathVisitor
 {
     /**
      * Enters the attribute path.

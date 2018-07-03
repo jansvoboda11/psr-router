@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace SvobodaTest\PsrRouter\Compiler;
+namespace SvobodaTest\PsrRouter\Route\Path;
 
-use Svoboda\PsrRouter\Compiler\PartsVisitor;
 use Svoboda\PsrRouter\Route\Path\AttributePath;
 use Svoboda\PsrRouter\Route\Path\OptionalPath;
+use Svoboda\PsrRouter\Route\Path\PathVisitor;
 use Svoboda\PsrRouter\Route\Path\StaticPath;
 
 /**
  * Visits path parts and logs the order.
  */
-class LogPathVisitor extends PartsVisitor
+class LogPathVisitor extends PathVisitor
 {
     /**
      * Holds the logged messages.

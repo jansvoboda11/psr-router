@@ -6,13 +6,14 @@ namespace Svoboda\PsrRouter\Compiler;
 
 use Svoboda\PsrRouter\Route\Path\AttributePath;
 use Svoboda\PsrRouter\Route\Path\OptionalPath;
+use Svoboda\PsrRouter\Route\Path\PathVisitor;
 use Svoboda\PsrRouter\Route\Path\RoutePath;
 use Svoboda\PsrRouter\Route\Path\StaticPath;
 
 /**
  * Builds regular expression for route path.
  */
-class PatternBuilder extends PartsVisitor
+class PatternBuilder extends PathVisitor
 {
     /**
      * Regular expressions for attribute types.
