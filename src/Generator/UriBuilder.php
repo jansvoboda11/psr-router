@@ -12,6 +12,9 @@ use Svoboda\PsrRouter\Route\Path\PathVisitor;
 use Svoboda\PsrRouter\Route\Path\RoutePath;
 use Svoboda\PsrRouter\Route\Path\StaticPath;
 
+/**
+ * Builds the URI based on the route path and provided attributes.
+ */
 class UriBuilder extends PathVisitor
 {
     /**

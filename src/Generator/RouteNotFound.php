@@ -6,6 +6,9 @@ namespace Svoboda\PsrRouter\Generator;
 
 use Svoboda\PsrRouter\Exception;
 
+/**
+ * Route not found in the collection.
+ */
 class RouteNotFound extends Exception
 {
     //
