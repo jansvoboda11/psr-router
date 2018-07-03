@@ -33,17 +33,26 @@ class Route
     private $handler;
 
     /**
+     * The optional name.
+     *
+     * @var null|string
+     */
+    private $name;
+
+    /**
      * Constructor.
      *
      * @param string $method
      * @param RoutePath $path
      * @param mixed $handler
+     * @param null|string $name
      */
-    public function __construct(string $method, RoutePath $path, $handler)
+    public function __construct(string $method, RoutePath $path, $handler, ?string $name = null)
     {
         $this->method = $method;
         $this->path = $path;
         $this->handler = $handler;
+        $this->name = $name;
     }
 
     /**
@@ -74,6 +83,16 @@ class Route
     public function getHandler()
     {
         return $this->handler;
+    }
+
+    /**
+     * Returns the name.
+     *
+     * @return null|string
+     */
+    public function getName(): ?string
+    {
+        return $this->name;
     }
 
     /**
