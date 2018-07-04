@@ -48,7 +48,7 @@ class RouteFactory
      * @return Route
      * @throws InvalidRoute
      */
-    public function createRoute(string $method, string $definition, $handler, ?string $name = null)
+    public function createRoute(string $method, string $definition, $handler, ?string $name = null): Route
     {
         $path = $this->parser->parse($definition);
 

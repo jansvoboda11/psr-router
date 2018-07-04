@@ -38,7 +38,7 @@ class PatternBuilder extends PathVisitor
      * @param RoutePath $path
      * @return string
      */
-    public function buildPattern(RoutePath $path)
+    public function buildPattern(RoutePath $path): string
     {
         $pattern = "";
 
