@@ -126,7 +126,7 @@ class UriGeneratorTest extends TestCase
         $this->expectException(InvalidAttribute::class);
 
         UriGenerator::create($routes)->generate("users.detail", [
-            "id" => "undefined",
+            "id" => "i42",
         ]);
     }
 

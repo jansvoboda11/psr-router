@@ -125,7 +125,7 @@ class UriBuilder extends PathVisitor
             throw new InvalidAttribute("The attribute has unknown type.");
         }
 
-        return "#" . $typePatterns[$type] . "#";
+        return "#^" . $typePatterns[$type] . "$#";
     }
 
     /**
