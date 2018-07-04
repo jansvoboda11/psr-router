@@ -76,7 +76,7 @@ class PatternBuilderTest extends TestCase
      *
      * @return Context
      */
-    private function context()
+    private function context(): Context
     {
         return new Context([
             "any" => "[^/]+",
