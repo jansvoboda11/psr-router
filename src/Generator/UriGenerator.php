@@ -68,7 +68,7 @@ class UriGenerator
         $route = $this->routes->oneNamed($name);
 
         if (is_null($route)) {
-            throw new RouteNotFound("Route does not exist.");
+            throw RouteNotFound::named($name);
         }
 
         return $this->uriBuilder->buildUri($route->getPath(), $attributes);

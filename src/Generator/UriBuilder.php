@@ -68,10 +68,11 @@ class UriBuilder extends PathVisitor
             return;
         }
 
+        $name = $path->getName();
         $value = $this->getValue($path, $data["attributes"]);
         $pattern = $this->getTypePattern($path);
 
-        $this->validateValue($value, $pattern);
+        $this->validateValue($name, $value, $pattern);
 
         $data["uri"] .= $value;
     }
@@ -117,7 +118,7 @@ class UriBuilder extends PathVisitor
         $name = $path->getName();
 
         if (!array_key_exists($name, $attributes)) {
-            throw new InvalidAttribute("The attribute is not provided!");
+            throw InvalidAttribute::missing($name);
         }
 
         return (string) $attributes[$name];
@@ -136,23 +137,26 @@ class UriBuilder extends PathVisitor
         $typePatterns = $this->context->getTypePatterns();
 
         if (!array_key_exists($type, $typePatterns)) {
-            throw new InvalidAttribute("The attribute has unknown type.");
+            $name = $path->getName();
+
+            throw InvalidAttribute::unknownType($name, $type);
         }
 
-        return "#^" . $typePatterns[$type] . "$#";
+        return $typePatterns[$type];
     }
 
     /**
      * Checks whether the value matches the regular expression.
      *
+     * @param string $name
      * @param string $value
      * @param string $pattern
      * @throws InvalidAttribute
      */
-    private function validateValue(string $value, string $pattern): void
+    private function validateValue(string $name, string $value, string $pattern): void
     {
-        if (!preg_match($pattern, $value)) {
-            throw new InvalidAttribute("The attribute value has incorrect type.");
+        if (!preg_match("#^$pattern$#", $value)) {
+            throw InvalidAttribute::badFormat($name, $value, $pattern);
         }
     }
 

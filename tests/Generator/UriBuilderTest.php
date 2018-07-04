@@ -184,6 +184,10 @@ class UriBuilderTest extends TestCase
         );
 
         $this->expectException(InvalidAttribute::class);
+        $this->expectExceptionMessage(<<<MESSAGE
+The value for attribute 'id' is missing
+MESSAGE
+        );
 
         $this->builder->buildUri($path);
     }
@@ -217,6 +221,10 @@ class UriBuilderTest extends TestCase
         );
 
         $this->expectException(InvalidAttribute::class);
+        $this->expectExceptionMessage(<<<MESSAGE
+The value for attribute 'first' is missing
+MESSAGE
+        );
 
         $this->builder->buildUri($path, [
             "id" => 42,
@@ -235,6 +243,10 @@ class UriBuilderTest extends TestCase
         );
 
         $this->expectException(InvalidAttribute::class);
+        $this->expectExceptionMessage(<<<MESSAGE
+The value 'i42' of attribute 'id' does not match the specified pattern: \d+
+MESSAGE
+        );
 
         $this->builder->buildUri($path, [
             "id" => "i42",

@@ -11,5 +11,14 @@ use Svoboda\PsrRouter\Exception;
  */
 class RouteNotFound extends Exception
 {
-    //
+    /**
+     * Route with given name not found.
+     *
+     * @param string $name
+     * @return RouteNotFound
+     */
+    public static function named(string $name): self
+    {
+        return new self("Route with name '$name' does not exist");
+    }
 }
