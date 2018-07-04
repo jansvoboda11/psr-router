@@ -43,11 +43,9 @@ class MultiPatternMatcher implements Matcher
 
             [$pattern, $route] = $record;
 
-            if (!preg_match($pattern, $requestPath, $matches)) {
-                continue;
+            if (preg_match($pattern, $requestPath, $matches)) {
+                return $this->createResult($route, $request, $matches);
             }
-
-            return $this->createResult($route, $request, $matches);
         }
 
         return null;
