@@ -82,6 +82,19 @@ class UriGeneratorTest extends TestCase
         self::assertEquals("/users/42", $uri);
     }
 
+    public function test_it_ignores_non_existent_attribute()
+    {
+        $routes = new RouteCollection();
+        $routes->get("/users/{id}", "UserAction", "users.detail");
+
+        $uri = UriGenerator::create($routes)->generate("users.detail", [
+            "foo" => "bar",
+            "id" => 42,
+        ]);
+
+        self::assertEquals("/users/42", $uri);
+    }
+
     public function test_it_fails_on_missing_required_attribute()
     {
         $routes = new RouteCollection();
@@ -102,18 +115,6 @@ class UriGeneratorTest extends TestCase
         UriGenerator::create($routes)->generate("users.detail", [
             "id" => 42,
             "last" => "Svoboda",
-        ]);
-    }
-
-    public function test_it_fails_on_non_existent_attribute()
-    {
-        $routes = new RouteCollection();
-        $routes->get("/users/{id:num}", "UserAction", "users.detail");
-
-        $this->expectException(InvalidAttribute::class);
-
-        UriGenerator::create($routes)->generate("users.detail", [
-            "foo" => "bar",
         ]);
     }
 

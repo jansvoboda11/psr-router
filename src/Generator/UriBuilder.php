@@ -35,18 +35,17 @@ class UriBuilder extends PathVisitor
             "context" => $context,
         ];
 
-        $this->checkAttributesExist($path, $attributes);
-        $this->checkRequiredAttributesExist($path, $attributes);
-        $this->checkOptionalAttributesAreContinuous($path, $attributes);
-        $this->checkAttributesType($path, $attributes, $context);
-
         $path->accept($this, $data);
 
         return $data["uri"];
     }
 
     /**
-     * @inheritdoc
+     * Adds the attribute value to the URI.
+     *
+     * @param AttributePath $path
+     * @param null $data
+     * @throws InvalidAttribute
      */
     public function enterAttribute(AttributePath $path, &$data = null): void
     {
@@ -54,31 +53,32 @@ class UriBuilder extends PathVisitor
             return;
         }
 
-        $name = $path->getName();
+        $value = $this->getValue($path, $data["attributes"]);
+        $pattern = $this->getTypePattern($path, $data["context"]);
 
-        $data["uri"] .= $data["attributes"][$name];
+        $this->validateValue($value, $pattern);
+
+        $data["uri"] .= $value;
     }
 
     /**
-     * @inheritdoc
+     * Determines if the optional path should be present in the URI.
+     *
+     * @param OptionalPath $path
+     * @param null $data
      */
     public function enterOptional(OptionalPath $path, &$data = null): void
     {
-        $pathAttributes = array_map(function (Attribute $attribute) {
-            return $attribute->getName();
-        }, $path->getAttributes());
-
-        $specifiedAttributes = array_keys($data["attributes"]);
-
-        $unfilledAttributes = array_intersect($pathAttributes, $specifiedAttributes);
-
-        if (empty($unfilledAttributes)) {
+        if (!$this->optionalAttributesProvided($path, $data["attributes"])) {
             $data["done"] = true;
         }
     }
 
     /**
-     * @inheritdoc
+     * Adds the static part of the path to the URI.
+     *
+     * @param StaticPath $path
+     * @param null $data
      */
     public function enterStatic(StaticPath $path, &$data = null): void
     {
@@ -90,117 +90,75 @@ class UriBuilder extends PathVisitor
     }
 
     /**
-     * Checks that all provided attributes exist in the route path.
+     * Returns the value of the attribute.
      *
-     * @param RoutePath $path
+     * @param AttributePath $path
      * @param array $attributes
+     * @return string
      * @throws InvalidAttribute
      */
-    private function checkAttributesExist(RoutePath $path, array $attributes): void
+    private function getValue(AttributePath $path, array $attributes): string
     {
-        $pathAttributes = $path->getAttributes();
+        $name = $path->getName();
 
-        $pathAttributeNames = array_map(function (Attribute $attribute) {
-            return $attribute->getName();
-        }, $pathAttributes);
-
-        foreach ($attributes as $name => $value) {
-            if (!in_array($name, $pathAttributeNames)) {
-                throw new InvalidAttribute("The attribute does not exist in path specification.");
-            }
+        if (!array_key_exists($name, $attributes)) {
+            throw new InvalidAttribute("The attribute is not provided!");
         }
+
+        return (string) $attributes[$name];
     }
 
     /**
-     * Checks that all required attributes are provided.
+     * Returns the regular expression for the attribute type.
      *
-     * @param RoutePath $path
-     * @param array $attributes
-     * @throws InvalidAttribute
-     */
-    private function checkRequiredAttributesExist(RoutePath $path, array $attributes): void
-    {
-        $pathAttributes = $path->getAttributes();
-
-        $requiredAttributes = array_filter($pathAttributes, function (Attribute $attribute) {
-            return $attribute->isRequired();
-        });
-
-        foreach ($requiredAttributes as $requiredAttribute) {
-            $name = $requiredAttribute->getName();
-
-            if (!array_key_exists($name, $attributes)) {
-                throw new InvalidAttribute("Required attribute not supplied.");
-            }
-        }
-    }
-
-    /**
-     * Checks that if optional attribute is provided, all preceding attributes
-     * are also provided.
-     *
-     * @param RoutePath $path
-     * @param array $attributes
-     * @throws InvalidAttribute
-     */
-    private function checkOptionalAttributesAreContinuous(RoutePath $path, array $attributes): void
-    {
-        $pathAttributes = $path->getAttributes();
-
-        $optionalAttributes = array_filter($pathAttributes, function (Attribute $attribute) {
-            return !$attribute->isRequired();
-        });
-
-        $optionalSkipped = false;
-
-        foreach ($optionalAttributes as $optionalAttribute) {
-            $name = $optionalAttribute->getName();
-
-            if ($optionalSkipped && array_key_exists($name, $attributes)) {
-                throw new InvalidAttribute("If you specify optional attribute, you also have to specify all preceding attributes.");
-            }
-
-            if (!array_key_exists($name, $attributes)) {
-                $optionalSkipped = true;
-            }
-        }
-    }
-
-    /**
-     * Checks that all provided attributes have the correct type.
-     *
-     * @param RoutePath $path
-     * @param array $attributes
+     * @param AttributePath $path
      * @param Context $context
+     * @return string
      * @throws InvalidAttribute
      */
-    private function checkAttributesType(RoutePath $path, array $attributes, Context $context): void
+    private function getTypePattern(AttributePath $path, Context $context): string
     {
-        $pathAttributes = $path->getAttributes();
+        $type = $path->getType() ?? $context->getImplicitType();
+        $typePatterns = $context->getTypePatterns();
 
-        foreach ($pathAttributes as $pathAttribute) {
-            $name = $pathAttribute->getName();
-            $type = $pathAttribute->getType() ?? $context->getImplicitType();
-
-            if (!array_key_exists($name, $attributes)) {
-                continue;
-            }
-
-            $typePatterns = $context->getTypePatterns();
-
-            if (!array_key_exists($type, $typePatterns)) {
-                throw new InvalidAttribute("Attribute type does not exist in the context.");
-            }
-
-            $typePattern = $typePatterns[$type];
-
-            $value = (string) $attributes[$name];
-
-            $matches = [];
-
-            if (!preg_match("#" . $typePattern . "#", $value, $matches)) {
-                throw new InvalidAttribute("Attribute does not conform to type pattern.");
-            }
+        if (!array_key_exists($type, $typePatterns)) {
+            throw new InvalidAttribute("The attribute has unknown type.");
         }
+
+        return "#" . $typePatterns[$type] . "#";
+    }
+
+    /**
+     * Checks whether the value matches the regular expression.
+     *
+     * @param string $value
+     * @param string $pattern
+     * @throws InvalidAttribute
+     */
+    private function validateValue(string $value, string $pattern): void
+    {
+        if (!preg_match($pattern, $value)) {
+            throw new InvalidAttribute("The attribute value has incorrect type.");
+        }
+    }
+
+    /**
+     * Determines if there were any optional attributes provided by the user.
+     *
+     * @param RoutePath $path
+     * @param array $attributes
+     * @return bool
+     */
+    private function optionalAttributesProvided(RoutePath $path, array $attributes): bool
+    {
+        $pathAttributes = array_map(function (Attribute $attribute) {
+            return $attribute->getName();
+        }, $path->getAttributes());
+
+        $specifiedAttributes = array_keys($attributes);
+
+        $unfilledAttributes = array_intersect($pathAttributes, $specifiedAttributes);
+
+        return !empty($unfilledAttributes);
     }
 }
