@@ -13,11 +13,24 @@ use SvobodaTest\PsrRouter\TestCase;
 
 class PatternBuilderTest extends TestCase
 {
+    /** @var PatternBuilder */
+    private $builder;
+
+    protected function setUp()
+    {
+        $context = new Context([
+            "any" => "[^/]+",
+            "num" => "\d+",
+        ], "any");
+        
+        $this->builder = new PatternBuilder($context);
+    }
+    
     public function test_build_pattern_for_static_path()
     {
         $static = new StaticPath("/users");
 
-        $pattern = (new PatternBuilder())->buildPattern($static, self::context());
+        $pattern = $this->builder->buildPattern($static);
 
         self::assertEquals("/users", $pattern);
     }
@@ -26,7 +39,7 @@ class PatternBuilderTest extends TestCase
     {
         $attribute = new AttributePath("foo", "num");
 
-        $pattern = (new PatternBuilder())->buildPattern($attribute, self::context());
+        $pattern = $this->builder->buildPattern($attribute);
 
         self::assertEquals("(?'foo'\d+)", $pattern);
     }
@@ -35,7 +48,7 @@ class PatternBuilderTest extends TestCase
     {
         $attribute = new AttributePath("foo", null);
 
-        $pattern = (new PatternBuilder())->buildPattern($attribute, self::context());
+        $pattern = $this->builder->buildPattern($attribute);
 
         self::assertEquals("(?'foo'[^/]+)", $pattern);
     }
@@ -46,7 +59,7 @@ class PatternBuilderTest extends TestCase
             new StaticPath("/users")
         );
 
-        $pattern = (new PatternBuilder())->buildPattern($optional, self::context());
+        $pattern = $this->builder->buildPattern($optional);
 
         self::assertEquals("(?:/users)?", $pattern);
     }
@@ -66,21 +79,8 @@ class PatternBuilderTest extends TestCase
             )
         );
 
-        $pattern = (new PatternBuilder())->buildPattern($complex, self::context());
+        $pattern = $this->builder->buildPattern($complex);
 
         self::assertEquals("/users(?:/(?'id'\d+))?", $pattern);
-    }
-
-    /**
-     * Returns the testing context.
-     *
-     * @return Context
-     */
-    private function context(): Context
-    {
-        return new Context([
-            "any" => "[^/]+",
-            "num" => "\d+",
-        ], "any");
     }
 }

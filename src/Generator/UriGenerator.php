@@ -19,13 +19,6 @@ class UriGenerator
     private $routes;
 
     /**
-     * The prefix placed on the beginning each URI.
-     *
-     * @var string
-     */
-    private $prefix;
-
-    /**
      * The URI builder.
      *
      * @var UriBuilder
@@ -37,27 +30,27 @@ class UriGenerator
      *
      * @param RouteCollection $routes
      * @param UriBuilder $uriBuilder
-     * @param null|string $prefix
      */
-    public function __construct(RouteCollection $routes, UriBuilder $uriBuilder, ?string $prefix = null)
+    public function __construct(RouteCollection $routes, UriBuilder $uriBuilder)
     {
         $this->routes = $routes;
         $this->uriBuilder = $uriBuilder;
-        $this->prefix = $prefix ?? "";
     }
 
     /**
      * Creates new URI generator.
      *
      * @param RouteCollection $routes
-     * @param null|string $prefix
+     * @param null|Context $context
      * @return UriGenerator
      */
-    public static function create(RouteCollection $routes, ?string $prefix = null): self
+    public static function create(RouteCollection $routes, ?Context $context): self
     {
-        $uriBuilder = new UriBuilder();
+        $context = $context ?? Context::createDefault();
 
-        return new self($routes, $uriBuilder, $prefix);
+        $uriBuilder = new UriBuilder($context);
+
+        return new self($routes, $uriBuilder);
     }
 
     /**
@@ -66,26 +59,18 @@ class UriGenerator
      *
      * @param string $name
      * @param array $attributes
-     * @param string $prefix
      * @return string
      * @throws InvalidAttribute
      * @throws RouteNotFound
      */
-    public function generate(string $name, array $attributes = [], ?string $prefix = null): string
+    public function generate(string $name, array $attributes = []): string
     {
-        // todo: refactor away
-        $context = Context::createDefault();
-
-        $prefix = $prefix ?? $this->prefix;
-
         $route = $this->routes->oneNamed($name);
 
         if (is_null($route)) {
             throw new RouteNotFound("Route does not exist.");
         }
 
-        $uri = $this->uriBuilder->buildUri($route->getPath(), $attributes, $context);
-
-        return $prefix . $uri;
+        return $this->uriBuilder->buildUri($route->getPath(), $attributes);
     }
 }

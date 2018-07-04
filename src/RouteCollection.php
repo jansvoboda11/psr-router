@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Svoboda\PsrRouter;
 
+use Svoboda\PsrRouter\Parser\Parser;
 use Svoboda\PsrRouter\Route\InvalidRoute;
 use Svoboda\PsrRouter\Route\Route;
 use Svoboda\PsrRouter\Route\RouteFactory;
+use Svoboda\PsrRouter\Semantics\Validator;
 
 /**
  * Collection of routes.
@@ -34,7 +36,7 @@ class RouteCollection
      */
     public function __construct(?RouteFactory $factory = null)
     {
-        $this->factory = $factory ?? new RouteFactory();
+        $this->factory = $factory ?? new RouteFactory(new Parser(), new Validator());
         $this->routes = [];
     }
 

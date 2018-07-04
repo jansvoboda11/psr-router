@@ -14,11 +14,26 @@ use SvobodaTest\PsrRouter\TestCase;
 
 class UriBuilderTest extends TestCase
 {
+    /** @var UriBuilder */
+    private $builder;
+
+    protected function setUp()
+    {
+        $context = new Context([
+            "any" => "[^/]+",
+            "num" => "\d+",
+        ], "any");
+
+        $this->builder = new UriBuilder(
+            $context
+        );
+    }
+
     public function test_it_generates_static_uri()
     {
         $path = new StaticPath("/home");
 
-        $uri = (new UriBuilder())->buildUri($path, [], self::context());
+        $uri = $this->builder->buildUri($path);
 
         self::assertEquals("/home", $uri);
     }
@@ -33,9 +48,9 @@ class UriBuilderTest extends TestCase
             )
         );
 
-        $uri = (new UriBuilder())->buildUri($path, [
+        $uri = $this->builder->buildUri($path, [
             "id" => 42,
-        ], self::context());
+        ]);
 
         self::assertEquals("/users/42", $uri);
     }
@@ -57,10 +72,10 @@ class UriBuilderTest extends TestCase
             )
         );
 
-        $uri = (new UriBuilder())->buildUri($path, [
+        $uri = $this->builder->buildUri($path, [
             "name" => "jansvoboda11",
             "id" => 42,
-        ], self::context());
+        ]);
 
         self::assertEquals("/users/42/jansvoboda11", $uri);
     }
@@ -84,10 +99,10 @@ class UriBuilderTest extends TestCase
             )
         );
 
-        $uri = (new UriBuilder())->buildUri($path, [
+        $uri = $this->builder->buildUri($path, [
             "name" => "jansvoboda11",
             "id" => 42,
-        ], self::context());
+        ]);
 
         self::assertEquals("/users/42/jansvoboda11", $uri);
     }
@@ -107,9 +122,9 @@ class UriBuilderTest extends TestCase
             )
         );
 
-        $uri = (new UriBuilder())->buildUri($path, [
+        $uri = $this->builder->buildUri($path, [
             "id" => 42,
-        ], self::context());
+        ]);
 
         self::assertEquals("/users/42", $uri);
     }
@@ -133,9 +148,9 @@ class UriBuilderTest extends TestCase
             )
         );
 
-        $uri = (new UriBuilder())->buildUri($path, [
+        $uri = $this->builder->buildUri($path, [
             "id" => 42,
-        ], self::context());
+        ]);
 
         self::assertEquals("/users/42", $uri);
     }
@@ -150,10 +165,10 @@ class UriBuilderTest extends TestCase
             )
         );
 
-        $uri = (new UriBuilder())->buildUri($path, [
+        $uri = $this->builder->buildUri($path, [
             "foo" => "bar",
             "id" => 42,
-        ], self::context());
+        ]);
 
         self::assertEquals("/users/42", $uri);
     }
@@ -170,7 +185,7 @@ class UriBuilderTest extends TestCase
 
         $this->expectException(InvalidAttribute::class);
 
-        (new UriBuilder())->buildUri($path, [], self::context());
+        $this->builder->buildUri($path);
     }
 
     public function test_it_fails_on_missing_preceding_optional_attribute()
@@ -203,10 +218,10 @@ class UriBuilderTest extends TestCase
 
         $this->expectException(InvalidAttribute::class);
 
-        (new UriBuilder())->buildUri($path, [
+        $this->builder->buildUri($path, [
             "id" => 42,
             "last" => "Svoboda",
-        ], self::context());
+        ]);
     }
 
     public function test_it_fails_on_attribute_type_mismatch()
@@ -221,21 +236,8 @@ class UriBuilderTest extends TestCase
 
         $this->expectException(InvalidAttribute::class);
 
-        (new UriBuilder())->buildUri($path, [
+        $this->builder->buildUri($path, [
             "id" => "i42",
-        ], self::context());
-    }
-
-    /**
-     * Returns the testing context.
-     *
-     * @return Context
-     */
-    private static function context(): Context
-    {
-        return new Context([
-            "any" => "[^/]+",
-            "num" => "\d+",
-        ], "any");
+        ]);
     }
 }

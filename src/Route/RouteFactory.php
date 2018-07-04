@@ -29,13 +29,13 @@ class RouteFactory
     /**
      * Constructor.
      *
-     * @param null|Parser $parser
-     * @param null|Validator $validator
+     * @param Parser $parser
+     * @param Validator $validator
      */
-    public function __construct(?Parser $parser = null, ?Validator $validator = null)
+    public function __construct(Parser $parser, Validator $validator)
     {
-        $this->parser = $parser ?? new Parser();
-        $this->validator = $validator ?? new Validator();
+        $this->parser = $parser;
+        $this->validator = $validator;
     }
 
     /**

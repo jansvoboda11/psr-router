@@ -21,17 +21,17 @@ class MultiPatternCompiler implements Compiler
     /**
      * Constructor.
      *
-     * @param null|PatternBuilder $patternBuilder
+     * @param PatternBuilder $patternBuilder
      */
-    public function __construct(?PatternBuilder $patternBuilder = null)
+    public function __construct(PatternBuilder $patternBuilder)
     {
-        $this->patternBuilder = $patternBuilder ?? new PatternBuilder();
+        $this->patternBuilder = $patternBuilder;
     }
 
     /**
      * @inheritdoc
      */
-    public function compile(RouteCollection $routes, Context $context): Matcher
+    public function compile(RouteCollection $routes): Matcher
     {
         $records = [];
 
@@ -39,7 +39,7 @@ class MultiPatternCompiler implements Compiler
             $method = $route->getMethod();
             $path = $route->getPath();
 
-            $pathPattern = $this->patternBuilder->buildPattern($path, $context);
+            $pathPattern = $this->patternBuilder->buildPattern($path);
 
             $pattern = "#^" . $method . $pathPattern . "$#";
 

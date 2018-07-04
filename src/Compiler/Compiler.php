@@ -12,11 +12,10 @@ use Svoboda\PsrRouter\RouteCollection;
 interface Compiler
 {
     /**
-     * Compiles the route collection into a matcher in the given context.
+     * Compiles the route collection into a matcher.
      *
      * @param RouteCollection $routes
-     * @param Context $context
      * @return Matcher
      */
-    public function compile(RouteCollection $routes, Context $context): Matcher;
+    public function compile(RouteCollection $routes): Matcher;
 }

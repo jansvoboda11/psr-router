@@ -18,21 +18,36 @@ use Svoboda\PsrRouter\Route\Path\StaticPath;
 class UriBuilder extends PathVisitor
 {
     /**
+     * The type context.
+     *
+     * @var Context
+     */
+    private $context;
+
+    /**
+     * Constructor.
+     *
+     * @param Context $context
+     */
+    public function __construct(Context $context)
+    {
+        $this->context = $context;
+    }
+
+    /**
      * Builds the URI for route with given attributes.
      *
      * @param RoutePath $path
      * @param array $attributes
-     * @param Context $context
      * @return string
      * @throws InvalidAttribute
      */
-    public function buildUri(RoutePath $path, array $attributes, Context $context): string
+    public function buildUri(RoutePath $path, array $attributes = []): string
     {
         $data = [
             "uri" => "",
             "done" => false,
             "attributes" => $attributes,
-            "context" => $context,
         ];
 
         $path->accept($this, $data);
@@ -54,7 +69,7 @@ class UriBuilder extends PathVisitor
         }
 
         $value = $this->getValue($path, $data["attributes"]);
-        $pattern = $this->getTypePattern($path, $data["context"]);
+        $pattern = $this->getTypePattern($path);
 
         $this->validateValue($value, $pattern);
 
@@ -112,14 +127,13 @@ class UriBuilder extends PathVisitor
      * Returns the regular expression for the attribute type.
      *
      * @param AttributePath $path
-     * @param Context $context
      * @return string
      * @throws InvalidAttribute
      */
-    private function getTypePattern(AttributePath $path, Context $context): string
+    private function getTypePattern(AttributePath $path): string
     {
-        $type = $path->getType() ?? $context->getImplicitType();
-        $typePatterns = $context->getTypePatterns();
+        $type = $path->getType() ?? $this->context->getImplicitType();
+        $typePatterns = $this->context->getTypePatterns();
 
         if (!array_key_exists($type, $typePatterns)) {
             throw new InvalidAttribute("The attribute has unknown type.");

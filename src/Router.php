@@ -9,6 +9,7 @@ use Svoboda\PsrRouter\Compiler\Context;
 use Svoboda\PsrRouter\Compiler\Compiler;
 use Svoboda\PsrRouter\Compiler\Matcher;
 use Svoboda\PsrRouter\Compiler\MultiPatternCompiler;
+use Svoboda\PsrRouter\Compiler\PatternBuilder;
 
 /**
  * Routes an incoming HTTP requests based on given collection of routes.
@@ -27,11 +28,10 @@ class Router
      *
      * @param RouteCollection $routes
      * @param Compiler $compiler
-     * @param Context $context
      */
-    public function __construct(RouteCollection $routes, Compiler $compiler, Context $context)
+    public function __construct(RouteCollection $routes, Compiler $compiler)
     {
-        $this->matcher = $compiler->compile($routes, $context);
+        $this->matcher = $compiler->compile($routes);
     }
 
     /**
@@ -43,10 +43,12 @@ class Router
      */
     public static function create(RouteCollection $routes, ?Context $context = null): self
     {
-        $compiler = new MultiPatternCompiler();
         $context = $context ?? Context::createDefault();
 
-        return new self($routes, $compiler, $context);
+        $builder = new PatternBuilder($context);
+        $compiler = new MultiPatternCompiler($builder);
+
+        return new self($routes, $compiler);
     }
 
     /**
