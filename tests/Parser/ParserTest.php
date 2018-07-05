@@ -13,11 +13,19 @@ use SvobodaTest\PsrRouter\TestCase;
 
 class ParserTest extends TestCase
 {
+    /** @var Parser */
+    private $parser;
+
+    public function setUp()
+    {
+        $this->parser = new Parser();
+    }
+    
     public function test_parse_static_path()
     {
         $definition = "/users/all";
 
-        $path = (new Parser())->parse($definition);
+        $path = $this->parser->parse($definition);
 
         $expectedPath = new StaticPath("/users/all");
 
@@ -28,7 +36,7 @@ class ParserTest extends TestCase
     {
         $definition = "/users/{id}";
 
-        $path = (new Parser())->parse($definition);
+        $path = $this->parser->parse($definition);
 
         $expectedPath = new StaticPath(
             "/users/",
@@ -45,7 +53,7 @@ class ParserTest extends TestCase
     {
         $definition = "/users/{id:any}";
 
-        $path = (new Parser())->parse($definition);
+        $path = $this->parser->parse($definition);
 
         $expectedPath = new StaticPath(
             "/users/",
@@ -62,7 +70,7 @@ class ParserTest extends TestCase
     {
         $definition = "/users/{name}/{id:num}";
 
-        $path = (new Parser())->parse($definition);
+        $path = $this->parser->parse($definition);
 
         $expectedPath = new StaticPath(
             "/users/",
@@ -86,7 +94,7 @@ class ParserTest extends TestCase
     {
         $definition = "/users[/{name}]";
 
-        $path = (new Parser())->parse($definition);
+        $path = $this->parser->parse($definition);
 
         $expectedPath = new StaticPath(
             "/users",
@@ -108,7 +116,7 @@ class ParserTest extends TestCase
     {
         $definition = "/users/{name}[/{id:num}]";
 
-        $path = (new Parser())->parse($definition);
+        $path = $this->parser->parse($definition);
 
         $expectedPath = new StaticPath(
             "/users/",
@@ -142,7 +150,7 @@ The attribute name is missing:
 MESSAGE
         );
 
-        (new Parser())->parse($definition);
+        $this->parser->parse($definition);
     }
 
     public function test_parse_path_with_missing_attribute_name()
@@ -157,7 +165,7 @@ The attribute name is missing:
 MESSAGE
         );
 
-        (new Parser())->parse($definition);
+        $this->parser->parse($definition);
     }
 
     public function test_parse_path_with_too_long_attribute_name()
@@ -172,7 +180,7 @@ The attribute name exceeded maximum allowed length of 32 characters:
 MESSAGE
         );
 
-        (new Parser())->parse($definition);
+        $this->parser->parse($definition);
     }
 
     public function test_parse_path_with_malformed_attribute_name()
@@ -187,7 +195,7 @@ Unexpected character (expected ':', '}', 'alphanumeric'):
 MESSAGE
         );
 
-        (new Parser())->parse($definition);
+        $this->parser->parse($definition);
     }
 
     public function test_parse_path_with_missing_attribute_type()
@@ -202,7 +210,7 @@ The attribute type is missing:
 MESSAGE
         );
 
-        (new Parser())->parse($definition);
+        $this->parser->parse($definition);
     }
 
     public function test_parse_path_with_malformed_attribute_type()
@@ -217,7 +225,7 @@ Unexpected character (expected '}', 'alphanumeric'):
 MESSAGE
         );
 
-        (new Parser())->parse($definition);
+        $this->parser->parse($definition);
     }
 
     public function test_parse_path_with_too_long_attribute_type()
@@ -232,7 +240,7 @@ The attribute type exceeded maximum allowed length of 32 characters:
 MESSAGE
         );
 
-        (new Parser())->parse($definition);
+        $this->parser->parse($definition);
     }
 
     public function test_parse_path_with_missing_left_attribute_brace()
@@ -247,7 +255,7 @@ Unexpected character:
 MESSAGE
         );
 
-        (new Parser())->parse($definition);
+        $this->parser->parse($definition);
     }
 
     public function test_parse_path_with_missing_right_attribute_brace()
@@ -262,7 +270,7 @@ Unexpected end of route:
 MESSAGE
         );
 
-        (new Parser())->parse($definition);
+        $this->parser->parse($definition);
     }
 
     public function test_parse_path_with_missing_left_optional_bracket()
@@ -277,7 +285,7 @@ Unexpected character:
 MESSAGE
         );
 
-        (new Parser())->parse($definition);
+        $this->parser->parse($definition);
     }
 
     public function test_parse_path_with_missing_right_optional_bracket()
@@ -292,7 +300,7 @@ Unexpected end of route:
 MESSAGE
         );
 
-        (new Parser())->parse($definition);
+        $this->parser->parse($definition);
     }
 
     public function test_parse_path_with_optional_sequence_in_the_middle()
@@ -307,7 +315,7 @@ Optional sequence cannot be followed by anything else:
 MESSAGE
         );
 
-        (new Parser())->parse($definition);
+        $this->parser->parse($definition);
     }
 
     public function test_parse_path_with_mixed_brackets_one()
@@ -322,7 +330,7 @@ Unexpected character (expected ':', '}', 'alphanumeric'):
 MESSAGE
         );
 
-        (new Parser())->parse($definition);
+        $this->parser->parse($definition);
     }
 
     public function test_parse_path_with_mixed_brackets_two()
@@ -337,6 +345,6 @@ Unexpected character (expected ':', '}', 'alphanumeric'):
 MESSAGE
         );
 
-        (new Parser())->parse($definition);
+        $this->parser->parse($definition);
     }
 }

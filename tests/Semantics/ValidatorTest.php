@@ -13,6 +13,14 @@ use SvobodaTest\PsrRouter\TestCase;
 
 class ValidatorTest extends TestCase
 {
+    /** @var Validator */
+    private $validator;
+
+    public function setUp()
+    {
+        $this->validator = new Validator();
+    }
+    
     /**
      * @doesNotPerformAssertions
      */
@@ -20,7 +28,7 @@ class ValidatorTest extends TestCase
     {
         $path = new StaticPath("");
 
-        (new Validator())->validate($path);
+        $this->validator->validate($path);
     }
 
     /**
@@ -30,7 +38,7 @@ class ValidatorTest extends TestCase
     {
         $path = new AttributePath("name", null);
 
-        (new Validator())->validate($path);
+        $this->validator->validate($path);
     }
 
     /**
@@ -45,7 +53,7 @@ class ValidatorTest extends TestCase
             )
         );
 
-        (new Validator())->validate($path);
+        $this->validator->validate($path);
     }
 
     /**
@@ -62,7 +70,7 @@ class ValidatorTest extends TestCase
             )
         );
 
-        (new Validator())->validate($path);
+        $this->validator->validate($path);
     }
 
     /**
@@ -81,7 +89,7 @@ class ValidatorTest extends TestCase
             )
         );
 
-        (new Validator())->validate($path);
+        $this->validator->validate($path);
     }
 
     public function test_path_with_two_required_attributes_of_same_name()
@@ -105,7 +113,7 @@ Multiple attributes with name 'id':
 MESSAGE
         );
 
-        (new Validator())->validate($path);
+        $this->validator->validate($path);
     }
 
     public function test_path_with_required_and_optional_attribute_of_same_name()
@@ -131,6 +139,6 @@ Multiple attributes with name 'id':
 MESSAGE
         );
 
-        (new Validator())->validate($path);
+        $this->validator->validate($path);
     }
 }
