@@ -15,7 +15,7 @@ class RouterTest extends TestCase
     {
         $request = self::createGetRequest("/users");
 
-        $routes = new RouteCollection();
+        $routes = RouteCollection::create();
         $routes->get("/users", "Users");
 
         $match = Router::create($routes)->match($request);
@@ -28,7 +28,7 @@ class RouterTest extends TestCase
     {
         $request = self::createGetRequest("/admins");
 
-        $routes = new RouteCollection();
+        $routes = RouteCollection::create();
         $routes->get("/users", "Users");
         $routes->get("/admins", "Admins");
 
@@ -42,7 +42,7 @@ class RouterTest extends TestCase
     {
         $request = self::createGetRequest("/admins");
 
-        $routes = new RouteCollection();
+        $routes = RouteCollection::create();
         $routes->get("/admins", "Admins1");
         $routes->get("/admins", "Admins2");
 
@@ -56,7 +56,7 @@ class RouterTest extends TestCase
     {
         $request = self::createGetRequest("/admins/jan/123");
 
-        $routes = new RouteCollection();
+        $routes = RouteCollection::create();
         $routes->get("/admins/{name}/{id}", "Admins");
 
         $match = Router::create($routes)->match($request);
@@ -71,7 +71,7 @@ class RouterTest extends TestCase
     {
         $request = self::createGetRequest("/users/jan/123");
 
-        $routes = new RouteCollection();
+        $routes = RouteCollection::create();
         $routes->get("/admins/{name}/{id}", "Admins");
         $routes->get("/users/{name}/{id}", "Users");
 
@@ -87,7 +87,7 @@ class RouterTest extends TestCase
     {
         $request = self::createGetRequest("/users/jan");
 
-        $routes = new RouteCollection();
+        $routes = RouteCollection::create();
         $routes->get("/users/{name}[/{id}]", "Users");
 
         $match = Router::create($routes)->match($request);
@@ -102,7 +102,7 @@ class RouterTest extends TestCase
     {
         $request = self::createPostRequest("/users");
 
-        $routes = new RouteCollection();
+        $routes = RouteCollection::create();
         $routes->get("/users", "Get");
         $routes->post("/users", "Post");
 
@@ -116,7 +116,7 @@ class RouterTest extends TestCase
     {
         $request = self::createGetRequest("/users/jan/123");
 
-        $routes = new RouteCollection();
+        $routes = RouteCollection::create();
         $routes->get("/users/{name}", "Users");
 
         $match = Router::create($routes)->match($request);
@@ -128,7 +128,7 @@ class RouterTest extends TestCase
     {
         $request = self::createGetRequest("/api/users/jan");
 
-        $routes = new RouteCollection();
+        $routes = RouteCollection::create();
         $routes->get("/users/{name}", "Users");
 
         $match = Router::create($routes)->match($request);
@@ -140,7 +140,7 @@ class RouterTest extends TestCase
     {
         $request = self::createGetRequest("/users?key=value");
 
-        $routes = new RouteCollection();
+        $routes = RouteCollection::create();
         $routes->get("/users", "Get");
 
         $match = Router::create($routes)->match($request);
@@ -153,7 +153,7 @@ class RouterTest extends TestCase
     {
         $request = self::createGetRequest("/users#main");
 
-        $routes = new RouteCollection();
+        $routes = RouteCollection::create();
         $routes->get("/users", "Get");
 
         $match = Router::create($routes)->match($request);

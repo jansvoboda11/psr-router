@@ -34,10 +34,25 @@ class RouteCollection
      *
      * @param RouteFactory $factory
      */
-    public function __construct(?RouteFactory $factory = null)
+    public function __construct(RouteFactory $factory)
     {
-        $this->factory = $factory ?? new RouteFactory(new Parser(), new Validator());
+        $this->factory = $factory;
         $this->routes = [];
+    }
+
+    /**
+     * Creates new empty route collection.
+     *
+     * @return RouteCollection
+     */
+    public static function create(): self
+    {
+        $parser = new Parser();
+        $validator = new Validator();
+
+        $factory = new RouteFactory($parser, $validator);
+
+        return new self($factory);
     }
 
     /**

@@ -38,13 +38,13 @@ class UriGenerator
     }
 
     /**
-     * Creates new URI generator.
+     * Creates new URI generator with default context.
      *
      * @param RouteCollection $routes
      * @param null|Context $context
      * @return UriGenerator
      */
-    public static function create(RouteCollection $routes, ?Context $context): self
+    public static function create(RouteCollection $routes, ?Context $context = null): self
     {
         $context = $context ?? Context::createDefault();
 

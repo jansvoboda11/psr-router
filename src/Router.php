@@ -35,11 +35,11 @@ class Router
     }
 
     /**
-     * Creates new router for given routes with default settings.
+     * Creates new router for given routes with default context.
      *
      * @param RouteCollection $routes
      * @param null|Context $context
-     * @return self
+     * @return Router
      */
     public static function create(RouteCollection $routes, ?Context $context = null): self
     {

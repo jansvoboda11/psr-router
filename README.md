@@ -15,7 +15,7 @@ $ composer require svoboda/psr-router
 ### Define your routes:
 
 ```php
-$routes = new RouteCollection();
+$routes = RouteCollection::create();
 
 $routes->get("/", HomeAction::class, "pages.home");
 $routes->get("/users/{name}", UserDetailsAction::class, "user.details");

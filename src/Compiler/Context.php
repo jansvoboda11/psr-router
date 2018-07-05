@@ -56,7 +56,7 @@ class Context
     /**
      * Creates the default context.
      *
-     * @return self
+     * @return Context
      */
     public static function createDefault(): self
     {
