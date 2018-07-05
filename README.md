@@ -13,8 +13,6 @@ You can install psr-router via Composer.
 ### Create new routes:
 
 ```php
-<?php
-
 $routes = new RouteCollection();
 $routes->get("/", HomeAction::class, "pages.home");
 $routes->get("/users/{name}", UserDetailsAction::class, "user.details");
