@@ -12,18 +12,18 @@ $ composer require svoboda/psr-router
 
 ## Usage
 
-### Defining routes:
+### Registering routes
 
-Routes can be defined using `RouteCollection` and its methods for `GET`,
-`POST`, `PUT`, `PATCH` and `DELETE` requests. You have to provide the path
-definition and a handler (whatever you like). If you plan to use the URI
-generator, you should also provide the name of the route as the third argument.
+Routes can be registered in the `RouteCollection`. You have to provide the path
+definition and a handler (a string, a callback or whatever you like). If you
+plan to use the URI generator, you should also provide a name.
 
-The path definition can contain the following fragments:
+The path definition can contain three types of fragments:
 
-* static text: `/static_text`
-* dynamic attributes: `{name:type}` or `{name}` (a shorthand for `{name:any}`)
-* optional parts: `/required[/optional]`
+* static text: `/users`
+* dynamic attributes: `{name:type}` or `{name}` (implies `any` type)
+* optional parts: `/users[/all]` (can only appear at the very end of
+definitions and can be nested)
 
 The built-in attribute types are the following:
 
@@ -42,7 +42,7 @@ $routes->post("/users/{name}", UserSettingsAction::class, "user.settings");
 $routes->get("/orders[/{year:num}]", OrderListAction::class, "order.list");
 ```
 
-### Routing incoming requests:
+### Routing incoming requests
 
 After defining routes, `Router` can match incoming requests (instances of PSR-7
 `ServerRequestInterface` interface). Result of the `match` method can be 
@@ -58,16 +58,19 @@ $handler = $match->getHandler();
 $request = $match->getRequest();
 ```
 
-### Generating route URIs:
+### Generating route URIs
 
 Generating URIs from route definitions is also possible. The `UriGenerator`
 takes the name of a route, an array of attributes and returns a complete URI
 filled with attributes. It requires the following:
 
 * all required attributes are provided
-* if an optional attribute is provided, all preceding attributes have to be
-provided as well (even if they are optional)
-* all attributes have the correct format
+* if an optional attribute is provided, all preceding attributes are provided
+too, even if they are optional
+* all provided attributes have the correct format
+
+If you provide an attribute that is not part of the route definition, it is 
+ignored.
 
 ```php
 $generator = UriGenerator::create($routes);
