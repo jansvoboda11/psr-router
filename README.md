@@ -21,8 +21,6 @@ $routes->get("/users/{name}", UserDetailsAction::class, "user.details");
 ### Route an incoming HTTP request:
 
 ```php
-<?php
-
 $request = ServerRequestFactory::fromGlobals();
 
 $router = Router::create($routes);
@@ -36,8 +34,6 @@ $request = $match->getRequest();
 ### Generate the URI of a route:
 
 ```php
-<?php
-
 $generator = UriGenerator::create($routes);
 
 $uri = $generator->generate("user.details", [
