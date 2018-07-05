@@ -26,17 +26,15 @@ $routes->post("/users/{name}", UserSettingsAction::class, "user.settings");
 $routes->get("/orders[/{year:num}]", OrderListAction::class, "order.list");
 ```
 
-#### Path definition
-
 The path definition can contain three types of fragments.
 
-##### Static text
+#### Static text
 
 Static text describes a part of the URI that is always present and never
 changes between requests. For example, `"/login"` is a path definition
 containing only static text.
 
-##### Dynamic attribute
+#### Dynamic attribute
 
 Dynamic attribute is a part of the URI that can differ from request to request.
 The dynamic attribute has a type associated with it (for example number, date 
@@ -54,7 +52,7 @@ providing custom `Context` to the `create` method of `Router` and
 | `any` | `[^/]+` |
 | `num` | `\d+`   |
 
-##### Optional part
+#### Optional part
 
 Optional part is a suffix of the URI that can be omitted. They can be nested
 and can contain both static text and dynamic attributes. The syntax for 
