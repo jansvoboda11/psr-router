@@ -43,14 +43,15 @@ the attribute name. The basic syntax for dynamic attributes is `"{name:type}"`.
 The type can be omitted and it defaults to `any`. That means `"{name}"` is a
 shorthand for `"{name:any}"`.
 
-The library contains few built-in attribute types which can be overridden by 
-providing custom `Context` to the `create` method of `Router` and 
-`UriGenerator`.
+The library contains few built-in attribute types:
 
 | Type  | Pattern |
 |-------|---------|
 | `any` | `[^/]+` |
 | `num` | `\d+`   |
+
+The defaults can be overridden by providing custom `Context` to the `create` 
+method of `Router` and `UriGenerator`.
 
 #### Optional part
 
