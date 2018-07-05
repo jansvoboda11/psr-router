@@ -12,12 +12,16 @@ You can install psr-router via Composer.
 
 ### Create new routes:
 
+    <?php
+    
     $routes = new RouteCollection();
     $routes->get("/", HomeAction::class, "pages.home");
     $routes->get("/users/{name}", UserDetailsAction::class, "user.details");
 
 ### Route an incoming HTTP request:
 
+    <?php
+    
     $request = ServerRequestFactory::fromGlobals();
     
     $router = Router::create($routes);
@@ -29,6 +33,8 @@ You can install psr-router via Composer.
 
 ### Generate the URI of a route:
 
+    <?php
+    
     $generator = UriGenerator::create($routes);
     
     $uri = $generator->generate("user.details", [
