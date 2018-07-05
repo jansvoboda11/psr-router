@@ -18,22 +18,6 @@ Routes can be registered in the `RouteCollection`. You have to provide the path
 definition and a handler (a string, a callback or whatever you like). If you
 plan to use the URI generator, you should also provide a name.
 
-The path definition can contain three types of fragments:
-
-* static text: `/users`
-* dynamic attributes: `{name:type}` or `{name}` (implies `any` type)
-* optional parts: `/users[/all]` (can only appear at the very end of
-definitions and can be nested)
-
-The built-in attribute types are the following:
-
-| Name  | Pattern |
-|-------|---------|
-| `any` | `[^/]+` |
-| `num` | `\d+`   |
-
-An example route collection:
-
 ```php
 $routes = RouteCollection::create();
 
@@ -41,6 +25,40 @@ $routes->get("/", HomeAction::class, "pages.home");
 $routes->post("/users/{name}", UserSettingsAction::class, "user.settings");
 $routes->get("/orders[/{year:num}]", OrderListAction::class, "order.list");
 ```
+
+#### Path definition
+
+The path definition can contain three types of fragments.
+
+##### Static text
+
+Static text describes a part of the URI that is always present and never
+changes between requests. For example, `"/login"` is a path definition
+containing only static text.
+
+##### Dynamic attribute
+
+Dynamic attribute is a part of the URI that can differ from request to request.
+The dynamic attribute has a type associated with it (for example number, date 
+or text). Its value is captured by the router and added to the request under 
+the attribute name. The basic syntax for dynamic attributes is `"{name:type}"`.
+The type can be omitted and it defaults to `any`. That means `"{name}"` is a
+shorthand for `"{name:any}"`.
+
+The library contains few built-in attribute types which can be overridden by 
+providing custom `Context` to the `create` method of `Router` and 
+`UriGenerator`.
+
+| Type  | Pattern |
+|-------|---------|
+| `any` | `[^/]+` |
+| `num` | `\d+`   |
+
+##### Optional part
+
+Optional part is a suffix of the URI that can be omitted. They can be nested
+and can contain both static text and dynamic attributes. The syntax for 
+optional parts is: `"[/optional]"`. 
 
 ### Routing incoming requests
 
