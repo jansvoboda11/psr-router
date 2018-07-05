@@ -6,11 +6,13 @@ Simple router built on top of PSR-7.
 
 You can install psr-router via Composer.
 
-    composer require svoboda/psr-router
+```
+$ composer require svoboda/psr-router
+```
 
 ## Usage
 
-### Create new routes:
+### Define your routes:
 
 ```php
 $routes = new RouteCollection();
@@ -21,8 +23,6 @@ $routes->get("/users/{name}", UserDetailsAction::class, "user.details");
 ### Route an incoming HTTP request:
 
 ```php
-$request = ServerRequestFactory::fromGlobals();
-
 $router = Router::create($routes);
 
 $match = $router->match($request);
