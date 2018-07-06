@@ -21,7 +21,7 @@ plan to use the URI generator, you should also provide a name.
 ```php
 $routes = RouteCollection::create();
 
-$routes->get("/", HomeAction::class, "pages.home");
+$routes->get("/login", LoginAction::class, "user.login");
 $routes->post("/users/{name}", UserSettingsAction::class, "user.settings");
 $routes->get("/orders[/{year:num}]", OrderListAction::class, "order.list");
 ```
@@ -56,15 +56,14 @@ method of `Router` and `UriGenerator`.
 #### Optional part
 
 Optional part is a suffix of the URI that can be omitted. They can be nested
-and can contain both static text and dynamic attributes. The syntax for 
+and may contain both static text and dynamic attributes. The syntax for 
 optional parts is: `"[/optional]"`. 
 
 ### Routing incoming requests
 
-After defining routes, `Router` can match incoming requests (instances of PSR-7
-`ServerRequestInterface` interface). Result of the `match` method can be 
-either `null` or `Match`, which contains the route handler and a request with 
-filled route attributes.
+After providing routes to `Router`, it can match incoming requests. The result
+of the `match` method is either `null` or `Match` which contains the route
+handler you specified earlier and the incoming request with filled attributes.
 
 ```php
 $router = Router::create($routes);
@@ -77,17 +76,9 @@ $request = $match->getRequest();
 
 ### Generating route URIs
 
-Generating URIs from route definitions is also possible. The `UriGenerator`
-takes the name of a route, an array of attributes and returns a complete URI
-filled with attributes. It requires the following:
-
-* all required attributes are provided
-* if an optional attribute is provided, all preceding attributes are provided
-too, even if they are optional
-* all provided attributes have the correct format
-
-If you provide an attribute that is not part of the route definition, it is 
-ignored.
+You can also create URIs from route definitions with `UriGenerator`. The 
+`generate` method accepts the route name and its attributes that will be filled
+in the final URI.
 
 ```php
 $generator = UriGenerator::create($routes);
@@ -96,3 +87,11 @@ $uri = $generator->generate("user.settings", [
     "name" => "john.doe",
 ]);
 ```
+
+There are few rules to keep in mind:
+
+* All required attributes must be provided.
+* If an optional attribute is provided, all preceding attributes must be 
+provided as well, even if they are optional.
+* All provided attributes must have value that is compatible with the type.
+* All unknown attributes are ignored.
