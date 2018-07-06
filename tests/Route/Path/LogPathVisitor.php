@@ -33,7 +33,7 @@ class LogPathVisitor extends PathVisitor
     /**
      * @inheritdoc
      */
-    public function enterAttribute(AttributePath $path, &$data = null): void
+    public function enterAttribute(AttributePath $path, &$data): void
     {
         $data[] = "Entering attribute " . $path->getName();
     }
@@ -41,7 +41,7 @@ class LogPathVisitor extends PathVisitor
     /**
      * @inheritdoc
      */
-    public function leaveAttribute(AttributePath $path, &$data = null): void
+    public function leaveAttribute(AttributePath $path, &$data): void
     {
         $data[] = "Leaving attribute " . $path->getName();
     }
@@ -49,7 +49,7 @@ class LogPathVisitor extends PathVisitor
     /**
      * @inheritdoc
      */
-    public function enterOptional(OptionalPath $path, &$data = null): void
+    public function enterOptional(OptionalPath $path, &$data): void
     {
         $data[] = "Entering optional";
     }
@@ -57,7 +57,7 @@ class LogPathVisitor extends PathVisitor
     /**
      * @inheritdoc
      */
-    public function leaveOptional(OptionalPath $path, &$data = null): void
+    public function leaveOptional(OptionalPath $path, &$data): void
     {
         $data[] = "Leaving optional";
     }
@@ -65,7 +65,7 @@ class LogPathVisitor extends PathVisitor
     /**
      * @inheritdoc
      */
-    public function enterStatic(StaticPath $path, &$data = null): void
+    public function enterStatic(StaticPath $path, &$data): void
     {
         $data[] = "Entering static " . $path->getStatic();
     }
@@ -73,7 +73,7 @@ class LogPathVisitor extends PathVisitor
     /**
      * @inheritdoc
      */
-    public function leaveStatic(StaticPath $path, &$data = null): void
+    public function leaveStatic(StaticPath $path, &$data): void
     {
         $data[] = "Leaving static " . $path->getStatic();
     }
