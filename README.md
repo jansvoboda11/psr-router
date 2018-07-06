@@ -103,3 +103,26 @@ There are few rules to keep in mind:
 provided as well.
 * Values of all provided attributes must be compatible with their types.
 * All unknown attributes are ignored.
+
+## Development
+
+If you want to contribute to the development of **Router**, there are few
+Composer commands to make it easier for you.
+
+Run automated test (using [PHPUnit](https://github.com/sebastianbergmann/phpunit)):
+
+```
+$ composer test
+```
+
+Run static analysis (using [PHPStan](https://github.com/phpstan/phpstan)):
+
+```
+$ composer analyse
+```
+
+Run benchmarks (using [PHPBench](https://github.com/phpbench/phpbench)):
+
+```
+$ composer bench
+```
