@@ -1,10 +1,11 @@
 # psr-router
 
-Simple router built on top of PSR-7.
+Router library for PHP 7.2 built with PSR-7 in mind.
 
 ## Installation
 
-You can install psr-router via Composer.
+You can install psr-router via Composer. It only requires PHP 7.2 and PSR-7
+interfaces (the `psr/http-message` package).
 
 ```
 $ composer require svoboda/psr-router
@@ -16,7 +17,7 @@ $ composer require svoboda/psr-router
 
 Routes can be registered in the `RouteCollection`. You have to provide the path
 definition and a handler (a string, a callback or whatever you like). If you
-plan to use the URI generator, you should also provide a name.
+plan to use the URI generator, you should also provide a name of the route.
 
 ```php
 $routes = RouteCollection::create();

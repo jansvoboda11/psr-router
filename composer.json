@@ -1,6 +1,6 @@
 {
     "name": "svoboda/psr-router",
-    "description": "Simple router built on top of PSR-7.",
+    "description": "Router library for PHP 7.2 built with PSR-7 in mind.",
     "keywords": ["router", "routing", "http", "psr", "psr-7"],
     "homepage": "https://github.com/jansvoboda11/psr-router",
     "license": "MIT",
