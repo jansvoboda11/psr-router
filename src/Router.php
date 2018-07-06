@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Svoboda\Router;
 
 use Psr\Http\Message\ServerRequestInterface;
+use Svoboda\Router\Compiler\CompilationFailure;
 use Svoboda\Router\Compiler\Context;
 use Svoboda\Router\Compiler\Compiler;
 use Svoboda\Router\Compiler\Matcher;
@@ -28,6 +29,7 @@ class Router
      *
      * @param RouteCollection $routes
      * @param Compiler $compiler
+     * @throws CompilationFailure
      */
     public function __construct(RouteCollection $routes, Compiler $compiler)
     {
@@ -40,6 +42,7 @@ class Router
      * @param RouteCollection $routes
      * @param null|Context $context
      * @return Router
+     * @throws CompilationFailure
      */
     public static function create(RouteCollection $routes, ?Context $context = null): self
     {

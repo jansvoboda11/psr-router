@@ -16,6 +16,7 @@ interface Compiler
      *
      * @param RouteCollection $routes
      * @return Matcher
+     * @throws CompilationFailure
      */
     public function compile(RouteCollection $routes): Matcher;
 }

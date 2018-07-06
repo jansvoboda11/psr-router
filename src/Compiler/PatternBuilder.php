@@ -37,6 +37,7 @@ class PatternBuilder extends PathVisitor
      *
      * @param RoutePath $path
      * @return string
+     * @throws CompilationFailure
      */
     public function buildPattern(RoutePath $path): string
     {
@@ -48,7 +49,11 @@ class PatternBuilder extends PathVisitor
     }
 
     /**
-     * @inheritdoc
+     * Creates a regular expression for the attribute.
+     *
+     * @param AttributePath $path
+     * @param null|mixed $pattern
+     * @throws CompilationFailure
      */
     public function enterAttribute(AttributePath $path, &$pattern = null): void
     {
@@ -56,13 +61,22 @@ class PatternBuilder extends PathVisitor
         $type = $path->getType() ?? $this->context->getImplicitType();
 
         $typePatterns = $this->context->getTypePatterns();
+
+        if (!key_exists($type, $typePatterns)) {
+            throw CompilationFailure::unknownType($name, $type);
+        }
+
         $typePattern = $typePatterns[$type];
 
         $pattern .= "(?'$name'$typePattern)";
     }
 
     /**
-     * @inheritdoc
+     * Creates the start of regular expression for the optional part of the
+     * path.
+     *
+     * @param OptionalPath $path
+     * @param null|mixed $pattern
      */
     public function enterOptional(OptionalPath $path, &$pattern = null): void
     {
@@ -70,7 +84,10 @@ class PatternBuilder extends PathVisitor
     }
 
     /**
-     * @inheritdoc
+     * Creates the end of regular expression for the optional part of the path.
+     *
+     * @param OptionalPath $path
+     * @param null $pattern
      */
     public function leaveOptional(OptionalPath $path, &$pattern = null): void
     {
@@ -78,7 +95,10 @@ class PatternBuilder extends PathVisitor
     }
 
     /**
-     * @inheritdoc
+     * Creates the regular expression for the static part of the path.
+     *
+     * @param StaticPath $path
+     * @param null $pattern
      */
     public function enterStatic(StaticPath $path, &$pattern = null): void
     {

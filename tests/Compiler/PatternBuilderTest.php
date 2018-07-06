@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SvobodaTest\Router\Compiler;
 
+use Svoboda\Router\Compiler\CompilationFailure;
 use Svoboda\Router\Compiler\Context;
 use Svoboda\Router\Compiler\PatternBuilder;
 use Svoboda\Router\Route\Path\AttributePath;
@@ -20,7 +21,7 @@ class PatternBuilderTest extends TestCase
     {
         $context = new Context([
             "any" => "[^/]+",
-            "num" => "\d+",
+            "number" => "\d+",
         ], "any");
         
         $this->builder = new PatternBuilder($context);
@@ -37,7 +38,7 @@ class PatternBuilderTest extends TestCase
 
     public function test_build_pattern_for_attribute_path_with_type()
     {
-        $attribute = new AttributePath("foo", "num");
+        $attribute = new AttributePath("foo", "number");
 
         $pattern = $this->builder->buildPattern($attribute);
 
@@ -73,7 +74,7 @@ class PatternBuilderTest extends TestCase
                     "/",
                     new AttributePath(
                         "id",
-                        "num"
+                        "number"
                     )
                 )
             )
@@ -82,5 +83,14 @@ class PatternBuilderTest extends TestCase
         $pattern = $this->builder->buildPattern($complex);
 
         self::assertEquals("/users(?:/(?'id'\d+))?", $pattern);
+    }
+
+    public function test_build_pattern_with_unknown_attribute_type()
+    {
+        $unknown = new AttributePath("id", "unknown");
+
+        $this->expectException(CompilationFailure::class);
+
+        $this->builder->buildPattern($unknown);
     }
 }
