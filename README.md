@@ -1,6 +1,6 @@
 # Router
 
-**Router** is a routing library (duh) for PHP 7.2 built with PSR-7 in mind.
+**Router** is a routing library (duh) for PHP built with PSR-7 in mind.
 
 ## Installation
 
@@ -10,7 +10,8 @@ You can install **Router** via Composer:
 $ composer require svoboda/router
 ```
 
-It only requires PHP 7.2 and PSR-7 interfaces (the `psr/http-message` package).
+It only requires PHP 7.2 and the PSR-7 interfaces (the `psr/http-message`
+package).
 
 ## Usage
 
