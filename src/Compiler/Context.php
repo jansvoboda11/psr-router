@@ -17,7 +17,12 @@ class Context
      */
     private const DEFAULT_TYPE_PATTERNS = [
         "any" => "[^/]+",
-        "num" => "\d+",
+        "alnum" => "[a-zA-Z0-9]+",
+        "alpha" => "[a-zA-Z]+",
+        "date" => "\d{4}-\d{2}-\d{2}",
+        "digit" => "\d",
+        "number" => "\d+",
+        "word" => "\w+",
     ];
 
     /**

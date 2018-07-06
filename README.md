@@ -23,7 +23,7 @@ $routes = RouteCollection::create();
 
 $routes->get("/login", LoginAction::class, "user.login");
 $routes->post("/users/{name}", UserSettingsAction::class, "user.settings");
-$routes->get("/orders[/{year:num}]", OrderListAction::class, "order.list");
+$routes->get("/orders[/{year:number}]", OrderListAction::class, "order.list");
 ```
 
 The path definition can contain three types of fragments.
@@ -45,10 +45,15 @@ shorthand for `"{name:any}"`.
 
 The library contains few built-in attribute types:
 
-| Type  | Pattern |
-|-------|---------|
-| `any` | `[^/]+` |
-| `num` | `\d+`   |
+| Type     | Pattern             |
+|----------|---------------------|
+| `any`    | `[^/]+`             |
+| `alnum`  | `[a-zA-Z0-9]+`      |
+| `alpha`  | `[a-zA-Z]+`         |
+| `date`   | `\d{4}-\d{2}-\d{2}` |
+| `digit`  | `\d`                |
+| `number` | `\d+`               |
+| `word`   | `\w+`               |
 
 The defaults can be overridden by providing custom `Context` to the `create` 
 method of `Router` and `UriGenerator`.
@@ -91,7 +96,7 @@ $uri = $generator->generate("user.settings", [
 There are few rules to keep in mind:
 
 * All required attributes must be provided.
-* If an optional attribute is provided, all preceding attributes must be 
-provided as well, even if they are optional.
-* All provided attributes must have value that is compatible with the type.
+* When an optional attribute is provided, all preceding attributes must be
+provided as well.
+* Values of all provided attributes must be compatible with their types.
 * All unknown attributes are ignored.
