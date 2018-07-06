@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\PsrRouter\Parser;
+namespace Svoboda\Router\Parser;
 
-use Svoboda\PsrRouter\Exception;
+use Svoboda\Router\Exception;
 
 /**
  * Unexpected character in the input.

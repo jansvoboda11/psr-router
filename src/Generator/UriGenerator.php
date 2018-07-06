@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\PsrRouter\Generator;
-use Svoboda\PsrRouter\Compiler\Context;
-use Svoboda\PsrRouter\RouteCollection;
+namespace Svoboda\Router\Generator;
+use Svoboda\Router\Compiler\Context;
+use Svoboda\Router\RouteCollection;
 
 /**
  * Generates the URI of specified route.

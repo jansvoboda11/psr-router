@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace SvobodaTest\PsrRouter;
+namespace SvobodaTest\Router;
 
-use Svoboda\PsrRouter\Router;
-use Svoboda\PsrRouter\RouteCollection;
+use Svoboda\Router\Router;
+use Svoboda\Router\RouteCollection;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Uri;
 

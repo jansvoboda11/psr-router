@@ -1,6 +1,6 @@
 <?php
 
-use Svoboda\PsrRouter\RouteCollection;
+use Svoboda\Router\RouteCollection;
 
 $routes = RouteCollection::create();
 

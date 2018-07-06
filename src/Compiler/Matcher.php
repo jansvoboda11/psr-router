@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\PsrRouter\Compiler;
+namespace Svoboda\Router\Compiler;
 
 use Psr\Http\Message\ServerRequestInterface;
-use Svoboda\PsrRouter\Match;
+use Svoboda\Router\Match;
 
 /**
  * Matches the incoming request.

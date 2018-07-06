@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\PsrRouter\Route;
+namespace Svoboda\Router\Route;
 
-use Svoboda\PsrRouter\Parser\Parser;
-use Svoboda\PsrRouter\Semantics\Validator;
+use Svoboda\Router\Parser\Parser;
+use Svoboda\Router\Semantics\Validator;
 
 /**
  * Creates parsed and validated routes.

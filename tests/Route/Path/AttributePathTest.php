@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace SvobodaTest\PsrRouter\Route\Path;
+namespace SvobodaTest\Router\Route\Path;
 
-use Svoboda\PsrRouter\Route\Attribute;
-use Svoboda\PsrRouter\Route\Path\AttributePath;
-use SvobodaTest\PsrRouter\TestCase;
+use Svoboda\Router\Route\Attribute;
+use Svoboda\Router\Route\Path\AttributePath;
+use SvobodaTest\Router\TestCase;
 
 class AttributePathTest extends TestCase
 {

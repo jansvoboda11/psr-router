@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace SvobodaTest\PsrRouter\Generator;
+namespace SvobodaTest\Router\Generator;
 
-use Svoboda\PsrRouter\Compiler\Context;
-use Svoboda\PsrRouter\Generator\InvalidAttribute;
-use Svoboda\PsrRouter\Generator\UriBuilder;
-use Svoboda\PsrRouter\Route\Path\AttributePath;
-use Svoboda\PsrRouter\Route\Path\OptionalPath;
-use Svoboda\PsrRouter\Route\Path\StaticPath;
-use SvobodaTest\PsrRouter\TestCase;
+use Svoboda\Router\Compiler\Context;
+use Svoboda\Router\Generator\InvalidAttribute;
+use Svoboda\Router\Generator\UriBuilder;
+use Svoboda\Router\Route\Path\AttributePath;
+use Svoboda\Router\Route\Path\OptionalPath;
+use Svoboda\Router\Route\Path\StaticPath;
+use SvobodaTest\Router\TestCase;
 
 class UriBuilderTest extends TestCase
 {

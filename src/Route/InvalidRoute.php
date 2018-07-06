@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\PsrRouter\Route;
+namespace Svoboda\Router\Route;
 
-use Svoboda\PsrRouter\Exception;
-use Svoboda\PsrRouter\Parser\Input;
+use Svoboda\Router\Exception;
+use Svoboda\Router\Parser\Input;
 
 /**
  * Invalid route definition.

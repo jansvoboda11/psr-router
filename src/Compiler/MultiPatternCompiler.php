@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\PsrRouter\Compiler;
+namespace Svoboda\Router\Compiler;
 
-use Svoboda\PsrRouter\RouteCollection;
+use Svoboda\Router\RouteCollection;
 
 /**
  * Creates one regular expression per route.

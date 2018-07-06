@@ -1,11 +1,11 @@
 <?php
 
-namespace SvobodaTest\PsrRouter\Route\Path;
+namespace SvobodaTest\Router\Route\Path;
 
-use Svoboda\PsrRouter\Route\Attribute;
-use Svoboda\PsrRouter\Route\Path\AttributePath;
-use Svoboda\PsrRouter\Route\Path\StaticPath;
-use SvobodaTest\PsrRouter\TestCase;
+use Svoboda\Router\Route\Attribute;
+use Svoboda\Router\Route\Path\AttributePath;
+use Svoboda\Router\Route\Path\StaticPath;
+use SvobodaTest\Router\TestCase;
 
 class StaticPathTest extends TestCase
 {

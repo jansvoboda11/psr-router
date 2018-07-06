@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\PsrRouter\Generator;
+namespace Svoboda\Router\Generator;
 
-use Svoboda\PsrRouter\Exception;
+use Svoboda\Router\Exception;
 
 /**
  * Route not found in the collection.

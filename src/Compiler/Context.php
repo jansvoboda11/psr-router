@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\PsrRouter\Compiler;
+namespace Svoboda\Router\Compiler;
 
 /**
  * Provides the context for compilation: available types and their regular

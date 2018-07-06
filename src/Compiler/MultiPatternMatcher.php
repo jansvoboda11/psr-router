@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\PsrRouter\Compiler;
+namespace Svoboda\Router\Compiler;
 
 use Psr\Http\Message\ServerRequestInterface;
-use Svoboda\PsrRouter\Match;
-use Svoboda\PsrRouter\Route\Route;
+use Svoboda\Router\Match;
+use Svoboda\Router\Route\Route;
 
 /**
  * Iterates over array of individual regular expressions and matches them

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\PsrRouter\Route\Path;
+namespace Svoboda\Router\Route\Path;
 
 /**
  * The null object for route part.

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\PsrRouter\Semantics;
+namespace Svoboda\Router\Semantics;
 
-use Svoboda\PsrRouter\Route\Attribute;
-use Svoboda\PsrRouter\Route\InvalidRoute;
-use Svoboda\PsrRouter\Route\Path\RoutePath;
+use Svoboda\Router\Route\Attribute;
+use Svoboda\Router\Route\InvalidRoute;
+use Svoboda\Router\Route\Path\RoutePath;
 
 /**
  * Validates the semantics of route path.

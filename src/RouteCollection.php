@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\PsrRouter;
+namespace Svoboda\Router;
 
-use Svoboda\PsrRouter\Parser\Parser;
-use Svoboda\PsrRouter\Route\InvalidRoute;
-use Svoboda\PsrRouter\Route\Route;
-use Svoboda\PsrRouter\Route\RouteFactory;
-use Svoboda\PsrRouter\Semantics\Validator;
+use Svoboda\Router\Parser\Parser;
+use Svoboda\Router\Route\InvalidRoute;
+use Svoboda\Router\Route\Route;
+use Svoboda\Router\Route\RouteFactory;
+use Svoboda\Router\Semantics\Validator;
 
 /**
  * Collection of routes.

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace SvobodaTest\PsrRouter\Route;
+namespace SvobodaTest\Router\Route;
 
 use Mockery;
-use Svoboda\PsrRouter\Parser\Parser;
-use Svoboda\PsrRouter\Route\InvalidRoute;
-use Svoboda\PsrRouter\Route\Path\StaticPath;
-use Svoboda\PsrRouter\Route\RouteFactory;
-use Svoboda\PsrRouter\Semantics\Validator;
-use SvobodaTest\PsrRouter\TestCase;
+use Svoboda\Router\Parser\Parser;
+use Svoboda\Router\Route\InvalidRoute;
+use Svoboda\Router\Route\Path\StaticPath;
+use Svoboda\Router\Route\RouteFactory;
+use Svoboda\Router\Semantics\Validator;
+use SvobodaTest\Router\TestCase;
 
 class RouteFactoryTest extends TestCase
 {

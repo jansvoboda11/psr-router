@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SvobodaTest\PsrRouter;
+namespace SvobodaTest\Router;
 
 use Mockery;
 

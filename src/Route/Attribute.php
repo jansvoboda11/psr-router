@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\PsrRouter\Route;
+namespace Svoboda\Router\Route;
 
 /**
  * The route attribute.

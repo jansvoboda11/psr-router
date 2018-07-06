@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\PsrRouter\Parser;
+namespace Svoboda\Router\Parser;
 
 /**
  * Provides parser-friendly methods around given string.

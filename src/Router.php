@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\PsrRouter;
+namespace Svoboda\Router;
 
 use Psr\Http\Message\ServerRequestInterface;
-use Svoboda\PsrRouter\Compiler\Context;
-use Svoboda\PsrRouter\Compiler\Compiler;
-use Svoboda\PsrRouter\Compiler\Matcher;
-use Svoboda\PsrRouter\Compiler\MultiPatternCompiler;
-use Svoboda\PsrRouter\Compiler\PatternBuilder;
+use Svoboda\Router\Compiler\Context;
+use Svoboda\Router\Compiler\Compiler;
+use Svoboda\Router\Compiler\Matcher;
+use Svoboda\Router\Compiler\MultiPatternCompiler;
+use Svoboda\Router\Compiler\PatternBuilder;
 
 /**
  * Routes an incoming HTTP requests based on given collection of routes.

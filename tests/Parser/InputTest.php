@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace SvobodaTest\PsrRouter\Parser;
+namespace SvobodaTest\Router\Parser;
 
-use Svoboda\PsrRouter\Parser\Input;
-use Svoboda\PsrRouter\Parser\UnexpectedChar;
-use SvobodaTest\PsrRouter\TestCase;
+use Svoboda\Router\Parser\Input;
+use Svoboda\Router\Parser\UnexpectedChar;
+use SvobodaTest\Router\TestCase;
 
 class InputTest extends TestCase
 {

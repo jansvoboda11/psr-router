@@ -25,12 +25,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Svoboda\\PsrRouter\\": "src/"
+            "Svoboda\\Router\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "SvobodaTest\\PsrRouter\\": "tests/"
+            "SvobodaTest\\Router\\": "tests/"
         }
     },
     "scripts": {

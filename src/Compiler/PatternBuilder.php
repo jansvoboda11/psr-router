@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\PsrRouter\Compiler;
+namespace Svoboda\Router\Compiler;
 
-use Svoboda\PsrRouter\Route\Path\AttributePath;
-use Svoboda\PsrRouter\Route\Path\OptionalPath;
-use Svoboda\PsrRouter\Route\Path\PathVisitor;
-use Svoboda\PsrRouter\Route\Path\RoutePath;
-use Svoboda\PsrRouter\Route\Path\StaticPath;
+use Svoboda\Router\Route\Path\AttributePath;
+use Svoboda\Router\Route\Path\OptionalPath;
+use Svoboda\Router\Route\Path\PathVisitor;
+use Svoboda\Router\Route\Path\RoutePath;
+use Svoboda\Router\Route\Path\StaticPath;
 
 /**
  * Builds regular expression for route path.

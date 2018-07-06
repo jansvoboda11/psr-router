@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\PsrRouter\Route\Path;
+namespace Svoboda\Router\Route\Path;
 
 /**
  * Two-pass visitor of all types of route path.
