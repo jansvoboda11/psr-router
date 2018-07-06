@@ -59,10 +59,10 @@ class UriBuilder extends PathVisitor
      * Adds the attribute value to the URI.
      *
      * @param AttributePath $path
-     * @param null $data
+     * @param mixed $data
      * @throws InvalidAttribute
      */
-    public function enterAttribute(AttributePath $path, &$data = null): void
+    public function enterAttribute(AttributePath $path, &$data): void
     {
         if ($data["done"]) {
             return;
@@ -81,9 +81,9 @@ class UriBuilder extends PathVisitor
      * Determines if the optional path should be present in the URI.
      *
      * @param OptionalPath $path
-     * @param null $data
+     * @param mixed $data
      */
-    public function enterOptional(OptionalPath $path, &$data = null): void
+    public function enterOptional(OptionalPath $path, &$data): void
     {
         if (!$this->optionalAttributesProvided($path, $data["attributes"])) {
             $data["done"] = true;
@@ -94,9 +94,9 @@ class UriBuilder extends PathVisitor
      * Adds the static part of the path to the URI.
      *
      * @param StaticPath $path
-     * @param null $data
+     * @param mixed $data
      */
-    public function enterStatic(StaticPath $path, &$data = null): void
+    public function enterStatic(StaticPath $path, &$data): void
     {
         if ($data["done"]) {
             return;
