@@ -26,28 +26,38 @@ class UriGenerator
     private $uriBuilder;
 
     /**
+     * The URI prefix.
+     *
+     * @var null|string
+     */
+    private $prefix;
+
+    /**
      * Constructor.
      *
      * @param RouteCollection $routes
      * @param UriBuilder $uriBuilder
+     * @param null|string $prefix
      */
-    public function __construct(RouteCollection $routes, UriBuilder $uriBuilder)
+    public function __construct(RouteCollection $routes, UriBuilder $uriBuilder, ?string $prefix)
     {
         $this->routes = $routes;
         $this->uriBuilder = $uriBuilder;
+        $this->prefix = $prefix;
     }
 
     /**
      * Creates new URI generator.
      *
      * @param RouteCollection $routes
+     * @param null|string $prefix
      * @return UriGenerator
      */
-    public static function create(RouteCollection $routes): self
+    public static function create(RouteCollection $routes, ?string $prefix = null): self
     {
         $uriBuilder = new UriBuilder();
 
-        return new self($routes, $uriBuilder);
+        return new self($routes, $uriBuilder, $prefix);
     }
 
     /**
@@ -56,12 +66,15 @@ class UriGenerator
      *
      * @param string $name
      * @param array $attributes
+     * @param null|string $prefix
      * @return string
      * @throws InvalidAttribute
      * @throws RouteNotFound
      */
-    public function generate(string $name, array $attributes = []): string
+    public function generate(string $name, array $attributes = [], ?string $prefix = null): string
     {
+        $prefix = $prefix ?? $this->prefix ?? "";
+
         $route = $this->routes->oneNamed($name);
 
         if (is_null($route)) {
@@ -71,6 +84,8 @@ class UriGenerator
         $path = $route->getPath();
         $types = $route->getTypes();
 
-        return $this->uriBuilder->buildUri($path, $types, $attributes);
+        $uri = $this->uriBuilder->buildUri($path, $types, $attributes);
+
+        return $prefix . $uri;
     }
 }
