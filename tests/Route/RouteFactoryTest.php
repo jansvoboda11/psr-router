@@ -10,10 +10,21 @@ use Svoboda\Router\Route\InvalidRoute;
 use Svoboda\Router\Route\Path\StaticPath;
 use Svoboda\Router\Route\RouteFactory;
 use Svoboda\Router\Semantics\Validator;
+use Svoboda\Router\Types\Types;
 use SvobodaTest\Router\TestCase;
 
 class RouteFactoryTest extends TestCase
 {
+    /** @var Types */
+    private $types;
+
+    public function setUp()
+    {
+        $this->types = new Types([
+            "any" => "[^/]+",
+        ], "any");
+    }
+
     public function test_it_parses_and_validates_definition()
     {
         $path = new StaticPath("/path");
@@ -26,12 +37,12 @@ class RouteFactoryTest extends TestCase
 
         $validator = Mockery::mock(Validator::class);
         $validator->shouldReceive("validate")
-            ->with($path)
+            ->with($path, $this->types)
             ->once();
 
         $factory = new RouteFactory($parser, $validator);
 
-        $route = $factory->createRoute("GET", "/path", "Handler");
+        $route = $factory->create("GET", "/path", "Handler", $this->types);
 
         self::assertEquals("GET", $route->getMethod());
         self::assertEquals($path, $route->getPath());
@@ -53,7 +64,7 @@ class RouteFactoryTest extends TestCase
 
         $this->expectException(InvalidRoute::class);
 
-        $factory->createRoute("GET", "/path", "Handler");
+        $factory->create("GET", "/path", "Handler", $this->types);
     }
 
     public function test_it_fails_when_validator_fails()
@@ -68,7 +79,7 @@ class RouteFactoryTest extends TestCase
 
         $validator = Mockery::mock(Validator::class);
         $validator->shouldReceive("validate")
-            ->with($path)
+            ->with($path, $this->types)
             ->andThrow(InvalidRoute::class)
             ->once();
 
@@ -76,6 +87,6 @@ class RouteFactoryTest extends TestCase
 
         $this->expectException(InvalidRoute::class);
 
-        $factory->createRoute("GET", "/path", "Handler");
+        $factory->create("GET", "/path", "Handler", $this->types);
     }
 }

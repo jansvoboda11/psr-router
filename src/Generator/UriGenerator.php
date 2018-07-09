@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 namespace Svoboda\Router\Generator;
-use Svoboda\Router\Compiler\Context;
+
 use Svoboda\Router\RouteCollection;
 
 /**
@@ -38,17 +38,14 @@ class UriGenerator
     }
 
     /**
-     * Creates new URI generator with default context.
+     * Creates new URI generator.
      *
      * @param RouteCollection $routes
-     * @param null|Context $context
      * @return UriGenerator
      */
-    public static function create(RouteCollection $routes, ?Context $context = null): self
+    public static function create(RouteCollection $routes): self
     {
-        $context = $context ?? Context::createDefault();
-
-        $uriBuilder = new UriBuilder($context);
+        $uriBuilder = new UriBuilder();
 
         return new self($routes, $uriBuilder);
     }
@@ -71,6 +68,9 @@ class UriGenerator
             throw RouteNotFound::named($name);
         }
 
-        return $this->uriBuilder->buildUri($route->getPath(), $attributes);
+        $path = $route->getPath();
+        $types = $route->getTypes();
+
+        return $this->uriBuilder->buildUri($path, $types, $attributes);
     }
 }

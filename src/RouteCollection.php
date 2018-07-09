@@ -9,6 +9,8 @@ use Svoboda\Router\Route\InvalidRoute;
 use Svoboda\Router\Route\Route;
 use Svoboda\Router\Route\RouteFactory;
 use Svoboda\Router\Semantics\Validator;
+use Svoboda\Router\Types\InvalidTypes;
+use Svoboda\Router\Types\Types;
 
 /**
  * Collection of routes.
@@ -23,36 +25,57 @@ class RouteCollection
     private $factory;
 
     /**
-     * The routes.
+     * Attribute type information.
+     *
+     * @var Types
+     */
+    private $types;
+
+    /**
+     * All routes.
      *
      * @var Route[]
      */
     private $routes;
 
     /**
+     * Named routes.
+     *
+     * @var Route[]
+     */
+    private $named;
+
+    /**
      * Constructor.
      *
      * @param RouteFactory $factory
+     * @param Types $types
      */
-    public function __construct(RouteFactory $factory)
+    public function __construct(RouteFactory $factory, Types $types)
     {
         $this->factory = $factory;
+        $this->types = $types;
         $this->routes = [];
+        $this->named = [];
     }
 
     /**
      * Creates new empty route collection.
      *
+     * @param null|Types $types
      * @return RouteCollection
+     * @throws InvalidTypes
      */
-    public static function create(): self
+    public static function create(?Types $types = null): self
     {
+        $types = $types ?? Types::createDefault();
+
         $parser = new Parser();
         $validator = new Validator();
 
         $factory = new RouteFactory($parser, $validator);
 
-        return new self($factory);
+        return new self($factory, $types);
     }
 
     /**
@@ -131,7 +154,13 @@ class RouteCollection
      */
     public function route(string $method, string $definition, $handler, ?string $name = null): void
     {
-        $this->routes[] = $this->factory->createRoute($method, $definition, $handler, $name);
+        $route = $this->factory->create($method, $definition, $handler, $this->types);
+
+        $this->routes[] = $route;
+
+        if (!is_null($name)) {
+            $this->named[$name] = $route;
+        }
     }
 
     /**
@@ -152,12 +181,10 @@ class RouteCollection
      */
     public function oneNamed(string $name): ?Route
     {
-        foreach ($this->routes as $route) {
-            if ($route->getName() === $name) {
-                return $route;
-            }
+        if (!array_key_exists($name, $this->named)) {
+            return null;
         }
 
-        return null;
+        return $this->named[$name];
     }
 }

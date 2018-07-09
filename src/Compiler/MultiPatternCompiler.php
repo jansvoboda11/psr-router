@@ -38,8 +38,9 @@ class MultiPatternCompiler implements Compiler
         foreach ($routes->all() as $route) {
             $method = $route->getMethod();
             $path = $route->getPath();
+            $types = $route->getTypes();
 
-            $pathPattern = $this->patternBuilder->buildPattern($path);
+            $pathPattern = $this->patternBuilder->buildPattern($path, $types);
 
             $pattern = "#^" . $method . $pathPattern . "$#";
 

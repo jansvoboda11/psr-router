@@ -16,18 +16,25 @@ class InvalidRoute extends Exception
      * Invalid route with more attributes of the same name.
      *
      * @param string $definition
-     * @param string[] $names
+     * @param string $name
      * @return InvalidRoute
      */
-    public static function ambiguousAttribute(string $definition, array $names): self
+    public static function ambiguousAttribute(string $definition, $name): self
     {
-        $names = array_map(function ($name) {
-            return "'$name'";
-        }, $names);
+        return new self("Multiple attributes with name '$name':\n$definition");
+    }
 
-        $names = implode(", ", $names);
-
-        return new self("Multiple attributes with name $names:\n$definition");
+    /**
+     * Invalid route with unknown attribute type.
+     *
+     * @param string $definition
+     * @param string $name
+     * @param string $type
+     * @return InvalidRoute
+     */
+    public static function unknownAttributeType(string $definition, string $name, string $type): self
+    {
+        return new self("Unknown type '$type' of attribute '$name':\n$definition");
     }
 
     /**

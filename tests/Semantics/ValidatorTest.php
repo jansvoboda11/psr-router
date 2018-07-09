@@ -9,6 +9,7 @@ use Svoboda\Router\Route\Path\AttributePath;
 use Svoboda\Router\Route\Path\OptionalPath;
 use Svoboda\Router\Route\Path\StaticPath;
 use Svoboda\Router\Semantics\Validator;
+use Svoboda\Router\Types\Types;
 use SvobodaTest\Router\TestCase;
 
 class ValidatorTest extends TestCase
@@ -16,9 +17,16 @@ class ValidatorTest extends TestCase
     /** @var Validator */
     private $validator;
 
+    /** @var Types */
+    private $types;
+
     public function setUp()
     {
         $this->validator = new Validator();
+
+        $this->types = new Types([
+            "any" => "[^/]+",
+        ], "any");
     }
     
     /**
@@ -28,7 +36,7 @@ class ValidatorTest extends TestCase
     {
         $path = new StaticPath("");
 
-        $this->validator->validate($path);
+        $this->validator->validate($path, $this->types);
     }
 
     /**
@@ -38,7 +46,7 @@ class ValidatorTest extends TestCase
     {
         $path = new AttributePath("name", null);
 
-        $this->validator->validate($path);
+        $this->validator->validate($path, $this->types);
     }
 
     /**
@@ -53,7 +61,7 @@ class ValidatorTest extends TestCase
             )
         );
 
-        $this->validator->validate($path);
+        $this->validator->validate($path, $this->types);
     }
 
     /**
@@ -70,7 +78,7 @@ class ValidatorTest extends TestCase
             )
         );
 
-        $this->validator->validate($path);
+        $this->validator->validate($path, $this->types);
     }
 
     /**
@@ -89,7 +97,7 @@ class ValidatorTest extends TestCase
             )
         );
 
-        $this->validator->validate($path);
+        $this->validator->validate($path, $this->types);
     }
 
     public function test_path_with_two_required_attributes_of_same_name()
@@ -113,7 +121,7 @@ Multiple attributes with name 'id':
 MESSAGE
         );
 
-        $this->validator->validate($path);
+        $this->validator->validate($path, $this->types);
     }
 
     public function test_path_with_required_and_optional_attribute_of_same_name()
@@ -139,6 +147,6 @@ Multiple attributes with name 'id':
 MESSAGE
         );
 
-        $this->validator->validate($path);
+        $this->validator->validate($path, $this->types);
     }
 }

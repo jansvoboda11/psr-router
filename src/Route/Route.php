@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Svoboda\Router\Route;
 
 use Svoboda\Router\Route\Path\RoutePath;
+use Svoboda\Router\Types\Types;
 
 /**
  * Route, duh.
@@ -33,11 +34,11 @@ class Route
     private $handler;
 
     /**
-     * The optional name.
+     * Attribute types.
      *
-     * @var null|string
+     * @var Types
      */
-    private $name;
+    private $types;
 
     /**
      * Constructor.
@@ -45,14 +46,14 @@ class Route
      * @param string $method
      * @param RoutePath $path
      * @param mixed $handler
-     * @param null|string $name
+     * @param Types $types
      */
-    public function __construct(string $method, RoutePath $path, $handler, ?string $name = null)
+    public function __construct(string $method, RoutePath $path, $handler, Types $types)
     {
         $this->method = $method;
         $this->path = $path;
         $this->handler = $handler;
-        $this->name = $name;
+        $this->types = $types;
     }
 
     /**
@@ -86,21 +87,21 @@ class Route
     }
 
     /**
-     * Returns the name.
+     * Returns the attribute types.
      *
-     * @return null|string
+     * @return Types
      */
-    public function getName(): ?string
+    public function getTypes(): Types
     {
-        return $this->name;
+        return $this->types;
     }
 
     /**
-     * Rebuilds the route definition.
+     * Returns the route definition.
      *
      * @return string
      */
-    public function rebuildDefinition(): string
+    public function getDefinition(): string
     {
         return $this->path->getDefinition();
     }

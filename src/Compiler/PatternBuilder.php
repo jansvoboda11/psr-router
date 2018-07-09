@@ -9,6 +9,7 @@ use Svoboda\Router\Route\Path\OptionalPath;
 use Svoboda\Router\Route\Path\PathVisitor;
 use Svoboda\Router\Route\Path\RoutePath;
 use Svoboda\Router\Route\Path\StaticPath;
+use Svoboda\Router\Types\Types;
 
 /**
  * Builds regular expression for route path.
@@ -16,59 +17,41 @@ use Svoboda\Router\Route\Path\StaticPath;
 class PatternBuilder extends PathVisitor
 {
     /**
-     * The type context.
-     *
-     * @var Context
-     */
-    private $context;
-
-    /**
-     * Constructor.
-     *
-     * @param Context $context
-     */
-    public function __construct(Context $context)
-    {
-        $this->context = $context;
-    }
-
-    /**
      * Creates regular expression for the route part.
      *
      * @param RoutePath $path
+     * @param Types $types
      * @return string
-     * @throws CompilationFailure
      */
-    public function buildPattern(RoutePath $path): string
+    public function buildPattern(RoutePath $path, Types $types): string
     {
-        $pattern = "";
+        $data = [
+            "pattern" => "",
+            "implicitType" => $types->getImplicit(),
+            "typePatterns" => $types->getPatterns(),
+        ];
 
-        $path->accept($this, $pattern);
+        $path->accept($this, $data);
 
-        return $pattern;
+        return $data["pattern"];
     }
 
     /**
      * Creates a regular expression for the attribute.
      *
      * @param AttributePath $path
-     * @param mixed $pattern
-     * @throws CompilationFailure
+     * @param mixed $data
      */
-    public function enterAttribute(AttributePath $path, &$pattern): void
+    public function enterAttribute(AttributePath $path, &$data): void
     {
         $name = $path->getName();
-        $type = $path->getType() ?? $this->context->getImplicitType();
+        $type = $path->getType() ?? $data["implicitType"];
 
-        $typePatterns = $this->context->getTypePatterns();
-
-        if (!key_exists($type, $typePatterns)) {
-            throw CompilationFailure::unknownType($name, $type);
-        }
+        $typePatterns = $data["typePatterns"];
 
         $typePattern = $typePatterns[$type];
 
-        $pattern .= "(?'$name'$typePattern)";
+        $data["pattern"] .= "(?'$name'$typePattern)";
     }
 
     /**
@@ -76,32 +59,32 @@ class PatternBuilder extends PathVisitor
      * path.
      *
      * @param OptionalPath $path
-     * @param mixed $pattern
+     * @param mixed $data
      */
-    public function enterOptional(OptionalPath $path, &$pattern): void
+    public function enterOptional(OptionalPath $path, &$data): void
     {
-        $pattern .= "(?:";
+        $data["pattern"] .= "(?:";
     }
 
     /**
      * Creates the end of regular expression for the optional part of the path.
      *
      * @param OptionalPath $path
-     * @param mixed $pattern
+     * @param mixed $data
      */
-    public function leaveOptional(OptionalPath $path, &$pattern): void
+    public function leaveOptional(OptionalPath $path, &$data): void
     {
-        $pattern .= ")?";
+        $data["pattern"] .= ")?";
     }
 
     /**
      * Creates the regular expression for the static part of the path.
      *
      * @param StaticPath $path
-     * @param mixed $pattern
+     * @param mixed $data
      */
-    public function enterStatic(StaticPath $path, &$pattern): void
+    public function enterStatic(StaticPath $path, &$data): void
     {
-        $pattern .= $path->getStatic();
+        $data["pattern"] .= $path->getStatic();
     }
 }

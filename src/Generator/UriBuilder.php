@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Svoboda\Router\Generator;
 
-use Svoboda\Router\Compiler\Context;
 use Svoboda\Router\Route\Attribute;
 use Svoboda\Router\Route\Path\AttributePath;
 use Svoboda\Router\Route\Path\OptionalPath;
 use Svoboda\Router\Route\Path\PathVisitor;
 use Svoboda\Router\Route\Path\RoutePath;
 use Svoboda\Router\Route\Path\StaticPath;
+use Svoboda\Router\Types\Types;
 
 /**
  * Builds the URI based on the route path and provided attributes.
@@ -18,36 +18,22 @@ use Svoboda\Router\Route\Path\StaticPath;
 class UriBuilder extends PathVisitor
 {
     /**
-     * The type context.
-     *
-     * @var Context
-     */
-    private $context;
-
-    /**
-     * Constructor.
-     *
-     * @param Context $context
-     */
-    public function __construct(Context $context)
-    {
-        $this->context = $context;
-    }
-
-    /**
      * Builds the URI for route with given attributes.
      *
      * @param RoutePath $path
+     * @param Types $types
      * @param array $attributes
      * @return string
      * @throws InvalidAttribute
      */
-    public function buildUri(RoutePath $path, array $attributes = []): string
+    public function buildUri(RoutePath $path, Types $types, array $attributes = []): string
     {
         $data = [
             "uri" => "",
             "done" => false,
             "attributes" => $attributes,
+            "implicitType" => $types->getImplicit(),
+            "typePatterns" => $types->getPatterns(),
         ];
 
         $path->accept($this, $data);
@@ -68,9 +54,12 @@ class UriBuilder extends PathVisitor
             return;
         }
 
+        $implicitType = $data["implicitType"];
+        $typePatterns = $data["typePatterns"];
+
         $name = $path->getName();
         $value = $this->getValue($path, $data["attributes"]);
-        $pattern = $this->getTypePattern($path);
+        $pattern = $this->getTypePattern($path, $implicitType, $typePatterns);
 
         $this->validateValue($name, $value, $pattern);
 
@@ -121,20 +110,21 @@ class UriBuilder extends PathVisitor
             throw InvalidAttribute::missing($name);
         }
 
-        return (string) $attributes[$name];
+        return (string)$attributes[$name];
     }
 
     /**
      * Returns the regular expression for the attribute type.
      *
      * @param AttributePath $path
+     * @param string $implicitType
+     * @param array $typePatterns
      * @return string
      * @throws InvalidAttribute
      */
-    private function getTypePattern(AttributePath $path): string
+    private function getTypePattern(AttributePath $path, string $implicitType, array $typePatterns): string
     {
-        $type = $path->getType() ?? $this->context->getImplicitType();
-        $typePatterns = $this->context->getTypePatterns();
+        $type = $path->getType() ?? $implicitType;
 
         if (!array_key_exists($type, $typePatterns)) {
             $name = $path->getName();

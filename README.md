@@ -58,8 +58,8 @@ The library contains few built-in attribute types:
 | `number` | `\d+`               |
 | `word`   | `\w+`               |
 
-The defaults can be overridden by providing custom `Context` to the `create` 
-method of `Router` and `UriGenerator`.
+The defaults can be overridden by providing custom `Types` instance to the 
+`create` method of `RouteCollection`.
 
 #### Optional part
 

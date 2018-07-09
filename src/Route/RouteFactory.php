@@ -6,6 +6,7 @@ namespace Svoboda\Router\Route;
 
 use Svoboda\Router\Parser\Parser;
 use Svoboda\Router\Semantics\Validator;
+use Svoboda\Router\Types\Types;
 
 /**
  * Creates parsed and validated routes.
@@ -44,16 +45,16 @@ class RouteFactory
      * @param string $method
      * @param string $definition
      * @param mixed $handler
-     * @param null|string $name
+     * @param Types $types
      * @return Route
      * @throws InvalidRoute
      */
-    public function createRoute(string $method, string $definition, $handler, ?string $name = null): Route
+    public function create(string $method, string $definition, $handler, Types $types): Route
     {
         $path = $this->parser->parse($definition);
 
-        $this->validator->validate($path);
+        $this->validator->validate($path, $types);
 
-        return new Route($method, $path, $handler, $name);
+        return new Route($method, $path, $handler, $types);
     }
 }

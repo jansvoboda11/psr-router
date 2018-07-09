@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Svoboda\Router\RouteCollection;
 
 $routes = RouteCollection::create();
