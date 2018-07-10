@@ -10,16 +10,15 @@ You can install **Router** via Composer:
 $ composer require svoboda/router
 ```
 
-It only requires PHP 7.2 and the PSR-7 interfaces (the `psr/http-message`
-package).
+It only requires PHP 7.2 and the PSR-7 interfaces (the `psr/http-message` package).
 
 ## Usage
 
 ### Registering routes
 
-Routes can be registered in the `RouteCollection`. You have to provide the path
-definition and a handler (a string, a callback or whatever you like). If you
-plan to use the URI generator, you should also provide a name of the route.
+You should register your routes in the `RouteCollection`.
+You have to provide the path definition and a handler (a string, a callback or whatever you like).
+If you plan to use the URI generator, you should also provide a name of the route.
 
 ```php
 $routes = RouteCollection::create();
@@ -29,22 +28,20 @@ $routes->post("/users/{name}", UserSettingsAction::class, "user.settings");
 $routes->get("/orders[/{year:number}]", OrderListAction::class, "order.list");
 ```
 
-The path definition can contain three types of fragments.
+Parts of the definition can be divided into three categories.
 
 #### Static text
 
-Static text describes a part of the URI that is always present and never
-changes between requests. For example, `/login` is a path definition containing
-only static text.
+A static text describes a part of the URI that never changes between requests.
+For example, `/login` and `/users/` are parts of the definition containing only static text.
 
 #### Dynamic attribute
 
-Dynamic attribute is a part of the URI that can differ from request to request.
-The dynamic attribute has a type associated with it (for example number, date 
-or text). Its value is captured by the router and added to the request under 
-the attribute name. The basic syntax for dynamic attributes is `{name:type}`.
-The type can be omitted and it defaults to `any`. That means `{name}` is a
-shorthand for `{name:any}`.
+A dynamic attribute is a part of the URI that can differ from request to request.
+The dynamic attribute has a name and a type associated with it (for example number, date or text).
+Its value is captured by the router and added to the request under the attribute name.
+The basic syntax for dynamic attributes is `{name:type}`.
+The type can be omitted and it defaults to `any`, which means that `{name}` is a shorthand for `{name:any}`.
 
 The library contains few built-in attribute types:
 
@@ -58,20 +55,19 @@ The library contains few built-in attribute types:
 | `number` | `\d+`               |
 | `word`   | `\w+`               |
 
-The defaults can be overridden by providing custom `Types` instance when
-creating `RouteCollection`.
+The defaults can be overridden by providing custom `Types` instance when creating `RouteCollection`.
 
 #### Optional part
 
-Optional part is a suffix of the URI that can be omitted. They can be nested
-and may contain both static text and dynamic attributes. The optional part is
-enclosed in square brackets: `[/{year:number}]`. 
+An optional part is a suffix of the URI that may be missing in some requests.
+Optional parts can be nested and contain both static text and dynamic attributes.
+The optional part is enclosed in square brackets: `[/{year:number}]`.
 
 ### Routing incoming requests
 
-After providing routes to `Router`, it can match incoming requests. The result
-of the `match` method is either `null` or `Match` which contains the route
-handler you specified earlier and the incoming request with filled attributes.
+The `Router` class processes incoming requests based on the route collection.
+Its `match` method accepts instance of the `ServerRequestInterface` and returns `Match` if the request matches any route definition. 
+The result contains the route handler and modified request with filled route attributes.
 
 ```php
 $router = Router::create($routes);
@@ -84,9 +80,10 @@ $request = $match->getRequest();
 
 ### Generating route URIs
 
-You can also create URIs from route definitions with `UriGenerator`. The 
-`generate` method accepts the route name and its attributes that will be filled
-in the final URI.
+The **Router** library is also able to generate URIs from route specifications (sometimes called *reverse routing*).
+This is useful when you want to dynamically create links in a declarative way.
+After creating an instance of `UriGenerator` with a route collection, you can use its `generate` method.
+It accepts the route name, its attributes that will be filled in and outputs a complete URI.
 
 ```php
 $generator = UriGenerator::create($routes);
@@ -99,14 +96,13 @@ $uri = $generator->generate("user.settings", [
 There are few rules to keep in mind:
 
 * All required attributes must be provided.
-* When an optional attribute is provided, all preceding attributes must be
-provided as well.
+* When an optional attribute is provided, all preceding attributes must be provided as well.
 * Values of all provided attributes must be compatible with their types.
 * All unknown attributes are ignored.
 
 ## Development
 
-There are few Composer commands that make developing **Router** easier.
+There are few Composer commands that make developing **Router** a little bit easier.
 
 Run automated test (using [PHPUnit](https://github.com/sebastianbergmann/phpunit)):
 
