@@ -34,17 +34,17 @@ The path definition can contain three types of fragments.
 #### Static text
 
 Static text describes a part of the URI that is always present and never
-changes between requests. For example, `"/login"` is a path definition
-containing only static text.
+changes between requests. For example, `/login` is a path definition containing
+only static text.
 
 #### Dynamic attribute
 
 Dynamic attribute is a part of the URI that can differ from request to request.
 The dynamic attribute has a type associated with it (for example number, date 
 or text). Its value is captured by the router and added to the request under 
-the attribute name. The basic syntax for dynamic attributes is `"{name:type}"`.
-The type can be omitted and it defaults to `any`. That means `"{name}"` is a
-shorthand for `"{name:any}"`.
+the attribute name. The basic syntax for dynamic attributes is `{name:type}`.
+The type can be omitted and it defaults to `any`. That means `{name}` is a
+shorthand for `{name:any}`.
 
 The library contains few built-in attribute types:
 
@@ -65,7 +65,7 @@ The defaults can be overridden by providing custom `Types` instance to the
 
 Optional part is a suffix of the URI that can be omitted. They can be nested
 and may contain both static text and dynamic attributes. The syntax for 
-optional parts is: `"[/optional]"`. 
+optional parts is: `[/{year:number}]`. 
 
 ### Routing incoming requests
 
