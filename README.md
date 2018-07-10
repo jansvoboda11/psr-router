@@ -41,8 +41,8 @@ A dynamic attribute is a part of the URI that can differ from request to request
 The dynamic attribute has a name and a type associated with it (for example number, date or text).
 Its value is captured by the router and added to the request under the attribute name.
 
-The basic syntax for dynamic attributes is `{name:type}`.
-The type can be omitted and it defaults to `any`, which means that `{name}` is a shorthand for `{name:any}`.
+The basic syntax for defining dynamic attributes is `{name:type}`.
+The type can be omitted and defaults to `any`, which means that `{name}` is a shorthand for `{name:any}`.
 
 **Router** contains few built-in attribute types:
 
@@ -60,7 +60,7 @@ The defaults can be overridden by providing custom `Types` instance when creatin
 
 An optional part is a suffix of the URI that may be missing in some requests.
 Optional parts can be nested and contain both static text and dynamic attributes.
-The optional part is enclosed in square brackets: `[/{year:number}]`.
+To declare a part of the definition optional, enclose it in square brackets: `[/{year:number}]`.
 
 ### Routing incoming requests
 
