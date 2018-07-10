@@ -1,8 +1,8 @@
 # Router
 
-**Router** is a PHP routing library built with PSR-7 in mind.
-It allows your application to execute different code paths based on the incoming HTTP request.
-**Router** features simple declarative way of defining routes, great performance and high flexibility.
+**Router** is a PHP routing library built with [PSR-7](https://www.php-fig.org/psr/psr-7/) in mind.
+Routers in general allow your application to execute different code paths based on the incoming HTTP request.
+**Router** features simple declarative way of creating routes, great performance and high flexibility.
 
 ## Installation
 
