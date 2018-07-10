@@ -58,14 +58,14 @@ The library contains few built-in attribute types:
 | `number` | `\d+`               |
 | `word`   | `\w+`               |
 
-The defaults can be overridden by providing custom `Types` instance to the 
-`create` method of `RouteCollection`.
+The defaults can be overridden by providing custom `Types` instance when
+creating `RouteCollection`.
 
 #### Optional part
 
 Optional part is a suffix of the URI that can be omitted. They can be nested
-and may contain both static text and dynamic attributes. The syntax for 
-optional parts is: `[/{year:number}]`. 
+and may contain both static text and dynamic attributes. The optional part is
+enclosed in square brackets: `[/{year:number}]`. 
 
 ### Routing incoming requests
 
@@ -106,8 +106,7 @@ provided as well.
 
 ## Development
 
-If you want to contribute to the development of **Router**, there are few
-Composer commands to make it easier for you.
+There are few Composer commands that make developing **Router** easier.
 
 Run automated test (using [PHPUnit](https://github.com/sebastianbergmann/phpunit)):
 
