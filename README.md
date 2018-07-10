@@ -40,10 +40,19 @@ For example, `/login` and `/users/` are parts of the definition containing only 
 A dynamic attribute is a part of the URI that can differ from request to request.
 The dynamic attribute has a name and a type associated with it (for example number, date or text).
 Its value is captured by the router and added to the request under the attribute name.
+
 The basic syntax for dynamic attributes is `{name:type}`.
 The type can be omitted and it defaults to `any`, which means that `{name}` is a shorthand for `{name:any}`.
 
-The library contains few built-in attribute types:
+**Router** contains few built-in attribute types:
+
+* `any` - all characters except `/`
+* `alnum` - alphanumeric characters
+* `alpha` - characters of the English alphabet (both lowercase and uppercase)
+* `date` - date in the `YYYY-MM-DD` format
+* `digit` - single decimal digit
+* `number` - integer
+* `word` - alphanumeric characters including `_`
 
 | Type     | Pattern             |
 |----------|---------------------|
