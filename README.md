@@ -49,20 +49,10 @@ The type can be omitted and it defaults to `any`, which means that `{name}` is a
 * `any` - all characters except `/`
 * `alnum` - alphanumeric characters
 * `alpha` - characters of the English alphabet (both lowercase and uppercase)
-* `date` - date in the `YYYY-MM-DD` format
+* `date` - date in the `yyyy-mm-dd` format
 * `digit` - single decimal digit
 * `number` - integer
 * `word` - alphanumeric characters including `_`
-
-| Type     | Pattern             |
-|----------|---------------------|
-| `any`    | `[^/]+`             |
-| `alnum`  | `[a-zA-Z0-9]+`      |
-| `alpha`  | `[a-zA-Z]+`         |
-| `date`   | `\d{4}-\d{2}-\d{2}` |
-| `digit`  | `\d`                |
-| `number` | `\d+`               |
-| `word`   | `\w+`               |
 
 The defaults can be overridden by providing custom `Types` instance when creating `RouteCollection`.
 
