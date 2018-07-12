@@ -158,7 +158,7 @@ class RouteCollection
 
         $this->routes[] = $route;
 
-        if (!is_null($name)) {
+        if ($name !== null) {
             $this->named[$name] = $route;
         }
     }

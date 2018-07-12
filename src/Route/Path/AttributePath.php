@@ -74,7 +74,7 @@ class AttributePath implements RoutePath
         $name = $this->name;
         $type = $this->type;
 
-        $typeDefinition = is_null($type) ? "" : ":$type";
+        $typeDefinition = ($type === null) ? "" : ":$type";
 
         $nextDefinition = $this->next->getDefinition();
 

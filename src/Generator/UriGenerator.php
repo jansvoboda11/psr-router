@@ -77,7 +77,7 @@ class UriGenerator
 
         $route = $this->routes->oneNamed($name);
 
-        if (is_null($route)) {
+        if ($route === null) {
             throw RouteNotFound::named($name);
         }
 
