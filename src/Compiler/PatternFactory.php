@@ -17,10 +17,12 @@ class PatternFactory
      *
      * @param RoutePath $path
      * @param Types $types
-     * @return PathPattern
+     * @return string
      */
-    public function create(RoutePath $path, Types $types): PathPattern
+    public function create(RoutePath $path, Types $types): string
     {
-        return new PathPattern($path, $types);
+        $pattern = new PathPattern($path, $types);
+
+        return (string)$pattern;
     }
 }

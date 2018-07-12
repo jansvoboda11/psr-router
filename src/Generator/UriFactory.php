@@ -13,16 +13,18 @@ use Svoboda\Router\Types\Types;
 class UriFactory
 {
     /**
-     * Create new path URI.
+     * Creates new path URI.
      *
      * @param RoutePath $path
      * @param Types $types
      * @param array $attributes
-     * @return PathUri
+     * @return string
      * @throws InvalidAttribute
      */
-    public function create(RoutePath $path, Types $types, array $attributes = []): PathUri
+    public function create(RoutePath $path, Types $types, array $attributes = []): string
     {
-        return new PathUri($path, $types, $attributes);
+        $uri = new PathUri($path, $types, $attributes);
+
+        return (string)$uri;
     }
 }
