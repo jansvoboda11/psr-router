@@ -2,7 +2,7 @@
 
 **Router** is a PHP routing library built with [PSR-7](https://www.php-fig.org/psr/psr-7/) in mind.
 
-Routing libraries in general allow your application to execute different code paths based on the structure of incoming HTTP requests, most commonly their URI.
+Routing libraries in general allow your application to execute different code paths based on the structure of incoming HTTP requests, usually their URI.
 
 This library features simple declarative way of creating routes, has great performance and is highly flexible.
 
@@ -25,7 +25,7 @@ The `Router` class matches incoming HTTP requests against defined routes and usi
 ### Registering routes
 
 You should register your routes in the `RouteCollection`.
-You have to provide the path definition and a handler (a string, a callback or whatever you like).
+You have to provide the path definition and a handler (whatever you like: a string, a callback, ...).
 If you plan to use the URI generator, you should also provide a name of the route.
 
 ```php
