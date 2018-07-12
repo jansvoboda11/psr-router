@@ -106,22 +106,8 @@ There are few rules to keep in mind:
 
 ## Development
 
-There are few Composer commands that make developing **Router** a little bit easier.
+There are few Composer commands that make developing **Router** a little bit easier:
 
-Run automated test (using [PHPUnit](https://github.com/sebastianbergmann/phpunit)):
-
-```
-$ composer test
-```
-
-Run static analysis (using [PHPStan](https://github.com/phpstan/phpstan)):
-
-```
-$ composer analyse
-```
-
-Run benchmarks (using [PHPBench](https://github.com/phpbench/phpbench)):
-
-```
-$ composer bench
-```
+* Run automated tests: `$ composer test`
+* Run static analysis: `$ composer analyse`
+* Run benchmarks: `$ composer bench`
