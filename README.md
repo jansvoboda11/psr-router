@@ -68,7 +68,7 @@ The defaults can be overridden by providing custom `Types` instance when creatin
 
 An optional part is a suffix of the URI that may not be present in some requests.
 Optional parts can be nested and contain both static text and dynamic attributes.
-To declare a part of the definition optional, enclose it in square brackets: `[/{year:number}]`.
+To declare a part of the definition as optional, put it in square brackets: `[/{year:number}]`.
 
 ### Matching incoming requests
 
