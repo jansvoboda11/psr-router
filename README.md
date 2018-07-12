@@ -108,6 +108,6 @@ There are few rules to keep in mind:
 
 There are few Composer commands that make developing **Router** a little bit easier:
 
-* Run automated tests: `$ composer test`
-* Run static analysis: `$ composer analyse`
-* Run benchmarks: `$ composer bench`
+* `$ composer test` - run automated tests
+* `$ composer analyse` - run static analysis
+* `$ composer bench` - run benchmarks
