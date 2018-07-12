@@ -26,9 +26,9 @@ class PartsVisitorTest extends TestCase
             )
         );
 
-        $visitor = new LogPathVisitor();
+        $visitor = new LoggingPathVisitor();
 
-        $log = $visitor->visit($path);
+        $log = $visitor->log($path);
 
         self::assertEquals([
             "Entering static /users",

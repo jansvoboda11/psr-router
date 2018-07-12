@@ -5,25 +5,20 @@ declare(strict_types=1);
 namespace SvobodaTest\Router\Generator;
 
 use Svoboda\Router\Generator\InvalidAttribute;
-use Svoboda\Router\Generator\UriBuilder;
+use Svoboda\Router\Generator\PathUri;
 use Svoboda\Router\Route\Path\AttributePath;
 use Svoboda\Router\Route\Path\OptionalPath;
 use Svoboda\Router\Route\Path\StaticPath;
 use Svoboda\Router\Types\Types;
 use SvobodaTest\Router\TestCase;
 
-class UriBuilderTest extends TestCase
+class PathUriTest extends TestCase
 {
-    /** @var UriBuilder */
-    private $builder;
-
     /** @var Types */
     private $types;
 
     protected function setUp()
     {
-        $this->builder = new UriBuilder();
-
         $this->types = new Types([
             "any" => "[^/]+",
             "num" => "\d+",
@@ -34,7 +29,7 @@ class UriBuilderTest extends TestCase
     {
         $path = new StaticPath("/home");
 
-        $uri = $this->builder->buildUri($path, $this->types);
+        $uri = new PathUri($path, $this->types);
 
         self::assertEquals("/home", $uri);
     }
@@ -49,7 +44,7 @@ class UriBuilderTest extends TestCase
             )
         );
 
-        $uri = $this->builder->buildUri($path, $this->types, [
+        $uri = new PathUri($path, $this->types, [
             "id" => 42,
         ]);
 
@@ -73,7 +68,7 @@ class UriBuilderTest extends TestCase
             )
         );
 
-        $uri = $this->builder->buildUri($path, $this->types, [
+        $uri = new PathUri($path, $this->types, [
             "name" => "jansvoboda11",
             "id" => 42,
         ]);
@@ -100,7 +95,7 @@ class UriBuilderTest extends TestCase
             )
         );
 
-        $uri = $this->builder->buildUri($path, $this->types, [
+        $uri = new PathUri($path, $this->types, [
             "name" => "jansvoboda11",
             "id" => 42,
         ]);
@@ -123,7 +118,7 @@ class UriBuilderTest extends TestCase
             )
         );
 
-        $uri = $this->builder->buildUri($path, $this->types, [
+        $uri = new PathUri($path, $this->types, [
             "id" => 42,
         ]);
 
@@ -149,7 +144,7 @@ class UriBuilderTest extends TestCase
             )
         );
 
-        $uri = $this->builder->buildUri($path, $this->types, [
+        $uri = new PathUri($path, $this->types, [
             "id" => 42,
         ]);
 
@@ -166,7 +161,7 @@ class UriBuilderTest extends TestCase
             )
         );
 
-        $uri = $this->builder->buildUri($path, $this->types, [
+        $uri = new PathUri($path, $this->types, [
             "foo" => "bar",
             "id" => 42,
         ]);
@@ -190,7 +185,7 @@ The value for attribute 'id' is missing
 MESSAGE
         );
 
-        $this->builder->buildUri($path, $this->types);
+        new PathUri($path, $this->types);
     }
 
     public function test_it_fails_on_missing_preceding_optional_attribute()
@@ -227,7 +222,7 @@ The value for attribute 'first' is missing
 MESSAGE
         );
 
-        $this->builder->buildUri($path, $this->types, [
+        new PathUri($path, $this->types, [
             "id" => 42,
             "last" => "Svoboda",
         ]);
@@ -249,7 +244,7 @@ The value 'i42' of attribute 'id' does not match the specified pattern: \d+
 MESSAGE
         );
 
-        $this->builder->buildUri($path, $this->types, [
+        new PathUri($path, $this->types, [
             "id" => "i42",
         ]);
     }

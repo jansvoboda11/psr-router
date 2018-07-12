@@ -8,7 +8,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Svoboda\Router\Compiler\Compiler;
 use Svoboda\Router\Compiler\Matcher;
 use Svoboda\Router\Compiler\MultiPatternCompiler;
-use Svoboda\Router\Compiler\PatternBuilder;
+use Svoboda\Router\Compiler\PatternFactory;
 
 /**
  * Routes an incoming HTTP requests based on given collection of routes.
@@ -41,8 +41,8 @@ class Router
      */
     public static function create(RouteCollection $routes): self
     {
-        $builder = new PatternBuilder();
-        $compiler = new MultiPatternCompiler($builder);
+        $factory = new PatternFactory();
+        $compiler = new MultiPatternCompiler($factory);
 
         return new self($routes, $compiler);
     }

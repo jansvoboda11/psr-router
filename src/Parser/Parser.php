@@ -164,7 +164,7 @@ class Parser
     private function parseAttributeName(Input $definition): string
     {
         $maxLength = self::MAX_ATTRIBUTE_NAME_LENGTH;
-        
+
         $name = $definition->takeAllAlphaNumUntil(":}");
 
         if (empty($name)) {
@@ -189,7 +189,7 @@ class Parser
     private function parseAttributeType(Input $definition): ?string
     {
         $maxLength = self::MAX_ATTRIBUTE_TYPE_LENGTH;
-        
+
         if ($definition->peek() !== ":") {
             return null;
         }

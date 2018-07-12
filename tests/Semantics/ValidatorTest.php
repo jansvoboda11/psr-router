@@ -20,7 +20,7 @@ class ValidatorTest extends TestCase
     /** @var Types */
     private $types;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->validator = new Validator();
 
@@ -28,7 +28,7 @@ class ValidatorTest extends TestCase
             "any" => "[^/]+",
         ], "any");
     }
-    
+
     /**
      * @doesNotPerformAssertions
      */

@@ -21,9 +21,9 @@ class UriGenerator
     /**
      * The URI builder.
      *
-     * @var UriBuilder
+     * @var UriFactory
      */
-    private $uriBuilder;
+    private $uriFactory;
 
     /**
      * The URI prefix.
@@ -36,13 +36,13 @@ class UriGenerator
      * Constructor.
      *
      * @param RouteCollection $routes
-     * @param UriBuilder $uriBuilder
+     * @param UriFactory $uriFactory
      * @param null|string $prefix
      */
-    public function __construct(RouteCollection $routes, UriBuilder $uriBuilder, ?string $prefix)
+    public function __construct(RouteCollection $routes, UriFactory $uriFactory, ?string $prefix)
     {
         $this->routes = $routes;
-        $this->uriBuilder = $uriBuilder;
+        $this->uriFactory = $uriFactory;
         $this->prefix = $prefix;
     }
 
@@ -55,9 +55,9 @@ class UriGenerator
      */
     public static function create(RouteCollection $routes, ?string $prefix = null): self
     {
-        $uriBuilder = new UriBuilder();
+        $uriFactory = new UriFactory();
 
-        return new self($routes, $uriBuilder, $prefix);
+        return new self($routes, $uriFactory, $prefix);
     }
 
     /**
@@ -84,7 +84,7 @@ class UriGenerator
         $path = $route->getPath();
         $types = $route->getTypes();
 
-        $uri = $this->uriBuilder->buildUri($path, $types, $attributes);
+        $uri = $this->uriFactory->create($path, $types, $attributes);
 
         return $prefix . $uri;
     }

@@ -18,7 +18,7 @@ class RouteFactoryTest extends TestCase
     /** @var Types */
     private $types;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->types = new Types([
             "any" => "[^/]+",

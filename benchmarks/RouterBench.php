@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Svoboda\Router\Compiler\MultiPatternCompiler;
-use Svoboda\Router\Compiler\PatternBuilder;
+use Svoboda\Router\Compiler\PatternFactory;
 use Svoboda\Router\Router;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Uri;
@@ -18,7 +18,7 @@ class RouterBench
     {
         $routes = require __DIR__ . "/config/routes.php";
 
-        $compiler = new MultiPatternCompiler(new PatternBuilder());
+        $compiler = new MultiPatternCompiler(new PatternFactory());
 
         $this->router = new Router($routes, $compiler);
 

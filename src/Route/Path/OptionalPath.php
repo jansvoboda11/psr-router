@@ -55,12 +55,12 @@ class OptionalPath implements RoutePath
     /**
      * @inheritdoc
      */
-    public function accept(PathVisitor $visitor, &$data): void
+    public function accept(PathVisitor $visitor): void
     {
-        $visitor->enterOptional($this, $data);
+        $visitor->enterOptional($this);
 
-        $this->optional->accept($visitor, $data);
+        $this->optional->accept($visitor);
 
-        $visitor->leaveOptional($this, $data);
+        $visitor->leaveOptional($this);
     }
 }

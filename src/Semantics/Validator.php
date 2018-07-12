@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace Svoboda\Router\Semantics;
 
+use Svoboda\Router\Route\Attribute;
 use Svoboda\Router\Route\InvalidRoute;
-use Svoboda\Router\Route\Path\AttributePath;
-use Svoboda\Router\Route\Path\PathVisitor;
 use Svoboda\Router\Route\Path\RoutePath;
 use Svoboda\Router\Types\Types;
 
 /**
  * Validates the semantics of route path.
  */
-class Validator extends PathVisitor
+class Validator
 {
     /**
      * Checks the semantic validity of given route path.
@@ -24,43 +23,54 @@ class Validator extends PathVisitor
      */
     public function validate(RoutePath $path, Types $types): void
     {
-        $data = [
-            "definition" => $path->getDefinition(),
-            "implicitType" => $types->getImplicit(),
-            "typePatterns" => $types->getPatterns(),
-            "attributes" => [],
-        ];
-
-        $path->accept($this, $data);
+        $this->checkDuplicateAttributes($path);
+        $this->checkAttributeTypes($path, $types);
     }
 
     /**
-     * Checks the uniqueness of the attribute and validity of its type.
-     *
-     * @param AttributePath $path
-     * @param mixed $data
+     * @param RoutePath $path
      * @throws InvalidRoute
      */
-    public function enterAttribute(AttributePath $path, &$data): void
+    private function checkDuplicateAttributes(RoutePath $path): void
     {
-        $implicitType = $data["implicitType"];
-        $typePatterns = $data["typePatterns"];
-        $attributes = &$data["attributes"];
+        $attributes = $path->getAttributes();
 
-        $definition = $data["definition"];
+        $names = array_map(function (Attribute $attribute) {
+            return $attribute->getName();
+        }, $attributes);
 
-        $name = $path->getName();
+        $nameCounts = array_count_values($names);
 
-        if (in_array($name, $attributes)) {
-            throw InvalidRoute::ambiguousAttribute($definition, $name);
+        foreach ($nameCounts as $name => $count) {
+            if ($count > 1) {
+                $definition = $path->getDefinition();
+
+                throw InvalidRoute::ambiguousAttribute($definition, $name);
+            }
         }
+    }
 
-        $attributes[] = $name;
+    /**
+     * @param RoutePath $path
+     * @param Types $types
+     * @throws InvalidRoute
+     */
+    private function checkAttributeTypes(RoutePath $path, Types $types): void
+    {
+        $attributes = $path->getAttributes();
 
-        $type = $path->getType() ?? $implicitType;
+        $typePatterns = $types->getPatterns();
+        $implicitType = $types->getImplicit();
 
-        if (!array_key_exists($type, $typePatterns)) {
-            throw InvalidRoute::unknownAttributeType($definition, $name, $type);
+        foreach ($attributes as $attribute) {
+            $name = $attribute->getName();
+            $type = $attribute->getType() ?? $implicitType;
+
+            if (!array_key_exists($type, $typePatterns)) {
+                $definition = $path->getDefinition();
+
+                throw InvalidRoute::unknownAttributeType($definition, $name, $type);
+            }
         }
     }
 }

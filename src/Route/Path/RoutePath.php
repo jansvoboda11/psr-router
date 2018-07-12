@@ -29,7 +29,6 @@ interface RoutePath
      * Accepts the visitor and allows it to visit the children nodes.
      *
      * @param PathVisitor $visitor
-     * @param mixed $data
      */
-    public function accept(PathVisitor $visitor, &$data): void;
+    public function accept(PathVisitor $visitor): void;
 }

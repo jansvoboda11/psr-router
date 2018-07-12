@@ -16,7 +16,7 @@ class TypesTest extends TestCase
         $this->expectExceptionMessage(<<<MESSAGE
 At least one type pattern must be provided
 MESSAGE
-    );
+        );
 
         new Types([], "");
     }

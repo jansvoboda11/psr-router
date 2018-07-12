@@ -12,20 +12,18 @@ use Svoboda\Router\RouteCollection;
 class MultiPatternCompiler implements Compiler
 {
     /**
-     * The regular expression builder.
-     *
-     * @var PatternBuilder
+     * @var PatternFactory
      */
-    private $patternBuilder;
+    private $patternFactory;
 
     /**
      * Constructor.
      *
-     * @param PatternBuilder $patternBuilder
+     * @param PatternFactory $patternFactory
      */
-    public function __construct(PatternBuilder $patternBuilder)
+    public function __construct(PatternFactory $patternFactory)
     {
-        $this->patternBuilder = $patternBuilder;
+        $this->patternFactory = $patternFactory;
     }
 
     /**
@@ -40,7 +38,7 @@ class MultiPatternCompiler implements Compiler
             $path = $route->getPath();
             $types = $route->getTypes();
 
-            $pathPattern = $this->patternBuilder->buildPattern($path, $types);
+            $pathPattern = $this->patternFactory->create($path, $types);
 
             $pattern = "#^" . $method . $pathPattern . "$#";
 

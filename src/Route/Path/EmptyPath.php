@@ -28,7 +28,7 @@ class EmptyPath implements RoutePath
     /**
      * @inheritdoc
      */
-    public function accept(PathVisitor $visitor, &$data): void
+    public function accept(PathVisitor $visitor): void
     {
         //
     }

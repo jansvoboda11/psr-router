@@ -16,11 +16,11 @@ class ParserTest extends TestCase
     /** @var Parser */
     private $parser;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->parser = new Parser();
     }
-    
+
     public function test_parse_static_path()
     {
         $definition = "/users/all";

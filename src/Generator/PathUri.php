@@ -13,69 +13,107 @@ use Svoboda\Router\Route\Path\StaticPath;
 use Svoboda\Router\Types\Types;
 
 /**
- * Builds the URI based on the route path and provided attributes.
+ * URI of a route path.
  */
-class UriBuilder extends PathVisitor
+class PathUri extends PathVisitor
 {
     /**
-     * Builds the URI for route with given attributes.
+     * The route path.
+     *
+     * @var RoutePath
+     */
+    private $path;
+
+    /**
+     * Type information.
+     *
+     * @var Types
+     */
+    private $types;
+
+    /**
+     * Provided attribute values.
+     *
+     * @var array
+     */
+    private $attributes;
+
+    /**
+     * The underlying URI.
+     *
+     * @var string
+     */
+    private $uri;
+
+    /**
+     * Flag signifying the path generation is done.
+     *
+     * @var bool
+     */
+    private $done;
+
+    /**
+     * Constructor.
      *
      * @param RoutePath $path
      * @param Types $types
      * @param array $attributes
-     * @return string
      * @throws InvalidAttribute
      */
-    public function buildUri(RoutePath $path, Types $types, array $attributes = []): string
+    public function __construct(RoutePath $path, Types $types, array $attributes = [])
     {
-        $data = [
-            "uri" => "",
-            "done" => false,
-            "attributes" => $attributes,
-            "implicitType" => $types->getImplicit(),
-            "typePatterns" => $types->getPatterns(),
-        ];
+        $this->path = $path;
+        $this->types = $types;
+        $this->attributes = $attributes;
+        $this->uri = "";
+        $this->done = false;
 
-        $path->accept($this, $data);
+        $this->path->accept($this);
+    }
 
-        return $data["uri"];
+    /**
+     * Converts the URI to a string.
+     *
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return $this->uri;
     }
 
     /**
      * Adds the attribute value to the URI.
      *
      * @param AttributePath $path
-     * @param mixed $data
      * @throws InvalidAttribute
      */
-    public function enterAttribute(AttributePath $path, &$data): void
+    public function enterAttribute(AttributePath $path): void
     {
-        if ($data["done"]) {
+        if ($this->done) {
             return;
         }
 
-        $implicitType = $data["implicitType"];
-        $typePatterns = $data["typePatterns"];
+        $implicitType = $this->types->getImplicit();
+        $typePatterns = $this->types->getPatterns();
 
         $name = $path->getName();
-        $value = $this->getValue($path, $data["attributes"]);
+        $value = $this->getValue($path, $this->attributes);
         $pattern = $this->getTypePattern($path, $implicitType, $typePatterns);
 
         $this->validateValue($name, $value, $pattern);
 
-        $data["uri"] .= $value;
+        $this->uri .= $value;
     }
 
     /**
      * Determines if the optional path should be present in the URI.
      *
      * @param OptionalPath $path
-     * @param mixed $data
      */
-    public function enterOptional(OptionalPath $path, &$data): void
+    public function enterOptional(OptionalPath $path): void
     {
-        if (!$this->optionalAttributesProvided($path, $data["attributes"])) {
-            $data["done"] = true;
+        if (!$this->optionalAttributesProvided($path)) {
+            $this->done = true;
         }
     }
 
@@ -83,15 +121,14 @@ class UriBuilder extends PathVisitor
      * Adds the static part of the path to the URI.
      *
      * @param StaticPath $path
-     * @param mixed $data
      */
-    public function enterStatic(StaticPath $path, &$data): void
+    public function enterStatic(StaticPath $path): void
     {
-        if ($data["done"]) {
+        if ($this->done) {
             return;
         }
 
-        $data["uri"] .= $path->getStatic();
+        $this->uri .= $path->getStatic();
     }
 
     /**
@@ -154,16 +191,15 @@ class UriBuilder extends PathVisitor
      * Determines if there were any optional attributes provided by the user.
      *
      * @param RoutePath $path
-     * @param array $attributes
      * @return bool
      */
-    private function optionalAttributesProvided(RoutePath $path, array $attributes): bool
+    private function optionalAttributesProvided(RoutePath $path): bool
     {
         $pathAttributes = array_map(function (Attribute $attribute) {
             return $attribute->getName();
         }, $path->getAttributes());
 
-        $specifiedAttributes = array_keys($attributes);
+        $specifiedAttributes = array_keys($this->attributes);
 
         $unfilledAttributes = array_intersect($pathAttributes, $specifiedAttributes);
 
