@@ -70,7 +70,7 @@ An optional part is a suffix of the URI that may not be present in some requests
 Optional parts can be nested and contain both static text and dynamic attributes.
 To declare a part of the definition optional, enclose it in square brackets: `[/{year:number}]`.
 
-### Routing incoming requests
+### Matching incoming requests
 
 The `Router` class processes incoming requests based on the route collection.
 Its `match` method accepts instance of the `ServerRequestInterface` and returns `Match` if the request matches any route definition. 
