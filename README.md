@@ -14,9 +14,13 @@ You can install **Router** via Composer:
 $ composer require svoboda/router
 ```
 
-It only requires PHP 7.2 and the PSR-7 interfaces (the `psr/http-message` package).
+The only requirements are PHP 7.2 and the `psr/http-message` package.
 
 ## Usage
+
+The API is designed to be really intuitive.
+Most of the time, you will interact with the `RouteCollection` class where you will register your routes.
+The `Router` class matches incoming HTTP requests against defined routes and using `UriGenerator` you can create URIs of your routes.
 
 ### Registering routes
 
@@ -37,7 +41,7 @@ Parts of the definition can be divided into three categories.
 #### Static text
 
 A static text describes a part of the URI that never changes between requests.
-For example, `/login` and `/users/` are parts of the definition containing only static text.
+For example `/login` and `/users/` are static parts of the definitions above.
 
 #### Dynamic attribute
 
