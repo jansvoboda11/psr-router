@@ -4,7 +4,7 @@
 
 Routing libraries in general allow your application to execute different code paths based on the structure of incoming HTTP requests, most commonly their URI.
 
-This library features simple declarative way of creating routes, great performance and high flexibility.
+This library features simple declarative way of creating routes, has great performance and is highly flexible.
 
 ## Installation
 
