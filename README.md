@@ -87,7 +87,7 @@ The **Router** library is also able to generate URIs from route specifications.
 This process is sometimes called *reverse routing* and it can be  useful when you want to dynamically create links in a declarative way.
 
 After creating an instance of `UriGenerator` with a route collection, you can use its `generate` method.
-It accepts the route name, its attributes that will be filled in and outputs a complete URI.
+It accepts the route name, the attributes that will be filled in and outputs a complete URI.
 
 ```php
 $generator = UriGenerator::create($routes);
