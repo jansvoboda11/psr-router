@@ -1,5 +1,5 @@
 {
-    "name": "svoboda/psr-router",
+    "name": "svoboda/router",
     "description": "Router is a routing library built with PSR-7 in mind.",
     "keywords": ["router", "routing", "http", "psr", "psr-7"],
     "homepage": "https://github.com/jansvoboda11/psr-router",
