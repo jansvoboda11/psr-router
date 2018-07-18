@@ -45,11 +45,13 @@ class Attribute
     }
 
     /**
-     * Makes the attribute optional (not required).
+     * Creates the same attribute, but optional (not required).
+     *
+     * @return Attribute
      */
-    public function makeOptional(): void
+    public function createOptional(): self
     {
-        $this->required = false;
+        return new self($this->getName(), $this->getType(), false);
     }
 
     /**

@@ -46,9 +46,7 @@ class OptionalPath implements RoutePath
         $attributes = $this->optional->getAttributes();
 
         return array_map(function (Attribute $attribute) {
-            $attribute->makeOptional();
-
-            return $attribute;
+            return $attribute->createOptional();
         }, $attributes);
     }
 
