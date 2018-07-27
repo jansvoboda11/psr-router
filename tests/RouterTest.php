@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SvobodaTest\Router;
 
+use Svoboda\Router\NoMatch;
 use Svoboda\Router\RouteCollection;
 use Svoboda\Router\Router;
 use Zend\Diactoros\ServerRequest;
@@ -112,6 +113,32 @@ class RouterTest extends TestCase
         self::assertEquals("Post", $match->getHandler());
     }
 
+    public function test_it_provides_allowed_methods_on_only_uri_match()
+    {
+        $request = self::createGetRequest("/users");
+
+        $routes = RouteCollection::create();
+        $routes->post("/users", "Post");
+        $routes->delete("/users", "Delete");
+
+        $this->expectExceptionObject(new NoMatch(["POST", "DELETE"], $request));
+
+        Router::create($routes)->match($request);
+    }
+
+    public function test_it_does_not_provide_allow_methods_on_no_uri_match()
+    {
+        $request = self::createGetRequest("/orders");
+
+        $routes = RouteCollection::create();
+        $routes->post("/users", "Post");
+        $routes->delete("/users", "Delete");
+
+        $this->expectExceptionObject(new NoMatch([], $request));
+
+        Router::create($routes)->match($request);
+    }
+
     public function test_it_does_not_match_route_with_extra_suffix()
     {
         $request = self::createGetRequest("/users/jan/123");
@@ -119,9 +146,9 @@ class RouterTest extends TestCase
         $routes = RouteCollection::create();
         $routes->get("/users/{name}", "Users");
 
-        $match = Router::create($routes)->match($request);
+        $this->expectException(NoMatch::class);
 
-        self::assertNull($match);
+        Router::create($routes)->match($request);
     }
 
     public function test_it_does_not_match_route_with_extra_prefix()
@@ -131,9 +158,9 @@ class RouterTest extends TestCase
         $routes = RouteCollection::create();
         $routes->get("/users/{name}", "Users");
 
-        $match = Router::create($routes)->match($request);
+        $this->expectException(NoMatch::class);
 
-        self::assertNull($match);
+        Router::create($routes)->match($request);
     }
 
     public function test_it_ignores_query_string()
@@ -170,7 +197,7 @@ class RouterTest extends TestCase
      */
     private static function createGetRequest(string $uri)
     {
-        return (new ServerRequest())->withUri(new Uri($uri));
+        return (new ServerRequest())->withMethod("GET")->withUri(new Uri($uri));
     }
 
     /**

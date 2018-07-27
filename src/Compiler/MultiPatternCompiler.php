@@ -34,13 +34,12 @@ class MultiPatternCompiler implements Compiler
         $records = [];
 
         foreach ($routes->all() as $route) {
-            $method = $route->getMethod();
             $path = $route->getPath();
             $types = $route->getTypes();
 
             $pathPattern = $this->patternFactory->create($path, $types);
 
-            $pattern = "#^" . $method . $pathPattern . "$#";
+            $pattern = "#^$pathPattern$#";
 
             $records[] = [$pattern, $route];
         }

@@ -6,6 +6,7 @@ namespace Svoboda\Router\Compiler;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Svoboda\Router\Match;
+use Svoboda\Router\NoMatch;
 
 /**
  * Matches the incoming request.
@@ -13,10 +14,11 @@ use Svoboda\Router\Match;
 interface Matcher
 {
     /**
-     * Matches the incoming request and on success provides a match.
+     * Tries to match the incoming request and returns the result.
      *
      * @param ServerRequestInterface $request
-     * @return null|Match
+     * @return Match
+     * @throws NoMatch
      */
-    public function match(ServerRequestInterface $request): ?Match;
+    public function match(ServerRequestInterface $request): Match;
 }

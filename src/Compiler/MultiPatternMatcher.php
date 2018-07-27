@@ -6,6 +6,7 @@ namespace Svoboda\Router\Compiler;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Svoboda\Router\Match;
+use Svoboda\Router\NoMatch;
 use Svoboda\Router\Route\Route;
 
 /**
@@ -34,21 +35,29 @@ class MultiPatternMatcher implements Matcher
     /**
      * @inheritdoc
      */
-    public function match(ServerRequestInterface $request): ?Match
+    public function match(ServerRequestInterface $request): Match
     {
-        $requestPath = $request->getMethod() . $request->getUri()->getPath();
+        $allowedMethods = [];
+
+        $requestMethod = $request->getMethod();
+        $requestPath = $request->getUri()->getPath();
 
         foreach ($this->records as $record) {
             $matches = [];
 
+            /** @var Route $route */
             [$pattern, $route] = $record;
 
-            if (preg_match($pattern, $requestPath, $matches)) {
+            $routeMethod = $route->getMethod();
+
+            if (preg_match($pattern, $requestPath, $matches) && $requestMethod === $routeMethod) {
                 return $this->createResult($route, $request, $matches);
             }
+
+            $allowedMethods = array_merge($allowedMethods, [$route->getMethod()]);
         }
 
-        return null;
+        throw new NoMatch($allowedMethods, $request);
     }
 
     /**
