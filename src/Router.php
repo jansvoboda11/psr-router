@@ -51,9 +51,10 @@ class Router
      * Match the incoming HTTP request.
      *
      * @param ServerRequestInterface $request
-     * @return null|Match
+     * @return Match
+     * @throws NoMatch
      */
-    public function match(ServerRequestInterface $request): ?Match
+    public function match(ServerRequestInterface $request): Match
     {
         return $this->matcher->match($request);
     }

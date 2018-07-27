@@ -21,7 +21,6 @@ class RouterTest extends TestCase
 
         $match = Router::create($routes)->match($request);
 
-        self::assertNotNull($match);
         self::assertEquals("Users", $match->getHandler());
     }
 
@@ -35,7 +34,6 @@ class RouterTest extends TestCase
 
         $match = Router::create($routes)->match($request);
 
-        self::assertNotNull($match);
         self::assertEquals("Admins", $match->getHandler());
     }
 
@@ -49,7 +47,6 @@ class RouterTest extends TestCase
 
         $match = Router::create($routes)->match($request);
 
-        self::assertNotNull($match);
         self::assertEquals("Admins1", $match->getHandler());
     }
 
@@ -62,7 +59,6 @@ class RouterTest extends TestCase
 
         $match = Router::create($routes)->match($request);
 
-        self::assertNotNull($match);
         self::assertEquals("Admins", $match->getHandler());
         self::assertEquals("jan", $match->getRequest()->getAttribute("name"));
         self::assertEquals("123", $match->getRequest()->getAttribute("id"));
@@ -78,7 +74,6 @@ class RouterTest extends TestCase
 
         $match = Router::create($routes)->match($request);
 
-        self::assertNotNull($match);
         self::assertEquals("Users", $match->getHandler());
         self::assertEquals("jan", $match->getRequest()->getAttribute("name"));
         self::assertEquals("123", $match->getRequest()->getAttribute("id"));
@@ -93,7 +88,6 @@ class RouterTest extends TestCase
 
         $match = Router::create($routes)->match($request);
 
-        self::assertNotNull($match);
         self::assertEquals("Users", $match->getHandler());
         self::assertEquals("jan", $match->getRequest()->getAttribute("name"));
         self::assertEquals(null, $match->getRequest()->getAttribute("id"));
@@ -109,7 +103,6 @@ class RouterTest extends TestCase
 
         $match = Router::create($routes)->match($request);
 
-        self::assertNotNull($match);
         self::assertEquals("Post", $match->getHandler());
     }
 
@@ -172,7 +165,6 @@ class RouterTest extends TestCase
 
         $match = Router::create($routes)->match($request);
 
-        self::assertNotNull($match);
         self::assertEquals("Get", $match->getHandler());
     }
 
@@ -185,7 +177,6 @@ class RouterTest extends TestCase
 
         $match = Router::create($routes)->match($request);
 
-        self::assertNotNull($match);
         self::assertEquals("Get", $match->getHandler());
     }
 
