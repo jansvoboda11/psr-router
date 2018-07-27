@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SvobodaTest\Router;
 
-use Svoboda\Router\NoMatch;
+use Svoboda\Router\Failure;
 use Svoboda\Router\RouteCollection;
 use Svoboda\Router\Router;
 use Zend\Diactoros\ServerRequest;
@@ -114,7 +114,7 @@ class RouterTest extends TestCase
         $routes->post("/users", "Post");
         $routes->delete("/users", "Delete");
 
-        $this->expectExceptionObject(new NoMatch(["POST", "DELETE"], $request));
+        $this->expectExceptionObject(new Failure(["POST", "DELETE"], $request));
 
         Router::create($routes)->match($request);
     }
@@ -127,7 +127,7 @@ class RouterTest extends TestCase
         $routes->post("/users", "Post");
         $routes->delete("/users", "Delete");
 
-        $this->expectExceptionObject(new NoMatch([], $request));
+        $this->expectExceptionObject(new Failure([], $request));
 
         Router::create($routes)->match($request);
     }
@@ -139,7 +139,7 @@ class RouterTest extends TestCase
         $routes = RouteCollection::create();
         $routes->get("/users/{name}", "Users");
 
-        $this->expectException(NoMatch::class);
+        $this->expectException(Failure::class);
 
         Router::create($routes)->match($request);
     }
@@ -151,7 +151,7 @@ class RouterTest extends TestCase
         $routes = RouteCollection::create();
         $routes->get("/users/{name}", "Users");
 
-        $this->expectException(NoMatch::class);
+        $this->expectException(Failure::class);
 
         Router::create($routes)->match($request);
     }
