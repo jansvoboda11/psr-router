@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Svoboda\Router\Compiler;
 
 use Psr\Http\Message\ServerRequestInterface;
+use Svoboda\Router\Failure;
 use Svoboda\Router\Match;
-use Svoboda\Router\NoMatch;
 use Svoboda\Router\Route\Route;
 
 /**
@@ -57,7 +57,7 @@ class MultiPatternMatcher implements Matcher
             $allowedMethods = array_merge($allowedMethods, [$route->getMethod()]);
         }
 
-        throw new NoMatch($allowedMethods, $request);
+        throw new Failure($allowedMethods, $request);
     }
 
     /**

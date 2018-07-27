@@ -9,7 +9,7 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * Exception representing routing failure - no exact route match.
  */
-class NoMatch extends Exception
+class Failure extends Exception
 {
     /**
      * Allowed methods for the request URI.
@@ -55,5 +55,15 @@ class NoMatch extends Exception
     public function getRequest(): ServerRequestInterface
     {
         return $this->request;
+    }
+
+    /**
+     * Determines whether the failure was caused by an incorrect HTTP method.
+     *
+     * @return bool
+     */
+    public function isMethodFailure(): bool
+    {
+        return !empty($this->allowedMethods);
     }
 }

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Svoboda\Router\Compiler;
 
 use Psr\Http\Message\ServerRequestInterface;
+use Svoboda\Router\Failure;
 use Svoboda\Router\Match;
-use Svoboda\Router\NoMatch;
 
 /**
  * Matches the incoming request.
@@ -18,7 +18,7 @@ interface Matcher
      *
      * @param ServerRequestInterface $request
      * @return Match
-     * @throws NoMatch
+     * @throws Failure
      */
     public function match(ServerRequestInterface $request): Match;
 }

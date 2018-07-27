@@ -52,7 +52,7 @@ class Router
      *
      * @param ServerRequestInterface $request
      * @return Match
-     * @throws NoMatch
+     * @throws Failure
      */
     public function match(ServerRequestInterface $request): Match
     {
