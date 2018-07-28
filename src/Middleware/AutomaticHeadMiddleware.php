@@ -62,6 +62,7 @@ class AutomaticHeadMiddleware implements MiddlewareInterface
 
         $getRequest = $request->withoutAttribute(Failure::class)->withMethod("GET");
 
+        // cannot throw, because we pass the GET request and GET is also in allowed methods
         $match = $this->router->match($getRequest);
 
         $response = $handler->handle($getRequest->withAttribute(Match::class, $match));
