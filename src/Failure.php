@@ -33,6 +33,8 @@ class Failure extends Exception
      */
     public function __construct(array $allowedMethods, ServerRequestInterface $request)
     {
+        parent::__construct("Failed to match incoming request.");
+
         $this->allowedMethods = $allowedMethods;
         $this->request = $request;
     }

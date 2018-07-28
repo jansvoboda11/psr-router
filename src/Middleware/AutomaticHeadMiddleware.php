@@ -53,7 +53,7 @@ class AutomaticHeadMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
-        /** @var Failure $failure */
+        /** @var ?Failure $failure */
         $failure = $request->getAttribute(Failure::class);
 
         if (!$failure || !$failure->isMethodFailure() || !in_array("GET", $failure->getAllowedMethods())) {

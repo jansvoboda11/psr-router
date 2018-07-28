@@ -63,6 +63,8 @@ class Types
         }
 
         foreach ($patterns as $name => $pattern) {
+            $name = (string)$name;
+
             if (!preg_match("#^\w+$#", $name)) {
                 throw InvalidTypes::invalidTypeName($name);
             }
