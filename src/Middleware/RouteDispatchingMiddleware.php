@@ -21,7 +21,7 @@ class RouteDispatchingMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        /** @var ?Match $match */
+        /** @var Match|null $match */
         $match = $request->getAttribute(Match::class);
 
         if (!$match) {
