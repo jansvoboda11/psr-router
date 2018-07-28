@@ -1,6 +1,6 @@
 <?php
 
-namespace SvobodaTest\Router\Route\Path;
+namespace SvobodaTest\Router\Unit\Route\Path;
 
 use Svoboda\Router\Route\Attribute;
 use Svoboda\Router\Route\Path\AttributePath;

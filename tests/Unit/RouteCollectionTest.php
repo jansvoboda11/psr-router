@@ -1,6 +1,6 @@
 <?php
 
-namespace SvobodaTest\Router;
+namespace SvobodaTest\Router\Unit;
 
 use Hamcrest\Matchers;
 use Mockery;
@@ -10,6 +10,8 @@ use Svoboda\Router\Route\Route;
 use Svoboda\Router\Route\RouteFactory;
 use Svoboda\Router\RouteCollection;
 use Svoboda\Router\Types\Types;
+use SvobodaTest\Router\Middleware;
+use SvobodaTest\Router\TestCase;
 
 class RouteCollectionTest extends TestCase
 {

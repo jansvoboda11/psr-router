@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SvobodaTest\Router\Parser;
+namespace SvobodaTest\Router\Unit\Parser;
 
 use Svoboda\Router\Parser\Parser;
 use Svoboda\Router\Route\InvalidRoute;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SvobodaTest\Router\Generator;
+namespace SvobodaTest\Router\Unit\Generator;
 
 use Svoboda\Router\Generator\InvalidAttribute;
 use Svoboda\Router\Generator\PathUri;

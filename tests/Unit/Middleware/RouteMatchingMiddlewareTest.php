@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SvobodaTest\Router\Middleware;
+namespace SvobodaTest\Router\Unit\Middleware;
 
 use Hamcrest\Matchers;
 use Mockery;

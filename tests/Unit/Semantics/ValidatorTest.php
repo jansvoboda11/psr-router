@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SvobodaTest\Router\Semantics;
+namespace SvobodaTest\Router\Unit\Semantics;
 
 use Svoboda\Router\Route\InvalidRoute;
 use Svoboda\Router\Route\Path\AttributePath;

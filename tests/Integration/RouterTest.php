@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
-namespace SvobodaTest\Router;
+namespace SvobodaTest\Router\Integration;
 
 use Svoboda\Router\Failure;
 use Svoboda\Router\RouteCollection;
 use Svoboda\Router\Router;
+use SvobodaTest\Router\Middleware;
+use SvobodaTest\Router\TestCase;
 
 class RouterTest extends TestCase
 {

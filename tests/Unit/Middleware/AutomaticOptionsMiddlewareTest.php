@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SvobodaTest\Router\Middleware;
+namespace SvobodaTest\Router\Unit\Middleware;
 
 use Mockery;
 use Mockery\MockInterface;
@@ -10,12 +10,12 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Svoboda\Router\Failure;
 use Svoboda\Router\Match;
-use Svoboda\Router\Middleware\MethodNotAllowedMiddleware;
+use Svoboda\Router\Middleware\AutomaticOptionsMiddleware;
 use SvobodaTest\Router\Middleware;
 use SvobodaTest\Router\TestCase;
 use Zend\Diactoros\Response\JsonResponse;
 
-class MethodNotAllowedMiddlewareTest extends TestCase
+class AutomaticOptionsMiddlewareTest extends TestCase
 {
     /** @var MockInterface|RequestHandlerInterface */
     private $handler;
@@ -23,21 +23,21 @@ class MethodNotAllowedMiddlewareTest extends TestCase
     /** @var ResponseInterface */
     private $emptyResponse;
 
-    /** @var MethodNotAllowedMiddleware */
+    /** @var AutomaticOptionsMiddleware */
     private $middleware;
 
     protected function setUp()
     {
         $this->handler = Mockery::mock(RequestHandlerInterface::class);
         $this->emptyResponse = self::createResponse();
-        $this->middleware = new MethodNotAllowedMiddleware($this->emptyResponse);
+        $this->middleware = new AutomaticOptionsMiddleware($this->emptyResponse);
     }
 
-    public function test_it_ignores_request_with_method_that_is_always_allowed()
+    public function test_it_ignores_non_options_request()
     {
         $request = self::createRequest("GET", "/users");
 
-        $handlerResponse = new JsonResponse([["foo" => "bar"]]);
+        $handlerResponse = new JsonResponse(["foo" => "bar"]);
 
         $this->handler
             ->shouldReceive("handle")
@@ -52,7 +52,7 @@ class MethodNotAllowedMiddlewareTest extends TestCase
 
     public function test_it_ignores_matched_route()
     {
-        $request = self::createRequest("POST", "/users");
+        $request = self::createRequest("OPTIONS", "/users");
         $match = new Match(new Middleware("Users"), $request);
         $request = $request->withAttribute(Match::class, $match);
 
@@ -71,7 +71,7 @@ class MethodNotAllowedMiddlewareTest extends TestCase
 
     public function test_it_ignores_uri_failure()
     {
-        $request = self::createRequest("POST", "/users");
+        $request = self::createRequest("OPTIONS", "/users");
         $failure = new Failure([], $request);
         $request = $request->withAttribute(Failure::class, $failure);
 
@@ -88,20 +88,18 @@ class MethodNotAllowedMiddlewareTest extends TestCase
         self::assertEquals($handlerResponse, $response);
     }
 
-    public function test_it_returns_method_not_allowed_response()
+    public function test_it_returns_allowed_methods()
     {
-        $request = self::createRequest("POST", "/users");
-        $failure = new Failure(["POST", "PATCH"], $request);
+        $request = self::createRequest("OPTIONS", "/users");
+        $failure = new Failure(["GET", "POST"], $request);
         $request = $request->withAttribute(Failure::class, $failure);
 
-        $allowResponse = $this->emptyResponse
-            ->withStatus(405, "Method Not Allowed")
-            ->withHeader("Allow", "POST, PATCH");
+        $optionsResponse = $this->emptyResponse->withHeader("Options", "GET, POST");
 
         $this->handler->shouldNotReceive("handle");
 
         $response = $this->middleware->process($request, $this->handler);
 
-        self::assertEquals($allowResponse, $response);
+        self::assertEquals($optionsResponse, $response);
     }
 }

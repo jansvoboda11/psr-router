@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SvobodaTest\Router\Types;
+namespace SvobodaTest\Router\Unit\Types;
 
 use Svoboda\Router\Types\InvalidTypes;
 use Svoboda\Router\Types\Types;

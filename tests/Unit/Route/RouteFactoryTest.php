@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SvobodaTest\Router\Route;
+namespace SvobodaTest\Router\Unit\Route;
 
 use Mockery;
 use Mockery\MockInterface;
