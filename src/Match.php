@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Svoboda\Router;
 
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
 
 /**
  * Routing match.
@@ -12,11 +13,11 @@ use Psr\Http\Message\ServerRequestInterface;
 class Match
 {
     /**
-     * The registered handler.
+     * The registered middleware.
      *
-     * @var mixed
+     * @var MiddlewareInterface
      */
-    private $handler;
+    private $middleware;
 
     /**
      * The matched request with all route attributes.
@@ -28,23 +29,23 @@ class Match
     /**
      * Constructor.
      *
-     * @param mixed $handler
+     * @param MiddlewareInterface $middleware
      * @param ServerRequestInterface $request
      */
-    public function __construct($handler, ServerRequestInterface $request)
+    public function __construct(MiddlewareInterface $middleware, ServerRequestInterface $request)
     {
-        $this->handler = $handler;
+        $this->middleware = $middleware;
         $this->request = $request;
     }
 
     /**
-     * Returns name of the request handler.
+     * Returns the middleware.
      *
-     * @return mixed
+     * @return MiddlewareInterface
      */
-    public function getHandler()
+    public function getMiddleware(): MiddlewareInterface
     {
-        return $this->handler;
+        return $this->middleware;
     }
 
     /**

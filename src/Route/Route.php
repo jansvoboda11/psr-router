@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Svoboda\Router\Route;
 
+use Psr\Http\Server\MiddlewareInterface;
 use Svoboda\Router\Route\Path\RoutePath;
 use Svoboda\Router\Types\Types;
 
@@ -27,11 +28,11 @@ class Route
     private $path;
 
     /**
-     * The handler.
+     * The middleware.
      *
-     * @var mixed
+     * @var MiddlewareInterface
      */
-    private $handler;
+    private $middleware;
 
     /**
      * Attribute types.
@@ -45,14 +46,14 @@ class Route
      *
      * @param string $method
      * @param RoutePath $path
-     * @param mixed $handler
+     * @param MiddlewareInterface $middleware
      * @param Types $types
      */
-    public function __construct(string $method, RoutePath $path, $handler, Types $types)
+    public function __construct(string $method, RoutePath $path, MiddlewareInterface $middleware, Types $types)
     {
         $this->method = $method;
         $this->path = $path;
-        $this->handler = $handler;
+        $this->middleware = $middleware;
         $this->types = $types;
     }
 
@@ -77,13 +78,13 @@ class Route
     }
 
     /**
-     * Returns the handler.
+     * Returns the middleware.
      *
-     * @return mixed
+     * @return MiddlewareInterface
      */
-    public function getHandler()
+    public function getMiddleware(): MiddlewareInterface
     {
-        return $this->handler;
+        return $this->middleware;
     }
 
     /**

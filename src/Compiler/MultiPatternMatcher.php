@@ -70,7 +70,7 @@ class MultiPatternMatcher implements Matcher
      */
     private function createResult(Route $route, ServerRequestInterface $request, array $matches): Match
     {
-        $handler = $route->getHandler();
+        $middleware = $route->getMiddleware();
         $attributes = $route->getAttributes();
 
         foreach ($attributes as $attribute) {
@@ -81,6 +81,6 @@ class MultiPatternMatcher implements Matcher
             $request = $request->withAttribute($name, $value);
         }
 
-        return new Match($handler, $request);
+        return new Match($middleware, $request);
     }
 }

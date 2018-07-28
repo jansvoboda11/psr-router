@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Svoboda\Router;
 
+use Psr\Http\Server\MiddlewareInterface;
 use Svoboda\Router\Parser\Parser;
 use Svoboda\Router\Route\InvalidRoute;
 use Svoboda\Router\Route\Route;
@@ -82,65 +83,65 @@ class RouteCollection
      * Creates a GET route.
      *
      * @param string $definition
-     * @param mixed $handler
+     * @param MiddlewareInterface $middleware
      * @param null|string $name
      * @throws InvalidRoute
      */
-    public function get(string $definition, $handler, ?string $name = null): void
+    public function get(string $definition, MiddlewareInterface $middleware, ?string $name = null): void
     {
-        $this->route("GET", $definition, $handler, $name);
+        $this->route("GET", $definition, $middleware, $name);
     }
 
     /**
      * Creates a POST route.
      *
      * @param string $definition
-     * @param mixed $handler
+     * @param MiddlewareInterface $middleware
      * @param null|string $name
      * @throws InvalidRoute
      */
-    public function post(string $definition, $handler, ?string $name = null): void
+    public function post(string $definition, MiddlewareInterface $middleware, ?string $name = null): void
     {
-        $this->route("POST", $definition, $handler, $name);
+        $this->route("POST", $definition, $middleware, $name);
     }
 
     /**
      * Creates a PUT route.
      *
      * @param string $definition
-     * @param mixed $handler
+     * @param MiddlewareInterface $middleware
      * @param null|string $name
      * @throws InvalidRoute
      */
-    public function put(string $definition, $handler, ?string $name = null): void
+    public function put(string $definition, MiddlewareInterface $middleware, ?string $name = null): void
     {
-        $this->route("PUT", $definition, $handler, $name);
+        $this->route("PUT", $definition, $middleware, $name);
     }
 
     /**
      * Creates a PATCH route.
      *
      * @param string $definition
-     * @param mixed $handler
+     * @param MiddlewareInterface $middleware
      * @param null|string $name
      * @throws InvalidRoute
      */
-    public function patch(string $definition, $handler, ?string $name = null): void
+    public function patch(string $definition, MiddlewareInterface $middleware, ?string $name = null): void
     {
-        $this->route("PATCH", $definition, $handler, $name);
+        $this->route("PATCH", $definition, $middleware, $name);
     }
 
     /**
      * Creates a DELETE route.
      *
      * @param string $definition
-     * @param mixed $handler
+     * @param MiddlewareInterface $middleware
      * @param null|string $name
      * @throws InvalidRoute
      */
-    public function delete(string $definition, $handler, ?string $name = null): void
+    public function delete(string $definition, MiddlewareInterface $middleware, ?string $name = null): void
     {
-        $this->route("DELETE", $definition, $handler, $name);
+        $this->route("DELETE", $definition, $middleware, $name);
     }
 
     /**
@@ -148,13 +149,13 @@ class RouteCollection
      *
      * @param string $method
      * @param string $definition
-     * @param mixed $handler
+     * @param MiddlewareInterface $middleware
      * @param null|string $name
      * @throws InvalidRoute
      */
-    public function route(string $method, string $definition, $handler, ?string $name = null): void
+    public function route(string $method, string $definition, MiddlewareInterface $middleware, ?string $name): void
     {
-        $route = $this->factory->create($method, $definition, $handler, $this->types);
+        $route = $this->factory->create($method, $definition, $middleware, $this->types);
 
         $this->routes[] = $route;
 

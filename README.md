@@ -1,6 +1,6 @@
 # Router
 
-**Router** is a PHP routing library built with [PSR-7](https://www.php-fig.org/psr/psr-7/) in mind.
+**Router** is a PHP routing library built with [PSR-7](https://www.php-fig.org/psr/psr-7/) and [PSR-15](https://www.php-fig.org/psr/psr-15/) in mind.
 
 Routing libraries, in general, allow your application to execute different code paths based on the structure of incoming HTTP requests, usually their URI.
 
@@ -14,7 +14,7 @@ You can install **Router** via Composer:
 $ composer require svoboda/router
 ```
 
-The only requirements are PHP 7.2 and the `psr/http-message` package.
+The only requirements are PHP 7.2 and the `psr/http-server-middleware` package.
 
 ## Usage
 
@@ -25,15 +25,15 @@ The `Router` class matches incoming HTTP requests against defined routes and usi
 ### Registering routes
 
 You should register your routes in the `RouteCollection`.
-You have to provide the path definition and a handler (whatever you like: a string, a callback, ...).
+You have to provide the path definition and a middleware.
 If you plan to use the URI generator, you should also provide a name of the route.
 
 ```php
 $routes = RouteCollection::create();
 
-$routes->get("/login", LoginAction::class, "user.login");
-$routes->post("/users/{name}", UserSettingsAction::class, "user.settings");
-$routes->get("/orders[/{year:number}]", OrderListAction::class, "order.list");
+$routes->get("/login", new LoginMiddleware(), "user.login");
+$routes->post("/users/{name}", new UserSettingsMiddleware(), "user.settings");
+$routes->get("/orders[/{year:number}]", new OrderListMiddleware(), "order.list");
 ```
 
 Parts of the definition can be divided into three categories.
@@ -73,16 +73,23 @@ To declare a part of the definition as optional, put it in square brackets: `[/{
 ### Matching incoming requests
 
 The `Router` class processes incoming requests based on the route collection.
-Its `match` method accepts instance of the `ServerRequestInterface` and returns `Match` if the request matches any route definition. 
-The result contains the route handler and modified request with filled route attributes.
+Its `match` method accepts instance of the `ServerRequestInterface`.
+The method returns a `Match` if the request matches any route definition.
+The match contains the route handler and modified request with filled route attributes.
+If the incoming request does not match any route definition, the method throws a `Failure`.
+The failure holds the original request and an array of HTTP methods that would result in a `Match` when used in combination with the actual URI.
 
 ```php
 $router = Router::create($routes);
 
-$match = $router->match($request);
-
-$handler = $match->getHandler();
-$request = $match->getRequest();
+try {
+    $match = $router->match($request);
+    $middleware = $match->getMiddleware();
+    $request = $match->getRequest();
+} catch (Failure $failure) {
+    $allowedMethods = $failure->getAllowedMethods();
+    $request = $failure->getRequest();
+}
 ```
 
 ### Generating route URIs

@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace SvobodaTest\Router\Route;
 
 use Mockery;
+use Mockery\MockInterface;
 use Svoboda\Router\Parser\Parser;
 use Svoboda\Router\Route\InvalidRoute;
 use Svoboda\Router\Route\Path\StaticPath;
 use Svoboda\Router\Route\RouteFactory;
 use Svoboda\Router\Semantics\Validator;
 use Svoboda\Router\Types\Types;
+use SvobodaTest\Router\Middleware;
 use SvobodaTest\Router\TestCase;
 
 class RouteFactoryTest extends TestCase
@@ -18,75 +20,82 @@ class RouteFactoryTest extends TestCase
     /** @var Types */
     private $types;
 
+    /** @var MockInterface|Parser */
+    private $parser;
+
+    /** @var MockInterface|Validator */
+    private $validator;
+
+    /** @var RouteFactory */
+    private $factory;
+
     protected function setUp()
     {
         $this->types = new Types([
             "any" => "[^/]+",
         ], "any");
+
+        $this->parser = Mockery::mock(Parser::class);
+        $this->validator = Mockery::mock(Validator::class);
+        $this->factory = new RouteFactory($this->parser, $this->validator);
     }
 
     public function test_it_parses_and_validates_definition()
     {
         $path = new StaticPath("/path");
 
-        $parser = Mockery::mock(Parser::class);
-        $parser->shouldReceive("parse")
+        $this->parser
+            ->shouldReceive("parse")
             ->with("/path")
             ->andReturn($path)
             ->once();
 
-        $validator = Mockery::mock(Validator::class);
-        $validator->shouldReceive("validate")
+        $this->validator
+            ->shouldReceive("validate")
             ->with($path, $this->types)
             ->once();
 
-        $factory = new RouteFactory($parser, $validator);
 
-        $route = $factory->create("GET", "/path", "Handler", $this->types);
+        $route = $this->factory->create("GET", "/path", new Middleware("Handler"), $this->types);
 
         self::assertEquals("GET", $route->getMethod());
         self::assertEquals($path, $route->getPath());
-        self::assertEquals("Handler", $route->getHandler());
+        self::assertEquals(new Middleware("Handler"), $route->getMiddleware());
     }
 
     public function test_it_fails_when_parser_fails()
     {
-        $parser = Mockery::mock(Parser::class);
-        $parser->shouldReceive("parse")
+        $this->parser
+            ->shouldReceive("parse")
             ->with("/path")
             ->andThrow(InvalidRoute::class)
             ->once();
 
-        $validator = Mockery::mock(Validator::class);
-        $validator->shouldNotReceive("validate");
-
-        $factory = new RouteFactory($parser, $validator);
+        $this->validator->shouldNotReceive("validate");
 
         $this->expectException(InvalidRoute::class);
 
-        $factory->create("GET", "/path", "Handler", $this->types);
+        $this->factory->create("GET", "/path", new Middleware("Handler"), $this->types);
     }
 
     public function test_it_fails_when_validator_fails()
     {
         $path = new StaticPath("/path");
 
-        $parser = Mockery::mock(Parser::class);
-        $parser->shouldReceive("parse")
+        $this->parser
+            ->shouldReceive("parse")
             ->with("/path")
             ->andReturn($path)
             ->once();
 
-        $validator = Mockery::mock(Validator::class);
-        $validator->shouldReceive("validate")
+        $this->validator
+            ->shouldReceive("validate")
             ->with($path, $this->types)
             ->andThrow(InvalidRoute::class)
             ->once();
 
-        $factory = new RouteFactory($parser, $validator);
-
         $this->expectException(InvalidRoute::class);
 
-        $factory->create("GET", "/path", "Handler", $this->types);
+        $this->factory->create("GET", "/path", new Middleware("Handler"), $this->types);
     }
 }
