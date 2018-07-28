@@ -74,7 +74,6 @@ To declare a part of the definition as optional, put it in square brackets: `[/{
 
 The `Router` class processes incoming requests based on the route collection.
 Its `match` method accepts instance of the `ServerRequestInterface`.
-
 The method returns a `Match` if the request matches any route definition.
 The match contains the route handler and modified request with filled route attributes.
 
