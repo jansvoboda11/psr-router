@@ -74,8 +74,10 @@ To declare a part of the definition as optional, put it in square brackets: `[/{
 
 The `Router` class processes incoming requests based on the route collection.
 Its `match` method accepts instance of the `ServerRequestInterface`.
+
 The method returns a `Match` if the request matches any route definition.
 The match contains the route handler and modified request with filled route attributes.
+
 If the incoming request does not match any route definition, the method throws a `Failure`.
 The failure holds the original request and an array of HTTP methods that would result in a `Match` when used in combination with the actual URI.
 
@@ -91,6 +93,10 @@ try {
     $request = $failure->getRequest();
 }
 ```
+
+#### Using built-in middleware
+
+Coming soon...
 
 ### Generating route URIs
 
