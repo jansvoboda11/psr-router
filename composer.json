@@ -2,7 +2,7 @@
     "name": "svoboda/router",
     "description": "Router is a routing library built with PSR-7 and PSR-15 in mind.",
     "keywords": ["router", "routing", "http", "psr", "psr-7"],
-    "homepage": "https://github.com/jansvoboda11/psr-router",
+    "homepage": "https://github.com/jansvoboda11/router",
     "license": "MIT",
     "authors": [
         {
@@ -21,7 +21,8 @@
         "phpbench/phpbench": "^0.14.0",
         "phpstan/phpstan": "^0.10.0",
         "phpunit/phpunit": "^7.2",
-        "zendframework/zend-diactoros": "^1.7"
+        "svoboda/dispatcher": "dev-master",
+        "zendframework/zend-diactoros": "^1.8"
     },
     "autoload": {
         "psr-4": {

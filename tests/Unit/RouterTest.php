@@ -37,16 +37,16 @@ class RouterTest extends TestCase
         $request = self::createRequest("GET", "/users");
         $matcherMatch = new Match(new Middleware("Users"), $request);
 
-        $this->matcher
-            ->shouldReceive("match")
-            ->with($request)
-            ->andReturn($matcherMatch)
-            ->once();
-
         $this->compiler
             ->shouldReceive("compile")
             ->with($this->routes)
             ->andReturn($this->matcher)
+            ->once();
+
+        $this->matcher
+            ->shouldReceive("match")
+            ->with($request)
+            ->andReturn($matcherMatch)
             ->once();
 
         $router = new Router($this->routes, $this->compiler);

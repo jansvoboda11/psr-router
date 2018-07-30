@@ -35,11 +35,13 @@ class TestCase extends \PHPUnit\Framework\TestCase
     /**
      * Creates new empty response.
      *
+     * @param int $code
+     * @param string $body
      * @return ResponseInterface
      */
-    protected static function createResponse(): ResponseInterface
+    protected static function createResponse(int $code = 200, string $body = ""): ResponseInterface
     {
-        return new Response();
+        return (new Response())->withStatus($code)->withBody(self::createStream($body));
     }
 
     /**
