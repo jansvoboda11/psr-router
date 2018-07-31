@@ -56,13 +56,15 @@ class AutomaticHeadMiddleware implements MiddlewareInterface
         /** @var Failure|null $failure */
         $failure = $request->getAttribute(Failure::class);
 
-        if (!$failure || !$failure->isMethodFailure() || !in_array("GET", $failure->getAllowedMethods())) {
+        if ($failure === null || !$this->isGetRouteReachable($failure)) {
             return $handler->handle($request);
         }
 
-        $getRequest = $request->withoutAttribute(Failure::class)->withMethod("GET");
+        $getRequest = $request
+            ->withoutAttribute(Failure::class)
+            ->withMethod("GET");
 
-        // cannot throw, because we pass the GET request and GET is also in allowed methods
+        // cannot throw, GET route is reachable
         $match = $this->router->match($getRequest);
 
         $response = $handler->handle($getRequest->withAttribute(Match::class, $match));
@@ -70,5 +72,17 @@ class AutomaticHeadMiddleware implements MiddlewareInterface
         $emptyStream = $this->streamFactory->createStream();
 
         return $response->withBody($emptyStream);
+    }
+
+    /**
+     * Determine if the GET route is reachable.
+     *
+     * @param Failure $failure
+     * @return bool
+     */
+    private function isGetRouteReachable(Failure $failure): bool
+    {
+        return $failure->isMethodFailure()
+            && in_array("GET", $failure->getAllowedMethods());
     }
 }
