@@ -29,7 +29,9 @@ class TestCase extends \PHPUnit\Framework\TestCase
      */
     protected static function createRequest(string $method, string $uri): ServerRequestInterface
     {
-        return (new ServerRequest())->withMethod($method)->withUri(new Uri($uri));
+        return (new ServerRequest())
+            ->withMethod($method)
+            ->withUri(new Uri($uri));
     }
 
     /**
@@ -41,7 +43,9 @@ class TestCase extends \PHPUnit\Framework\TestCase
      */
     protected static function createResponse(int $code = 200, string $body = ""): ResponseInterface
     {
-        return (new Response())->withStatus($code)->withBody(self::createStream($body));
+        return (new Response())
+            ->withStatus($code)
+            ->withBody(self::createStream($body));
     }
 
     /**

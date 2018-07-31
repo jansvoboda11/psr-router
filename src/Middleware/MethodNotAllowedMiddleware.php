@@ -55,7 +55,7 @@ class MethodNotAllowedMiddleware implements MiddlewareInterface
 
         return $this->responseFactory
             ->createResponse()
-            ->withStatus(405, "Method Not Allowed")
+            ->withStatus(405)
             ->withHeader("Allow", $allow);
     }
 }
