@@ -6,7 +6,7 @@ namespace Svoboda\Router\Middleware;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Svoboda\Router\Failure;
@@ -26,22 +26,22 @@ class AutomaticHeadMiddleware implements MiddlewareInterface
     private $router;
 
     /**
-     * An empty response body.
+     * The stream factory.
      *
-     * @var StreamInterface
+     * @var StreamFactoryInterface
      */
-    private $emptyBody;
+    private $streamFactory;
 
     /**
      * Constructor.
      *
      * @param Router $router
-     * @param StreamInterface $emptyBody
+     * @param StreamFactoryInterface $streamFactory
      */
-    public function __construct(Router $router, StreamInterface $emptyBody)
+    public function __construct(Router $router, StreamFactoryInterface $streamFactory)
     {
         $this->router = $router;
-        $this->emptyBody = $emptyBody;
+        $this->streamFactory = $streamFactory;
     }
 
     /**
@@ -67,6 +67,8 @@ class AutomaticHeadMiddleware implements MiddlewareInterface
 
         $response = $handler->handle($getRequest->withAttribute(Match::class, $match));
 
-        return $response->withBody($this->emptyBody);
+        $emptyStream = $this->streamFactory->createStream();
+
+        return $response->withBody($emptyStream);
     }
 }

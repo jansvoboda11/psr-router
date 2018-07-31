@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Svoboda\Router\Middleware;
 
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -16,20 +17,20 @@ use Svoboda\Router\Failure;
 class AutomaticOptionsMiddleware implements MiddlewareInterface
 {
     /**
-     * An empty HTTP response.
+     * The response factory.
      *
-     * @var ResponseInterface
+     * @var ResponseFactoryInterface
      */
-    private $emptyResponse;
+    private $responseFactory;
 
     /**
      * Constructor.
      *
-     * @param ResponseInterface $emptyResponse
+     * @param ResponseFactoryInterface $responseFactory
      */
-    public function __construct(ResponseInterface $emptyResponse)
+    public function __construct(ResponseFactoryInterface $responseFactory)
     {
-        $this->emptyResponse = $emptyResponse;
+        $this->responseFactory = $responseFactory;
     }
 
     /**
@@ -48,8 +49,10 @@ class AutomaticOptionsMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
-        $allow = implode(", ", $failure->getAllowedMethods());
+        $options = implode(", ", $failure->getAllowedMethods());
 
-        return $this->emptyResponse->withHeader("Options", $allow);
+        return $this->responseFactory
+            ->createResponse()
+            ->withHeader("Options", $options);
     }
 }

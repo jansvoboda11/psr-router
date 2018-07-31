@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Svoboda\Router\Middleware;
 
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -16,20 +17,20 @@ use Svoboda\Router\Failure;
 class MethodNotAllowedMiddleware implements MiddlewareInterface
 {
     /**
-     * An empty response.
+     * The response interface.
      *
-     * @var ResponseInterface
+     * @var ResponseFactoryInterface
      */
-    private $emptyResponse;
+    private $responseFactory;
 
     /**
      * Constructor.
      *
-     * @param ResponseInterface $emptyResponse
+     * @param ResponseFactoryInterface $responseFactory
      */
-    public function __construct(ResponseInterface $emptyResponse)
+    public function __construct(ResponseFactoryInterface $responseFactory)
     {
-        $this->emptyResponse = $emptyResponse;
+        $this->responseFactory = $responseFactory;
     }
 
     /**
@@ -52,6 +53,9 @@ class MethodNotAllowedMiddleware implements MiddlewareInterface
 
         $allow = implode(", ", $failure->getAllowedMethods());
 
-        return $this->emptyResponse->withStatus(405, "Method Not Allowed")->withHeader("Allow", $allow);
+        return $this->responseFactory
+            ->createResponse()
+            ->withStatus(405, "Method Not Allowed")
+            ->withHeader("Allow", $allow);
     }
 }

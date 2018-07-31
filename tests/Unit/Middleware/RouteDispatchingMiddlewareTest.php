@@ -11,8 +11,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Svoboda\Router\Match;
 use Svoboda\Router\Middleware\RouteDispatchingMiddleware;
 use SvobodaTest\Router\TestCase;
-use Zend\Diactoros\Response;
-use Zend\Diactoros\ServerRequest;
 
 class RouteDispatchingMiddlewareTest extends TestCase
 {
@@ -30,25 +28,23 @@ class RouteDispatchingMiddlewareTest extends TestCase
 
     public function test_it_calls_default_handler_without_match()
     {
-        $request = new ServerRequest();
-        $emptyResponse = new Response();
+        $request = self::createRequest("GET", "/users");
 
         $this->handler
             ->shouldReceive("handle")
             ->with($request)
-            ->andReturn($emptyResponse)
+            ->andReturn(self::createResponse(201, "Default Handler Response"))
             ->once();
 
         $response = $this->middleware->process($request, $this->handler);
 
-        self::assertEquals($emptyResponse, $response);
+        self::assertEquals(201, $response->getStatusCode());
+        self::assertEquals("Default Handler Response", $response->getBody());
     }
 
     public function test_it_delegates_to_match_middleware_when_present()
     {
-        $matchResponse = new Response();
-
-        $request = new ServerRequest();
+        $request = self::createRequest("GET", "/users");
 
         $this->handler->shouldNotReceive("handle");
 
@@ -56,7 +52,7 @@ class RouteDispatchingMiddlewareTest extends TestCase
         $middleware
             ->shouldReceive("process")
             ->with($request, $this->handler)
-            ->andReturn($matchResponse)
+            ->andReturn(self::createResponse(201))
             ->once();
 
         $match = Mockery::mock(Match::class);
@@ -73,6 +69,6 @@ class RouteDispatchingMiddlewareTest extends TestCase
 
         $response = $this->middleware->process($request, $this->handler);
 
-        self::assertEquals($matchResponse, $response);
+        self::assertEquals(201, $response->getStatusCode());
     }
 }

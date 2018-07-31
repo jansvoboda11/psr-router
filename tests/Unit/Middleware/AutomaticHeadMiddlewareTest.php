@@ -7,7 +7,7 @@ namespace SvobodaTest\Router\Unit\Middleware;
 use Hamcrest\Matchers;
 use Mockery;
 use Mockery\MockInterface;
-use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Svoboda\Router\Failure;
 use Svoboda\Router\Match;
@@ -15,8 +15,6 @@ use Svoboda\Router\Middleware\AutomaticHeadMiddleware;
 use Svoboda\Router\Router;
 use SvobodaTest\Router\Middleware;
 use SvobodaTest\Router\TestCase;
-use Zend\Diactoros\Response;
-use Zend\Diactoros\Response\JsonResponse;
 
 class AutomaticHeadMiddlewareTest extends TestCase
 {
@@ -26,8 +24,8 @@ class AutomaticHeadMiddlewareTest extends TestCase
     /** @var MockInterface|RequestHandlerInterface */
     private $handler;
 
-    /** @var StreamInterface */
-    private $emptyBody;
+    /** @var MockInterface|StreamFactoryInterface */
+    private $streamFactory;
 
     /** @var AutomaticHeadMiddleware */
     private $middleware;
@@ -35,27 +33,27 @@ class AutomaticHeadMiddlewareTest extends TestCase
     protected function setUp()
     {
         $this->router = Mockery::mock(Router::class);
+        $this->streamFactory = Mockery::mock(StreamFactoryInterface::class);
         $this->handler = Mockery::mock(RequestHandlerInterface::class);
-        $this->emptyBody = self::createStream();
-        $this->middleware = new AutomaticHeadMiddleware($this->router, $this->emptyBody);
+        $this->middleware = new AutomaticHeadMiddleware($this->router, $this->streamFactory);
     }
 
     public function test_it_ignores_non_head_request()
     {
         $request = self::createRequest("POST", "/users");
 
-        $handlerResponse = new JsonResponse(["foo" => "bar"]);
-
         $this->router->shouldNotReceive("match");
+
         $this->handler
             ->shouldReceive("handle")
             ->with($request)
-            ->andReturn($handlerResponse)
+            ->andReturn(self::createResponse(201, "Foobar"))
             ->once();
 
         $response = $this->middleware->process($request, $this->handler);
 
-        self::assertEquals($response, $handlerResponse);
+        self::assertEquals(201, $response->getStatusCode());
+        self::assertEquals("Foobar", $response->getBody());
     }
 
     public function test_it_ignores_matched_head_route()
@@ -64,18 +62,17 @@ class AutomaticHeadMiddlewareTest extends TestCase
         $match = new Match(new Middleware("Users"), $request);
         $request = $request->withAttribute(Match::class, $match);
 
-        $handlerResponse = (new Response())->withHeader("Allow", "GET, POST");
-
         $this->router->shouldNotReceive("match");
+
         $this->handler
             ->shouldReceive("handle")
             ->with($request)
-            ->andReturn($handlerResponse)
+            ->andReturn(self::createResponse()->withHeader("Allow", "GET, POST"))
             ->once();
 
         $response = $this->middleware->process($request, $this->handler);
 
-        self::assertEquals($response, $handlerResponse);
+        self::assertEquals(["GET, POST"], $response->getHeader("Allow"));
     }
 
     public function test_it_ignores_uri_failure()
@@ -84,18 +81,17 @@ class AutomaticHeadMiddlewareTest extends TestCase
         $failure = new Failure([], $request);
         $request = $request->withAttribute(Failure::class, $failure);
 
-        $handlerResponse = (new Response())->withStatus(404, "Not Found");
-
         $this->router->shouldNotReceive("match");
+
         $this->handler
             ->shouldReceive("handle")
             ->with($request)
-            ->andReturn($handlerResponse)
+            ->andReturn(self::createResponse(404))
             ->once();
 
         $response = $this->middleware->process($request, $this->handler);
 
-        self::assertEquals($response, $handlerResponse);
+        self::assertEquals(404, $response->getStatusCode());
     }
 
     public function test_it_ignores_when_get_is_missing()
@@ -104,18 +100,17 @@ class AutomaticHeadMiddlewareTest extends TestCase
         $failure = new Failure(["POST"], $request);
         $request = $request->withAttribute(Failure::class, $failure);
 
-        $handlerResponse = (new Response())->withStatus(404, "Not Found");
-
         $this->router->shouldNotReceive("match");
+
         $this->handler
             ->shouldReceive("handle")
             ->with($request)
-            ->andReturn($handlerResponse)
+            ->andReturn(self::createResponse(404))
             ->once();
 
         $response = $this->middleware->process($request, $this->handler);
 
-        self::assertEquals($response, $handlerResponse);
+        self::assertEquals(404, $response->getStatusCode());
     }
 
     public function test_it_returns_get_response_with_empty_body()
@@ -130,22 +125,26 @@ class AutomaticHeadMiddlewareTest extends TestCase
         $match = new Match(new Middleware("Get"), $request);
         $matchRequest = $getRequest->withAttribute(Match::class, $match);
 
-        $getResponse = new JsonResponse(["foo" => "bar"]);
-        $headResponse = $getResponse->withBody($this->emptyBody);
-
         $this->router
             ->shouldReceive("match")
             ->with(Matchers::equalTo($getRequest))
             ->andReturn($match)
             ->once();
+
         $this->handler
             ->shouldReceive("handle")
             ->with(Matchers::equalTo($matchRequest))
-            ->andReturn($getResponse)
+            ->andReturn(self::createResponse(201, "The GET body."))
+            ->once();
+
+        $this->streamFactory
+            ->shouldReceive("createStream")
+            ->andReturn(self::createStream())
             ->once();
 
         $response = $this->middleware->process($failureRequest, $this->handler);
 
-        self::assertEquals($response, $headResponse);
+        self::assertEquals(201, $response->getStatusCode());
+        self::assertEquals("", $response->getBody());
     }
 }

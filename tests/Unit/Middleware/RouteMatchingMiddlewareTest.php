@@ -14,8 +14,6 @@ use Svoboda\Router\Middleware\RouteMatchingMiddleware;
 use Svoboda\Router\Router;
 use SvobodaTest\Router\Middleware;
 use SvobodaTest\Router\TestCase;
-use Zend\Diactoros\Response;
-use Zend\Diactoros\ServerRequest;
 
 class RouteMatchingMiddlewareTest extends TestCase
 {
@@ -37,10 +35,9 @@ class RouteMatchingMiddlewareTest extends TestCase
 
     public function test_it_adds_match_attribute()
     {
-        $request = new ServerRequest();
+        $request = self::createRequest("GET", "/users");
         $match = new Match(new Middleware("Match"), $request);
         $requestWithMatch = $request->withAttribute(Match::class, $match);
-        $emptyResponse = new Response();
 
         $this->router
             ->shouldReceive("match")
@@ -51,21 +48,20 @@ class RouteMatchingMiddlewareTest extends TestCase
         $this->handler
             ->shouldReceive("handle")
             ->with(Matchers::equalTo($requestWithMatch))
-            ->andReturn($emptyResponse)
+            ->andReturn(self::createResponse(404))
             ->once();
 
         $response = $this->middleware->process($request, $this->handler);
 
-        self::assertSame($emptyResponse, $response);
+        self::assertSame(404, $response->getStatusCode());
     }
 
     public function test_it_adds_failure_attribute()
     {
-        $request = new ServerRequest();
+        $request = self::createRequest("PATCH", "/users");
         $failure = new Failure(["GET", "POST"], $request);
         $requestWithFailure = $request->withAttribute(Failure::class, $failure);
-        $emptyResponse = new Response();
-        
+
         $this->router
             ->shouldReceive("match")
             ->with($request)
@@ -75,11 +71,11 @@ class RouteMatchingMiddlewareTest extends TestCase
         $this->handler
             ->shouldReceive("handle")
             ->with(Matchers::equalTo($requestWithFailure))
-            ->andReturn($emptyResponse)
+            ->andReturn(self::createResponse(404))
             ->once();
 
         $response = $this->middleware->process($request, $this->handler);
 
-        self::assertSame($emptyResponse, $response);
+        self::assertSame(404, $response->getStatusCode());
     }
 }

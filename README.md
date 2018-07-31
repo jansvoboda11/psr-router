@@ -14,7 +14,7 @@ You can install **Router** via Composer:
 $ composer require svoboda/router
 ```
 
-The only requirements are PHP 7.2 and the `psr/http-server-middleware` package.
+The only requirements are PHP 7.2 and two PSR packages.
 
 ## Usage
 
