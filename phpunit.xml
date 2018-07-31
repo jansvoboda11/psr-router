@@ -4,7 +4,7 @@
          convertWarningsToExceptions="true"
 >
     <testsuites>
-        <testsuite name="PsrRouter Tests">
+        <testsuite name="Router Tests">
             <directory>tests/</directory>
         </testsuite>
     </testsuites>
