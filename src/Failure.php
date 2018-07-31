@@ -50,6 +50,17 @@ class Failure extends Exception
     }
 
     /**
+     * Determine if the given is allowed.
+     *
+     * @param string $method
+     * @return bool
+     */
+    public function isMethodAllowed(string $method): bool
+    {
+        return in_array($method, $this->getAllowedMethods());
+    }
+
+    /**
      * Returns the original request.
      *
      * @return ServerRequestInterface
