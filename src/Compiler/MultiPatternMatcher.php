@@ -76,9 +76,9 @@ class MultiPatternMatcher implements Matcher
         foreach ($attributes as $attribute) {
             $name = $attribute->getName();
 
-            $value = $matches[$name] ?? null;
-
-            $request = $request->withAttribute($name, $value);
+            if (!array_key_exists($name, $matches)) {
+                $request = $request->withAttribute($name, $matches[$name]);
+            }
         }
 
         return new Match($middleware, $request);
