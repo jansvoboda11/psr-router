@@ -50,11 +50,13 @@ class MultiPatternMatcher implements Matcher
 
             $routeMethod = $route->getMethod();
 
-            if (preg_match($pattern, $requestPath, $matches) && $requestMethod === $routeMethod) {
-                return $this->createResult($route, $request, $matches);
-            }
+            if (preg_match($pattern, $requestPath, $matches)) {
+                if ($requestMethod === $routeMethod) {
+                    return $this->createResult($route, $request, $matches);
+                }
 
-            $allowedMethods = array_merge($allowedMethods, [$route->getMethod()]);
+                $allowedMethods = array_merge($allowedMethods, [$route->getMethod()]);
+            }
         }
 
         throw new Failure($allowedMethods, $request);

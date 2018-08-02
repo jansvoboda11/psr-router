@@ -112,9 +112,12 @@ class RouterTest extends TestCase
 
         $routes = RouteCollection::create();
         $routes->post("/users", new Middleware("Post"));
+        $routes->patch("/orders", new Middleware("Patch"));
         $routes->delete("/users", new Middleware("Delete"));
 
-        $this->expectExceptionObject(new Failure(["POST", "DELETE"], $request));
+        $failure = new Failure(["POST", "DELETE"], $request);
+
+        $this->expectThrowable($failure);
 
         Router::create($routes)->match($request);
     }

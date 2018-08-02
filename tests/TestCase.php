@@ -15,6 +15,20 @@ use Zend\Diactoros\Uri;
 
 class TestCase extends \PHPUnit\Framework\TestCase
 {
+    use ThrowableExpectations;
+
+    protected function setUp()
+    {
+        $this->setUpThrowableExpectations();
+    }
+
+    protected function runTest()
+    {
+        $this->handleThrowableExpectations(function () {
+            parent::runTest();
+        });
+    }
+
     protected function tearDown()
     {
         Mockery::close();
