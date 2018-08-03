@@ -130,7 +130,9 @@ class RouterTest extends TestCase
         $routes->post("/users", new Middleware("Post"));
         $routes->delete("/users", new Middleware("Delete"));
 
-        $this->expectExceptionObject(new Failure([], $request));
+        $failure = new Failure([], $request);
+
+        $this->expectThrowable($failure);
 
         Router::create($routes)->match($request);
     }
@@ -142,7 +144,9 @@ class RouterTest extends TestCase
         $routes = RouteCollection::create();
         $routes->get("/users/{name}", new Middleware("Users"));
 
-        $this->expectException(Failure::class);
+        $failure = new Failure([], $request);
+
+        $this->expectThrowable($failure);
 
         Router::create($routes)->match($request);
     }
@@ -154,7 +158,9 @@ class RouterTest extends TestCase
         $routes = RouteCollection::create();
         $routes->get("/users/{name}", new Middleware("Users"));
 
-        $this->expectException(Failure::class);
+        $failure = new Failure([], $request);
+
+        $this->expectThrowable($failure);
 
         Router::create($routes)->match($request);
     }
