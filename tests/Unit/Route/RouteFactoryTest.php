@@ -55,7 +55,6 @@ class RouteFactoryTest extends TestCase
             ->with($path, $this->types)
             ->once();
 
-
         $route = $this->factory->create("GET", "/path", new Handler("Handler"), $this->types);
 
         self::assertEquals("GET", $route->getMethod());

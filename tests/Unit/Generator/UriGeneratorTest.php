@@ -44,7 +44,6 @@ class UriGeneratorTest extends TestCase
             ->with("users.all")
             ->andReturn(null);
 
-
         $generator = new UriGenerator($this->routes, $this->factory, null);
 
         $this->expectException(RouteNotFound::class);
