@@ -14,56 +14,35 @@ use SebastianBergmann\Comparator\ComparisonFailure;
 class ThrowableExpectationFailed extends ExpectationFailedException
 {
     /**
-     * Name of the file where the throwable expectation was created.
-     *
-     * @var string
-     */
-    private $expectationFile;
-
-    /**
-     * Number of the line where the throwable expectation was created.
-     *
-     * @var int
-     */
-    private $expectationLine;
-
-    /**
      * Constructor.
      *
-     * @param string $expectationFile
-     * @param int $expectationLine
+     * @param array $expectationFrame
      * @param string $message
      * @param null|ComparisonFailure $comparisonFailure
      * @param null|Exception $previous
      */
     public function __construct(
-        string $expectationFile,
-        int $expectationLine,
+        array $expectationFrame,
         string $message = "",
         ?ComparisonFailure $comparisonFailure = null,
         Exception $previous = null
     ) {
         parent::__construct($message, $comparisonFailure, $previous);
 
-        $this->expectationFile = $expectationFile;
-        $this->expectationLine = $expectationLine;
+        $this->line = $expectationFrame["line"];
+        $this->file = $expectationFrame["file"];
     }
 
     /**
-     * Removes extra trace records and injects the position of throwable expectation.
+     * Returns the stack trace without extra trace record from ThrowableExpectations trait.
      *
      * @return array
      */
     public function getSerializableTrace(): array
     {
-        $trace = parent::getSerializableTrace();
+        $trace = $this->getTrace();
 
-        // remove internal calls in ThrowableExpectations trait
         array_shift($trace);
-        array_shift($trace);
-
-        $trace[0]["file"] = $this->expectationFile;
-        $trace[0]["line"] = $this->expectationLine;
 
         return $trace;
     }

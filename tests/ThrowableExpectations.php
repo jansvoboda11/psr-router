@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SvobodaTest\Router;
 
 use PHPUnit\Framework\Assert;
-use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\ExpectationFailedException;
 use Throwable;
 
@@ -18,23 +17,16 @@ trait ThrowableExpectations
     /**
      * The expected throwable object.
      *
-     * @var Throwable
+     * @var null|Throwable
      */
     private $throwable;
 
     /**
-     * Filename of the test with throwable expectation.
+     * The frame where the expectation was set.
      *
-     * @var string
+     * @var null|array
      */
-    private $throwableFile;
-
-    /**
-     * Line number where the throwable expectation was set.
-     *
-     * @var int
-     */
-    private $throwableLine;
+    private $expectationFrame;
 
     /**
      * Set up the expectations. Should be called in the `setUp` method of test case:
@@ -47,8 +39,7 @@ trait ThrowableExpectations
     protected function setUpThrowableExpectations(): void
     {
         $this->throwable = null;
-        $this->throwableFile = null;
-        $this->throwableLine = null;
+        $this->expectationFrame = null;
     }
 
     /**
@@ -66,15 +57,11 @@ trait ThrowableExpectations
     protected function expectThrowable(Throwable $throwable): void
     {
         $this->throwable = $throwable;
-
-        $caller = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0];
-
-        $this->throwableFile = $caller["file"];
-        $this->throwableLine = $caller["line"];
+        $this->expectationFrame = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0];
     }
 
     /**
-     * Black magic. Should be called in the `runTest` method of your test case:
+     * Black magic. Should be called in the `runTest` method of the test case:
      *
      * protected function runTest()
      * {
@@ -94,16 +81,19 @@ trait ThrowableExpectations
             if ($this->shouldHaveThrown()) {
                 throw $this->createNoThrowFailure();
             }
-        } catch (Exception $exception) {
-            // propagate the no throw failure from above
+        } catch (\PHPUnit\Framework\Exception $exception) {
+            // propagate any native failures and no-throw failure from above
             throw $exception;
         } catch (Throwable $actual) {
             if (!$this->shouldHaveThrown()) {
-                // ignore unexpected throwable
                 throw $actual;
             }
 
-            $this->handleThrow($actual);
+            try {
+                Assert::assertEquals($this->throwable, $actual);
+            } catch (ExpectationFailedException $error) {
+                throw $this->createThrowableComparisonFailure($error);
+            }
         }
     }
 
@@ -125,25 +115,9 @@ trait ThrowableExpectations
     private function createNoThrowFailure(): ThrowableExpectationFailed
     {
         return new ThrowableExpectationFailed(
-            $this->throwableFile,
-            $this->throwableLine,
+            $this->expectationFrame,
             "Failed asserting that a throwable object was thrown."
         );
-    }
-
-    /**
-     * Handle the situation when test did throw.
-     *
-     * @param Throwable $actual
-     * @throws Throwable
-     */
-    private function handleThrow(Throwable $actual): void
-    {
-        try {
-            Assert::assertEquals($this->throwable, $actual);
-        } catch (ExpectationFailedException $error) {
-            throw $this->createThrowableComparisonFailure($error);
-        }
     }
 
     /**
@@ -155,8 +129,7 @@ trait ThrowableExpectations
     private function createThrowableComparisonFailure(ExpectationFailedException $error): ThrowableExpectationFailed
     {
         return new ThrowableExpectationFailed(
-            $this->throwableFile,
-            $this->throwableLine,
+            $this->expectationFrame,
             "Failed asserting that two throwable objects are equal.",
             $error->getComparisonFailure(),
             $error->getPrevious()
