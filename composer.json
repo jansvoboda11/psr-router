@@ -1,7 +1,7 @@
 {
     "name": "svoboda/router",
     "description": "Router is a routing library built with PSR-7 and PSR-15 in mind.",
-    "keywords": ["router", "routing", "http", "psr", "psr-7"],
+    "keywords": ["router", "routing", "http", "psr", "psr-7", "psr-15"],
     "homepage": "https://github.com/jansvoboda11/router",
     "license": "MIT",
     "authors": [
