@@ -100,13 +100,9 @@ try {
 The library also provides a few middleware that should be used in following order:
 
 1. `RouteMatchingMiddleware` tries to match the request and populates it with either `Match` or `Failure` attribute.
-
 2. `AutomaticOptionsMiddleware` responds to OPTIONS requests with a list of allowed HTTP methods for the request URI.
-
 3. `AutomaticHeadMiddleware` responds to HEAD requests according to [the specification](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/HEAD) if the GET route exists.
-
 4. `MethodNotAllowedMiddleware` responds with a 405 status to requests using an invalid method with a valid URI.
-
 5. `RouteDispatchingMiddleware` dispatches the request to the matched middleware and returns its response. 
 
 ### Generating route URIs
