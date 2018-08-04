@@ -39,7 +39,7 @@ class AutomaticOptionsMiddlewareTest extends TestCase
         $this->handler
             ->shouldReceive("handle")
             ->with($request)
-            ->andReturn(self::createResponse(201, "Foobar"))
+            ->andReturn(self::createResponse(201, "Created", "Foobar"))
             ->once();
 
         $response = $this->middleware->process($request, $this->handler);
@@ -57,7 +57,7 @@ class AutomaticOptionsMiddlewareTest extends TestCase
         $this->handler
             ->shouldReceive("handle")
             ->with($request)
-            ->andReturn(self::createResponse(201, "Foobar"))
+            ->andReturn(self::createResponse(201, "Created", "Foobar"))
             ->once();
 
         $response = $this->middleware->process($request, $this->handler);
@@ -75,7 +75,7 @@ class AutomaticOptionsMiddlewareTest extends TestCase
         $this->handler
             ->shouldReceive("handle")
             ->with($request)
-            ->andReturn(self::createResponse(201, "Foobar"))
+            ->andReturn(self::createResponse(201, "Created", "Foobar"))
             ->once();
 
         $response = $this->middleware->process($request, $this->handler);
@@ -92,12 +92,16 @@ class AutomaticOptionsMiddlewareTest extends TestCase
 
         $this->responseFactory
             ->shouldReceive("createResponse")
-            ->andReturn(self::createResponse());
+            ->with(200, "OK")
+            ->andReturn(self::createResponse(200, "OK"))
+            ->once();
 
         $this->handler->shouldNotReceive("handle");
 
         $response = $this->middleware->process($request, $this->handler);
 
+        self::assertEquals(200, $response->getStatusCode());
+        self::assertEquals("OK", $response->getReasonPhrase());
         self::assertEquals(["GET, POST"], $response->getHeader("Options"));
     }
 }

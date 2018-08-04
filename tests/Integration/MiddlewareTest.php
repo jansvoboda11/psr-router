@@ -89,7 +89,7 @@ class MiddlewareTest extends TestCase
         $getMiddleware = Mockery::mock(MiddlewareInterface::class);
         $getMiddleware
             ->shouldReceive("process")
-            ->andReturn(self::createResponse(206, "The GET response body."))
+            ->andReturn(self::createResponse(201, "Created", "The GET response body."))
             ->once();
 
         $routes = RouteCollection::create();
@@ -99,7 +99,7 @@ class MiddlewareTest extends TestCase
 
         $response = $dispatcher->dispatch($request);
 
-        self::assertEquals(206, $response->getStatusCode());
+        self::assertEquals(201, $response->getStatusCode());
         self::assertEquals("", $response->getBody());
     }
 
@@ -137,7 +137,12 @@ class MiddlewareTest extends TestCase
         $responseFactory = Mockery::mock(ResponseFactoryInterface::class);
         $responseFactory
             ->shouldReceive("createResponse")
-            ->andReturn(self::createResponse());
+            ->with(200, "OK")
+            ->andReturn(self::createResponse(200, "OK"));
+        $responseFactory
+            ->shouldReceive("createResponse")
+            ->with(405, "Method Not Allowed")
+            ->andReturn(self::createResponse(405, "Method Not Allowed"));
 
         /** @var MockInterface|StreamFactoryInterface $streamFactory */
         $streamFactory = Mockery::mock(StreamFactoryInterface::class);
@@ -149,7 +154,7 @@ class MiddlewareTest extends TestCase
         $handler = Mockery::mock(RequestHandlerInterface::class);
         $handler
             ->shouldReceive("handle")
-            ->andReturn(self::createResponse(404, "Route does not exist."))
+            ->andReturn(self::createResponse(404, "Not Found", "Route does not exist."))
             ->atMost()
             ->once();
 

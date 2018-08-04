@@ -39,7 +39,7 @@ class MethodNotAllowedMiddlewareTest extends TestCase
         $this->handler
             ->shouldReceive("handle")
             ->with($request)
-            ->andReturn(self::createResponse(201, "Foobar"))
+            ->andReturn(self::createResponse(201, "Created", "Foobar"))
             ->once();
 
         $response = $this->middleware->process($request, $this->handler);
@@ -57,7 +57,7 @@ class MethodNotAllowedMiddlewareTest extends TestCase
         $this->handler
             ->shouldReceive("handle")
             ->with($request)
-            ->andReturn(self::createResponse(201, "Foobar"))
+            ->andReturn(self::createResponse(201, "Created", "Foobar"))
             ->once();
 
         $response = $this->middleware->process($request, $this->handler);
@@ -75,7 +75,7 @@ class MethodNotAllowedMiddlewareTest extends TestCase
         $this->handler
             ->shouldReceive("handle")
             ->with($request)
-            ->andReturn(self::createResponse(201, "Foobar"))
+            ->andReturn(self::createResponse(201, "Created", "Foobar"))
             ->once();
 
         $response = $this->middleware->process($request, $this->handler);
@@ -92,7 +92,8 @@ class MethodNotAllowedMiddlewareTest extends TestCase
 
         $this->responseFactory
             ->shouldReceive("createResponse")
-            ->andReturn(self::createResponse())
+            ->with(405, "Method Not Allowed")
+            ->andReturn(self::createResponse(405, "Method Not Allowed"))
             ->once();
 
         $this->handler->shouldNotReceive("handle");
@@ -100,6 +101,7 @@ class MethodNotAllowedMiddlewareTest extends TestCase
         $response = $this->middleware->process($request, $this->handler);
 
         self::assertEquals(405, $response->getStatusCode());
+        self::assertEquals("Method Not Allowed", $response->getReasonPhrase());
         self::assertEquals(["POST, PATCH"], $response->getHeader("Allow"));
     }
 }

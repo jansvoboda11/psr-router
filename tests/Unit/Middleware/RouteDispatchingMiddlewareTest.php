@@ -33,7 +33,7 @@ class RouteDispatchingMiddlewareTest extends TestCase
         $this->handler
             ->shouldReceive("handle")
             ->with($request)
-            ->andReturn(self::createResponse(201, "Default Handler Response"))
+            ->andReturn(self::createResponse(201, "Created", "Default Handler Response"))
             ->once();
 
         $response = $this->middleware->process($request, $this->handler);

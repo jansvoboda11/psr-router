@@ -19,11 +19,11 @@
     },
     "require-dev": {
         "mockery/mockery": "^1.1",
+        "nyholm/psr7": "^1.0",
         "phpbench/phpbench": "^0.14.0",
         "phpstan/phpstan": "^0.10.0",
         "phpunit/phpunit": "^7.3",
-        "svoboda/dispatcher": "dev-master",
-        "zendframework/zend-diactoros": "^1.8"
+        "svoboda/dispatcher": "dev-master"
     },
     "autoload": {
         "psr-4": {

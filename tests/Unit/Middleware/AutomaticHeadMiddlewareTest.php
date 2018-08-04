@@ -47,7 +47,7 @@ class AutomaticHeadMiddlewareTest extends TestCase
         $this->handler
             ->shouldReceive("handle")
             ->with($request)
-            ->andReturn(self::createResponse(201, "Foobar"))
+            ->andReturn(self::createResponse(201, "Created", "Foobar"))
             ->once();
 
         $response = $this->middleware->process($request, $this->handler);
@@ -134,11 +134,12 @@ class AutomaticHeadMiddlewareTest extends TestCase
         $this->handler
             ->shouldReceive("handle")
             ->with(Matchers::equalTo($matchRequest))
-            ->andReturn(self::createResponse(201, "The GET body."))
+            ->andReturn(self::createResponse(201, "Created", "The GET body."))
             ->once();
 
         $this->streamFactory
             ->shouldReceive("createStream")
+            ->with()
             ->andReturn(self::createStream())
             ->once();
 

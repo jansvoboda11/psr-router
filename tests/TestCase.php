@@ -5,13 +5,10 @@ declare(strict_types=1);
 namespace SvobodaTest\Router;
 
 use Mockery;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
-use Zend\Diactoros\Response;
-use Zend\Diactoros\ServerRequest;
-use Zend\Diactoros\Stream;
-use Zend\Diactoros\Uri;
 
 class TestCase extends \PHPUnit\Framework\TestCase
 {
@@ -43,23 +40,22 @@ class TestCase extends \PHPUnit\Framework\TestCase
      */
     protected static function createRequest(string $method, string $uri): ServerRequestInterface
     {
-        return (new ServerRequest())
-            ->withMethod($method)
-            ->withUri(new Uri($uri));
+        return (new Psr17Factory())->createServerRequest($method, $uri);
     }
 
     /**
      * Creates new empty response.
      *
      * @param int $code
+     * @param string $reasonPhrase
      * @param string $body
      * @return ResponseInterface
      */
-    protected static function createResponse(int $code = 200, string $body = ""): ResponseInterface
+    protected static function createResponse(int $code = 200, string $reasonPhrase = "", string $body = ""): ResponseInterface
     {
-        return (new Response())
-            ->withStatus($code)
-            ->withBody(self::createStream($body));
+        $body = self::createStream($body);
+
+        return (new Psr17Factory())->createResponse($code, $reasonPhrase)->withBody($body);
     }
 
     /**
@@ -70,11 +66,6 @@ class TestCase extends \PHPUnit\Framework\TestCase
      */
     protected static function createStream(string $string = ""): StreamInterface
     {
-        $stream = new Stream("php://temp", "wb+");
-
-        $stream->write($string);
-        $stream->rewind();
-
-        return $stream;
+        return (new Psr17Factory())->createStream($string);
     }
 }

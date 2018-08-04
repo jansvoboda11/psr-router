@@ -52,7 +52,7 @@ class AutomaticOptionsMiddleware implements MiddlewareInterface
         $options = implode(", ", $failure->getAllowedMethods());
 
         return $this->responseFactory
-            ->createResponse()
+            ->createResponse(200, "OK")
             ->withHeader("Options", $options);
     }
 }
