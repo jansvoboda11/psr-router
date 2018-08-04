@@ -4,7 +4,7 @@
 
 Routing libraries, in general, allow your application to execute different code paths based on the structure of incoming HTTP requests, usually their URI.
 
-This library provides a simple interface for handling PSR-7 requests with PSR-17 middleware and handlers.
+This library provides a simple interface for handling PSR-7 requests with PSR-15 middleware and handlers.
 
 ## Installation
 
@@ -103,7 +103,7 @@ The library also provides a few middleware that should be used in following orde
 
 * `AutomaticOptionsMiddleware` responds to OPTIONS requests with a list of allowed HTTP methods for the request URI.
 
-* `AutomaticHeadMiddleware` responds to HEAD requests with the same response your registered middleware would to a GET request, but with empty body.
+* `AutomaticHeadMiddleware` responds to HEAD requests according to [the specification](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/HEAD) if the GET route exists.
 
 * `MethodNotAllowedMiddleware` responds with a 405 status to requests using an invalid method with a valid URI.
 
