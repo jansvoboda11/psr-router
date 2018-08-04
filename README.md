@@ -105,7 +105,7 @@ The library also provides a few middleware that should be used in following orde
 
 * `AutomaticHeadMiddleware` responds to HEAD requests with the same response your registered middleware would to a GET request, but with empty body.
 
-* `MethodNotAllowedMiddleware` sends a 405 (Method Not Allowed) response if the request uses an invalid HTTP method with a valid URI.
+* `MethodNotAllowedMiddleware` sends a 405 response if the request uses an invalid HTTP method with a valid URI.
 
 * `RouteDispatchingMiddleware` dispatches the request to the matched middleware and returns its response. 
 
