@@ -99,11 +99,11 @@ try {
 
 The library also provides a few middleware that should be used in following order:
 
-1. `RouteMatchingMiddleware` tries to match the incoming request. It populates the request with either `Match::class` or `Failure::class` attribute.
-2. `AutomaticOptionsMiddleware` automatically responds to OPTIONS requests with a list of allowed HTTP methods for the request URI.
-3. `AutomaticHeadMiddleware` automatically responds to HEAD requests with the same response your registered middleware would to a GET request, but with empty body.
-4. `MethodNotAllowedMiddleware` automatically sends a 405 (Method Not Allowed) response if the incoming request uses an invalid HTTP method with a valid URI.
-5. `RouteDispatchingMiddleware` finally dispatches the request to the middleware you registered in the route collection and returns its response. 
+`RouteMatchingMiddleware` tries to match the incoming request and populates it with either `Match` or `Failure` attribute.
+`AutomaticOptionsMiddleware` responds to OPTIONS requests with a list of allowed HTTP methods for the request URI.
+`AutomaticHeadMiddleware` responds to HEAD requests with the same response your registered middleware would to a GET request, but with empty body.
+`MethodNotAllowedMiddleware` sends a 405 (Method Not Allowed) response if the request uses an invalid HTTP method with a valid URI.
+`RouteDispatchingMiddleware` dispatches the request to the matched middleware and returns its response. 
 
 ### Generating route URIs
 
