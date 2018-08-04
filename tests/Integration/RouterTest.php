@@ -7,7 +7,7 @@ namespace SvobodaTest\Router\Integration;
 use Svoboda\Router\Failure;
 use Svoboda\Router\RouteCollection;
 use Svoboda\Router\Router;
-use SvobodaTest\Router\Middleware;
+use SvobodaTest\Router\Handler;
 use SvobodaTest\Router\TestCase;
 
 class RouterTest extends TestCase
@@ -17,11 +17,11 @@ class RouterTest extends TestCase
         $request = self::createRequest("GET", "/users");
 
         $routes = RouteCollection::create();
-        $routes->get("/users", new Middleware("Users"));
+        $routes->get("/users", new Handler("Users"));
 
         $match = Router::create($routes)->match($request);
 
-        self::assertEquals(new Middleware("Users"), $match->getMiddleware());
+        self::assertEquals(new Handler("Users"), $match->getHandler());
     }
 
     public function test_it_matches_second_from_two_static_routes()
@@ -29,12 +29,12 @@ class RouterTest extends TestCase
         $request = self::createRequest("GET", "/admins");
 
         $routes = RouteCollection::create();
-        $routes->get("/users", new Middleware("Users"));
-        $routes->get("/admins", new Middleware("Admins"));
+        $routes->get("/users", new Handler("Users"));
+        $routes->get("/admins", new Handler("Admins"));
 
         $match = Router::create($routes)->match($request);
 
-        self::assertEquals(new Middleware("Admins"), $match->getMiddleware());
+        self::assertEquals(new Handler("Admins"), $match->getHandler());
     }
 
     public function test_it_matches_first_from_two_ambiguous_routes()
@@ -42,12 +42,12 @@ class RouterTest extends TestCase
         $request = self::createRequest("GET", "/admins");
 
         $routes = RouteCollection::create();
-        $routes->get("/admins", new Middleware("Admins1"));
-        $routes->get("/admins", new Middleware("Admins2"));
+        $routes->get("/admins", new Handler("Admins1"));
+        $routes->get("/admins", new Handler("Admins2"));
 
         $match = Router::create($routes)->match($request);
 
-        self::assertEquals(new Middleware("Admins1"), $match->getMiddleware());
+        self::assertEquals(new Handler("Admins1"), $match->getHandler());
     }
 
     public function test_it_matches_single_route_with_attributes()
@@ -55,11 +55,11 @@ class RouterTest extends TestCase
         $request = self::createRequest("GET", "/admins/jan/123");
 
         $routes = RouteCollection::create();
-        $routes->get("/admins/{name}/{id}", new Middleware("Admins"));
+        $routes->get("/admins/{name}/{id}", new Handler("Admins"));
 
         $match = Router::create($routes)->match($request);
 
-        self::assertEquals(new Middleware("Admins"), $match->getMiddleware());
+        self::assertEquals(new Handler("Admins"), $match->getHandler());
         self::assertEquals("jan", $match->getRequest()->getAttribute("name"));
         self::assertEquals("123", $match->getRequest()->getAttribute("id"));
     }
@@ -69,12 +69,12 @@ class RouterTest extends TestCase
         $request = self::createRequest("GET", "/users/jan/123");
 
         $routes = RouteCollection::create();
-        $routes->get("/admins/{name}/{id}", new Middleware("Admins"));
-        $routes->get("/users/{name}/{id}", new Middleware("Users"));
+        $routes->get("/admins/{name}/{id}", new Handler("Admins"));
+        $routes->get("/users/{name}/{id}", new Handler("Users"));
 
         $match = Router::create($routes)->match($request);
 
-        self::assertEquals(new Middleware("Users"), $match->getMiddleware());
+        self::assertEquals(new Handler("Users"), $match->getHandler());
         self::assertEquals("jan", $match->getRequest()->getAttribute("name"));
         self::assertEquals("123", $match->getRequest()->getAttribute("id"));
     }
@@ -84,11 +84,11 @@ class RouterTest extends TestCase
         $request = self::createRequest("GET", "/users/jan");
 
         $routes = RouteCollection::create();
-        $routes->get("/users/{name}[/{id}]", new Middleware("Users"));
+        $routes->get("/users/{name}[/{id}]", new Handler("Users"));
 
         $match = Router::create($routes)->match($request);
 
-        self::assertEquals(new Middleware("Users"), $match->getMiddleware());
+        self::assertEquals(new Handler("Users"), $match->getHandler());
         self::assertEquals("jan", $match->getRequest()->getAttribute("name"));
         self::assertEquals(null, $match->getRequest()->getAttribute("id"));
     }
@@ -98,12 +98,12 @@ class RouterTest extends TestCase
         $request = self::createRequest("POST", "/users");
 
         $routes = RouteCollection::create();
-        $routes->get("/users", new Middleware("Get"));
-        $routes->post("/users", new Middleware("Post"));
+        $routes->get("/users", new Handler("Get"));
+        $routes->post("/users", new Handler("Post"));
 
         $match = Router::create($routes)->match($request);
 
-        self::assertEquals(new Middleware("Post"), $match->getMiddleware());
+        self::assertEquals(new Handler("Post"), $match->getHandler());
     }
 
     public function test_it_provides_allowed_methods_on_only_uri_match()
@@ -111,9 +111,9 @@ class RouterTest extends TestCase
         $request = self::createRequest("GET", "/users");
 
         $routes = RouteCollection::create();
-        $routes->post("/users", new Middleware("Post"));
-        $routes->patch("/orders", new Middleware("Patch"));
-        $routes->delete("/users", new Middleware("Delete"));
+        $routes->post("/users", new Handler("Post"));
+        $routes->patch("/orders", new Handler("Patch"));
+        $routes->delete("/users", new Handler("Delete"));
 
         $failure = new Failure(["POST", "DELETE"], $request);
 
@@ -127,8 +127,8 @@ class RouterTest extends TestCase
         $request = self::createRequest("GET", "/orders");
 
         $routes = RouteCollection::create();
-        $routes->post("/users", new Middleware("Post"));
-        $routes->delete("/users", new Middleware("Delete"));
+        $routes->post("/users", new Handler("Post"));
+        $routes->delete("/users", new Handler("Delete"));
 
         $failure = new Failure([], $request);
 
@@ -142,7 +142,7 @@ class RouterTest extends TestCase
         $request = self::createRequest("GET", "/users/jan/123");
 
         $routes = RouteCollection::create();
-        $routes->get("/users/{name}", new Middleware("Users"));
+        $routes->get("/users/{name}", new Handler("Users"));
 
         $failure = new Failure([], $request);
 
@@ -156,7 +156,7 @@ class RouterTest extends TestCase
         $request = self::createRequest("GET", "/api/users/jan");
 
         $routes = RouteCollection::create();
-        $routes->get("/users/{name}", new Middleware("Users"));
+        $routes->get("/users/{name}", new Handler("Users"));
 
         $failure = new Failure([], $request);
 
@@ -170,11 +170,11 @@ class RouterTest extends TestCase
         $request = self::createRequest("GET", "/users?key=value");
 
         $routes = RouteCollection::create();
-        $routes->get("/users", new Middleware("Users"));
+        $routes->get("/users", new Handler("Users"));
 
         $match = Router::create($routes)->match($request);
 
-        self::assertEquals(new Middleware("Users"), $match->getMiddleware());
+        self::assertEquals(new Handler("Users"), $match->getHandler());
     }
 
     public function test_it_ignores_hash()
@@ -182,10 +182,10 @@ class RouterTest extends TestCase
         $request = self::createRequest("GET", "/users#main");
 
         $routes = RouteCollection::create();
-        $routes->get("/users", new Middleware("Users"));
+        $routes->get("/users", new Handler("Users"));
 
         $match = Router::create($routes)->match($request);
 
-        self::assertEquals(new Middleware("Users"), $match->getMiddleware());
+        self::assertEquals(new Handler("Users"), $match->getHandler());
     }
 }

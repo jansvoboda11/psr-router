@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Svoboda\Router\Route;
 
-use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Svoboda\Router\Parser\Parser;
 use Svoboda\Router\Semantics\Validator;
 use Svoboda\Router\Types\Types;
@@ -45,17 +45,17 @@ class RouteFactory
      *
      * @param string $method
      * @param string $definition
-     * @param MiddlewareInterface $middleware
+     * @param RequestHandlerInterface $handler
      * @param Types $types
      * @return Route
      * @throws InvalidRoute
      */
-    public function create(string $method, string $definition, MiddlewareInterface $middleware, Types $types): Route
+    public function create(string $method, string $definition, RequestHandlerInterface $handler, Types $types): Route
     {
         $path = $this->parser->parse($definition);
 
         $this->validator->validate($path, $types);
 
-        return new Route($method, $path, $middleware, $types);
+        return new Route($method, $path, $handler, $types);
     }
 }

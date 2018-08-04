@@ -13,7 +13,7 @@ use Svoboda\Router\Failure;
 use Svoboda\Router\Match;
 use Svoboda\Router\Middleware\AutomaticHeadMiddleware;
 use Svoboda\Router\Router;
-use SvobodaTest\Router\Middleware;
+use SvobodaTest\Router\Handler;
 use SvobodaTest\Router\TestCase;
 
 class AutomaticHeadMiddlewareTest extends TestCase
@@ -59,7 +59,7 @@ class AutomaticHeadMiddlewareTest extends TestCase
     public function test_it_ignores_matched_head_route()
     {
         $request = self::createRequest("HEAD", "/users");
-        $match = new Match(new Middleware("Users"), $request);
+        $match = new Match(new Handler("Users"), $request);
         $request = $request->withAttribute(Match::class, $match);
 
         $this->router->shouldNotReceive("match");
@@ -122,7 +122,7 @@ class AutomaticHeadMiddlewareTest extends TestCase
 
         $getRequest = $request->withMethod("GET");
 
-        $match = new Match(new Middleware("Get"), $request);
+        $match = new Match(new Handler("Get"), $request);
         $matchRequest = $getRequest->withAttribute(Match::class, $match);
 
         $this->router

@@ -11,7 +11,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Svoboda\Router\Failure;
 use Svoboda\Router\Match;
 use Svoboda\Router\Middleware\AutomaticOptionsMiddleware;
-use SvobodaTest\Router\Middleware;
+use SvobodaTest\Router\Handler;
 use SvobodaTest\Router\TestCase;
 
 class AutomaticOptionsMiddlewareTest extends TestCase
@@ -51,7 +51,7 @@ class AutomaticOptionsMiddlewareTest extends TestCase
     public function test_it_ignores_matched_route()
     {
         $request = self::createRequest("OPTIONS", "/users");
-        $match = new Match(new Middleware("Users"), $request);
+        $match = new Match(new Handler("Users"), $request);
         $request = $request->withAttribute(Match::class, $match);
 
         $this->handler

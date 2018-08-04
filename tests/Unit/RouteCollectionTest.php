@@ -9,7 +9,7 @@ use Svoboda\Router\Route\Route;
 use Svoboda\Router\Route\RouteFactory;
 use Svoboda\Router\RouteCollection;
 use Svoboda\Router\Types\Types;
-use SvobodaTest\Router\Middleware;
+use SvobodaTest\Router\Handler;
 use SvobodaTest\Router\TestCase;
 
 class RouteCollectionTest extends TestCase
@@ -36,16 +36,16 @@ class RouteCollectionTest extends TestCase
     public function test_it_registers_route_without_name()
     {
         $path = new StaticPath("/users");
-        $middleware = new Middleware("UsersAction");
-        $route = new Route("GET", $path, $middleware, $this->types);
+        $handler = new Handler("UsersAction");
+        $route = new Route("GET", $path, $handler, $this->types);
 
         $this->factory
             ->shouldReceive("create")
-            ->with("GET", "/users", $middleware, $this->types)
+            ->with("GET", "/users", $handler, $this->types)
             ->andReturn($route)
             ->once();
 
-        $this->collection->get("/users", $middleware);
+        $this->collection->get("/users", $handler);
 
         $routes = $this->collection->all();
 
@@ -56,16 +56,16 @@ class RouteCollectionTest extends TestCase
     public function test_it_registers_route_with_name()
     {
         $path = new StaticPath("/users");
-        $middleware = new Middleware("UsersAction");
-        $route = new Route("GET", $path, $middleware, $this->types);
+        $handler = new Handler("UsersAction");
+        $route = new Route("GET", $path, $handler, $this->types);
 
         $this->factory
             ->shouldReceive("create")
-            ->with("GET", "/users", $middleware, $this->types)
+            ->with("GET", "/users", $handler, $this->types)
             ->andReturn($route)
             ->once();
 
-        $this->collection->get("/users", $middleware, "users.all");
+        $this->collection->get("/users", $handler, "users.all");
 
         $routes = $this->collection->all();
 
@@ -76,16 +76,16 @@ class RouteCollectionTest extends TestCase
     public function test_it_finds_named_route()
     {
         $path = new StaticPath("/users");
-        $middleware = new Middleware("UsersAction");
-        $route = new Route("GET", $path, $middleware, $this->types);
+        $handler = new Handler("UsersAction");
+        $route = new Route("GET", $path, $handler, $this->types);
 
         $this->factory
             ->shouldReceive("create")
-            ->with("GET", "/users", $middleware, $this->types)
+            ->with("GET", "/users", $handler, $this->types)
             ->andReturn($route)
             ->once();
 
-        $this->collection->get("/users", $middleware, "users.all");
+        $this->collection->get("/users", $handler, "users.all");
 
         $found = $this->collection->oneNamed("users.all");
 
@@ -95,16 +95,16 @@ class RouteCollectionTest extends TestCase
     public function test_it_fails_to_find_named_route()
     {
         $path = new StaticPath("/users");
-        $middleware = new Middleware("UsersAction");
-        $route = new Route("GET", $path, $middleware, $this->types);
+        $handler = new Handler("UsersAction");
+        $route = new Route("GET", $path, $handler, $this->types);
 
         $this->factory
             ->shouldReceive("create")
-            ->with("GET", "/users", $middleware, $this->types)
+            ->with("GET", "/users", $handler, $this->types)
             ->andReturn($route)
             ->once();
 
-        $this->collection->get("/users", $middleware, "users.all");
+        $this->collection->get("/users", $handler, "users.all");
 
         $found = $this->collection->oneNamed("wrong.name");
 

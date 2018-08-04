@@ -28,9 +28,9 @@ class RouteDispatchingMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
-        $middleware = $match->getMiddleware();
+        $handler = $match->getHandler();
         $request = $match->getRequest();
 
-        return $middleware->process($request, $handler);
+        return $handler->handle($request);
     }
 }

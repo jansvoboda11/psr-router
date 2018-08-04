@@ -25,15 +25,15 @@ The `Router` class matches incoming HTTP requests against defined routes and usi
 ### Registering routes
 
 You should register your routes in the `RouteCollection`.
-You have to provide the path definition and a middleware.
+You have to provide the path definition and a handler.
 If you plan to use the URI generator, you should also provide a name of the route.
 
 ```php
 $routes = RouteCollection::create();
 
-$routes->get("/login", new LoginMiddleware(), "user.login");
-$routes->post("/users/{name}", new UserSettingsMiddleware(), "user.settings");
-$routes->get("/orders[/{year:number}]", new OrderListMiddleware(), "order.list");
+$routes->get("/login", new LoginHandler(), "user.login");
+$routes->post("/users/{name}", new UserSettingsHandler(), "user.settings");
+$routes->get("/orders[/{year:number}]", new OrderListHandler(), "order.list");
 ```
 
 Parts of the definition can be divided into three categories.
@@ -87,7 +87,7 @@ $router = Router::create($routes);
 
 try {
     $match = $router->match($request);
-    $middleware = $match->getMiddleware();
+    $handler = $match->getHandler();
     $request = $match->getRequest();
 } catch (Failure $failure) {
     $allowedMethods = $failure->getAllowedMethods();
@@ -97,13 +97,13 @@ try {
 
 #### Using built-in middleware
 
-The library also provides a few middleware that should be used in following order:
+The library also provides five middleware that take care of few things for you. You should use them in following order:
 
 1. `RouteMatchingMiddleware` tries to match the request and populates it with either `Match` or `Failure` attribute.
 2. `AutomaticOptionsMiddleware` responds to OPTIONS requests with a list of allowed methods for the requested URI.
 3. `AutomaticHeadMiddleware` responds to HEAD requests according to [the specification](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/HEAD) if the GET route exists.
 4. `MethodNotAllowedMiddleware` responds with a 405 status to requests using an invalid method with a valid URI.
-5. `RouteDispatchingMiddleware` dispatches the request to the matched middleware and returns its response. 
+5. `RouteDispatchingMiddleware` dispatches the request to the matched handler and returns its response. 
 
 ### Generating route URIs
 

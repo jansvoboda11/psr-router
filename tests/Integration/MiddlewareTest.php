@@ -8,7 +8,6 @@ use Mockery;
 use Mockery\MockInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Svoboda\Dispatcher\Dispatcher;
 use Svoboda\Router\Middleware\AutomaticHeadMiddleware;
@@ -39,15 +38,15 @@ class MiddlewareTest extends TestCase
     {
         $request = self::createRequest("POST", "/users");
 
-        /** @var MockInterface|MiddlewareInterface $usersMiddleware */
-        $usersMiddleware = Mockery::mock(MiddlewareInterface::class);
-        $usersMiddleware
-            ->shouldReceive("process")
+        /** @var MockInterface|RequestHandlerInterface $usersHandler */
+        $usersHandler = Mockery::mock(RequestHandlerInterface::class);
+        $usersHandler
+            ->shouldReceive("handle")
             ->andReturn(self::createResponse(201))
             ->once();
 
         $routes = RouteCollection::create();
-        $routes->post("/users", $usersMiddleware);
+        $routes->post("/users", $usersHandler);
 
         $dispatcher = self::createDispatcher($routes);
 
@@ -60,18 +59,18 @@ class MiddlewareTest extends TestCase
     {
         $request = self::createRequest("OPTIONS", "/users");
 
-        /** @var MockInterface|MiddlewareInterface $getMiddleware */
-        $getMiddleware = Mockery::mock(MiddlewareInterface::class);
-        $getMiddleware->shouldNotReceive("process");
+        /** @var MockInterface|RequestHandlerInterface $getHandler */
+        $getHandler = Mockery::mock(RequestHandlerInterface::class);
+        $getHandler->shouldNotReceive("handle");
 
-        /** @var MockInterface|MiddlewareInterface $postMiddleware */
-        $postMiddleware = Mockery::mock(MiddlewareInterface::class);
-        $postMiddleware->shouldNotReceive("process");
+        /** @var MockInterface|RequestHandlerInterface $postHandler */
+        $postHandler = Mockery::mock(RequestHandlerInterface::class);
+        $postHandler->shouldNotReceive("handle");
 
         $routes = RouteCollection::create();
 
-        $routes->get("/users", $getMiddleware);
-        $routes->post("/users", $postMiddleware);
+        $routes->get("/users", $getHandler);
+        $routes->post("/users", $postHandler);
 
         $dispatcher = self::createDispatcher($routes);
 
@@ -85,15 +84,15 @@ class MiddlewareTest extends TestCase
     {
         $request = self::createRequest("HEAD", "/users");
 
-        /** @var MockInterface|MiddlewareInterface $getMiddleware */
-        $getMiddleware = Mockery::mock(MiddlewareInterface::class);
-        $getMiddleware
-            ->shouldReceive("process")
+        /** @var MockInterface|RequestHandlerInterface $getHandler */
+        $getHandler = Mockery::mock(RequestHandlerInterface::class);
+        $getHandler
+            ->shouldReceive("handle")
             ->andReturn(self::createResponse(201, "Created", "The GET response body."))
             ->once();
 
         $routes = RouteCollection::create();
-        $routes->get("/users", $getMiddleware);
+        $routes->get("/users", $getHandler);
 
         $dispatcher = self::createDispatcher($routes);
 
@@ -107,12 +106,12 @@ class MiddlewareTest extends TestCase
     {
         $request = self::createRequest("POST", "/users");
 
-        /** @var MockInterface|MiddlewareInterface $patchMiddleware */
-        $patchMiddleware = Mockery::mock(MiddlewareInterface::class);
-        $patchMiddleware->shouldNotReceive("process");
+        /** @var MockInterface|RequestHandlerInterface $patchHandler */
+        $patchHandler = Mockery::mock(RequestHandlerInterface::class);
+        $patchHandler->shouldNotReceive("handle");
 
         $routes = RouteCollection::create();
-        $routes->patch("/users", $patchMiddleware);
+        $routes->patch("/users", $patchHandler);
 
         $dispatcher = self::createDispatcher($routes);
 

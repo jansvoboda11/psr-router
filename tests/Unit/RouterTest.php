@@ -11,7 +11,7 @@ use Svoboda\Router\Compiler\Matcher;
 use Svoboda\Router\Match;
 use Svoboda\Router\RouteCollection;
 use Svoboda\Router\Router;
-use SvobodaTest\Router\Middleware;
+use SvobodaTest\Router\Handler;
 use SvobodaTest\Router\TestCase;
 
 class RouterTest extends TestCase
@@ -35,7 +35,7 @@ class RouterTest extends TestCase
     public function test_it_creates_and_uses_matcher()
     {
         $request = self::createRequest("GET", "/users");
-        $matcherMatch = new Match(new Middleware("Users"), $request);
+        $matcherMatch = new Match(new Handler("Users"), $request);
 
         $this->compiler
             ->shouldReceive("compile")

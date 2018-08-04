@@ -13,7 +13,7 @@ use Svoboda\Router\Route\Path\StaticPath;
 use Svoboda\Router\Route\Route;
 use Svoboda\Router\RouteCollection;
 use Svoboda\Router\Types\Types;
-use SvobodaTest\Router\Middleware;
+use SvobodaTest\Router\Handler;
 use SvobodaTest\Router\TestCase;
 
 class UriGeneratorTest extends TestCase
@@ -55,7 +55,7 @@ class UriGeneratorTest extends TestCase
     public function test_creates_uri_without_prefix()
     {
         $path = new StaticPath("/users");
-        $route = new Route("GET", $path, new Middleware("UsersAction"), $this->types);
+        $route = new Route("GET", $path, new Handler("UsersAction"), $this->types);
 
         $this->routes
             ->shouldReceive("oneNamed")
@@ -77,7 +77,7 @@ class UriGeneratorTest extends TestCase
     public function test_it_creates_uri_with_prefix_from_constructor()
     {
         $path = new StaticPath("/users");
-        $route = new Route("GET", $path, new Middleware("UsersAction"), $this->types);
+        $route = new Route("GET", $path, new Handler("UsersAction"), $this->types);
 
         $this->routes
             ->shouldReceive("oneNamed")
@@ -99,7 +99,7 @@ class UriGeneratorTest extends TestCase
     public function test_method_prefix_overrides_constructor_prefix()
     {
         $path = new StaticPath("/users");
-        $route = new Route("GET", $path, new Middleware("UsersAction"), $this->types);
+        $route = new Route("GET", $path, new Handler("UsersAction"), $this->types);
 
         $this->routes
             ->shouldReceive("oneNamed")

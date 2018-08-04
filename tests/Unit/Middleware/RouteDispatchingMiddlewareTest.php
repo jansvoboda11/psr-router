@@ -6,7 +6,6 @@ namespace SvobodaTest\Router\Unit\Middleware;
 
 use Mockery;
 use Mockery\MockInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Svoboda\Router\Match;
 use Svoboda\Router\Middleware\RouteDispatchingMiddleware;
@@ -48,17 +47,18 @@ class RouteDispatchingMiddlewareTest extends TestCase
 
         $this->handler->shouldNotReceive("handle");
 
-        $middleware = Mockery::mock(MiddlewareInterface::class);
-        $middleware
-            ->shouldReceive("process")
-            ->with($request, $this->handler)
+        /** @var MockInterface|RequestHandlerInterface $handler */
+        $handler = Mockery::mock(RequestHandlerInterface::class);
+        $handler
+            ->shouldReceive("handle")
+            ->with($request)
             ->andReturn(self::createResponse(201))
             ->once();
 
         $match = Mockery::mock(Match::class);
         $match
-            ->shouldReceive("getMiddleware")
-            ->andReturn($middleware)
+            ->shouldReceive("getHandler")
+            ->andReturn($handler)
             ->once();
         $match
             ->shouldReceive("getRequest")

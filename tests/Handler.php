@@ -7,10 +7,9 @@ namespace SvobodaTest\Router;
 use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class Middleware implements MiddlewareInterface
+class Handler implements RequestHandlerInterface
 {
     private $name;
 
@@ -19,7 +18,7 @@ class Middleware implements MiddlewareInterface
         $this->name = $name;
     }
 
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         throw new Exception("Not implemented");
     }

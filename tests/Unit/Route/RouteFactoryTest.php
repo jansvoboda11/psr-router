@@ -12,7 +12,7 @@ use Svoboda\Router\Route\Path\StaticPath;
 use Svoboda\Router\Route\RouteFactory;
 use Svoboda\Router\Semantics\Validator;
 use Svoboda\Router\Types\Types;
-use SvobodaTest\Router\Middleware;
+use SvobodaTest\Router\Handler;
 use SvobodaTest\Router\TestCase;
 
 class RouteFactoryTest extends TestCase
@@ -56,11 +56,11 @@ class RouteFactoryTest extends TestCase
             ->once();
 
 
-        $route = $this->factory->create("GET", "/path", new Middleware("Handler"), $this->types);
+        $route = $this->factory->create("GET", "/path", new Handler("Handler"), $this->types);
 
         self::assertEquals("GET", $route->getMethod());
         self::assertEquals($path, $route->getPath());
-        self::assertEquals(new Middleware("Handler"), $route->getMiddleware());
+        self::assertEquals(new Handler("Handler"), $route->getHandler());
     }
 
     public function test_it_fails_when_parser_fails()
@@ -75,7 +75,7 @@ class RouteFactoryTest extends TestCase
 
         $this->expectException(InvalidRoute::class);
 
-        $this->factory->create("GET", "/path", new Middleware("Handler"), $this->types);
+        $this->factory->create("GET", "/path", new Handler("Handler"), $this->types);
     }
 
     public function test_it_fails_when_validator_fails()
@@ -96,6 +96,6 @@ class RouteFactoryTest extends TestCase
 
         $this->expectException(InvalidRoute::class);
 
-        $this->factory->create("GET", "/path", new Middleware("Handler"), $this->types);
+        $this->factory->create("GET", "/path", new Handler("Handler"), $this->types);
     }
 }
