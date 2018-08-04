@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SvobodaTest\Router\Unit\Route\Path;
 
 use Svoboda\Router\Route\Attribute;
