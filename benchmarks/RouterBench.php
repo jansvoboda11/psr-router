@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
+use Nyholm\Psr7\Factory\Psr17Factory;
 use Svoboda\Router\Compiler\MultiPatternCompiler;
 use Svoboda\Router\Compiler\PatternFactory;
 use Svoboda\Router\Router;
-use Zend\Diactoros\ServerRequest;
-use Zend\Diactoros\Uri;
 
 class RouterBench
 {
@@ -22,7 +21,7 @@ class RouterBench
 
         $this->router = new Router($routes, $compiler);
 
-        $this->request = (new ServerRequest())->withUri(new Uri("/"));
+        $this->request = (new Psr17Factory())->createServerRequest("GET", "/");
     }
 
     /**
