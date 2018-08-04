@@ -81,6 +81,8 @@ If the incoming request does not match any route definition, the method throws a
 The failure holds the original request and an array of HTTP methods that would result in a `Match` when used in combination with the actual URI.
 
 ```php
+/** @var ServerRequestInterface $request */
+
 $router = Router::create($routes);
 
 try {
