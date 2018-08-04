@@ -4,7 +4,7 @@
 
 Routing libraries, in general, allow your application to execute different code paths based on the structure of incoming HTTP requests, usually their URI.
 
-This library features a simple declarative way of creating routes, has great performance and is highly flexible.
+This library provides a simple interface for handling PSR-7 requests with PSR-17 middleware and handlers.
 
 ## Installation
 
@@ -97,7 +97,13 @@ try {
 
 #### Using built-in middleware
 
-Coming soon...
+The library also provides a few middleware that should be used in following order:
+
+1. `RouteMatchingMiddleware` tries to match the incoming request. It populates the request with either `Match::class` or `Failure::class` attribute.
+2. `AutomaticOptionsMiddleware` automatically responds to OPTIONS requests with a list of allowed HTTP methods for the request URI.
+3. `AutomaticHeadMiddleware` automatically responds to HEAD requests with the same response your registered middleware would to a GET request, but with empty body.
+4. `MethodNotAllowedMiddleware` automatically sends a 405 (Method Not Allowed) response if the incoming request uses an invalid HTTP method with a valid URI.
+5. `RouteDispatchingMiddleware` finally dispatches the request to the middleware you registered in the route collection and returns its response. 
 
 ### Generating route URIs
 
