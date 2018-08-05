@@ -33,10 +33,10 @@ class UnexpectedChar extends Exception
      */
     public function __construct(Input $input, array $expected)
     {
+        parent::__construct("Encountered an unexpected character");
+
         $this->input = $input;
         $this->expected = $expected;
-
-        parent::__construct();
     }
 
     /**

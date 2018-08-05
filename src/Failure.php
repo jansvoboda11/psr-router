@@ -33,7 +33,7 @@ class Failure extends Exception
      */
     public function __construct(array $allowedMethods, ServerRequestInterface $request)
     {
-        parent::__construct("Failed to match incoming request.");
+        parent::__construct("Failed to match incoming request");
 
         $this->allowedMethods = $allowedMethods;
         $this->request = $request;
@@ -50,6 +50,16 @@ class Failure extends Exception
     }
 
     /**
+     * Determines whether the failure was caused by an incorrect HTTP method.
+     *
+     * @return bool
+     */
+    public function isMethodFailure(): bool
+    {
+        return !empty($this->allowedMethods);
+    }
+
+    /**
      * Determine if the given is allowed.
      *
      * @param string $method
@@ -57,7 +67,7 @@ class Failure extends Exception
      */
     public function isMethodAllowed(string $method): bool
     {
-        return in_array($method, $this->getAllowedMethods());
+        return in_array($method, $this->allowedMethods);
     }
 
     /**
@@ -68,15 +78,5 @@ class Failure extends Exception
     public function getRequest(): ServerRequestInterface
     {
         return $this->request;
-    }
-
-    /**
-     * Determines whether the failure was caused by an incorrect HTTP method.
-     *
-     * @return bool
-     */
-    public function isMethodFailure(): bool
-    {
-        return !empty($this->allowedMethods);
     }
 }
