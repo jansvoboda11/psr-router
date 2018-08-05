@@ -160,7 +160,7 @@ class MiddlewareTest extends TestCase
         return new Dispatcher([
             new RouteMatchingMiddleware($router),
             new AutomaticOptionsMiddleware($responseFactory),
-            new AutomaticHeadMiddleware($router, $streamFactory),
+            new AutomaticHeadMiddleware($streamFactory),
             new MethodNotAllowedMiddleware($responseFactory),
             new RouteDispatchingMiddleware(),
         ], $handler);

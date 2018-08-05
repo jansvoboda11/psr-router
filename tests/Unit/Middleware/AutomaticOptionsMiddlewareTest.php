@@ -87,7 +87,10 @@ class AutomaticOptionsMiddlewareTest extends TestCase
     public function test_it_returns_allowed_methods()
     {
         $request = self::createRequest("OPTIONS", "/users");
-        $failure = new Failure(["GET", "POST"], $request);
+        $failure = new Failure([
+            "GET" => new Handler("Get"),
+            "POST" => new Handler("Post"),
+        ], $request);
         $request = $request->withAttribute(Failure::class, $failure);
 
         $this->responseFactory

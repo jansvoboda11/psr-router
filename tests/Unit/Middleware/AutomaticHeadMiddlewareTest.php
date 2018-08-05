@@ -12,15 +12,11 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Svoboda\Router\Failure;
 use Svoboda\Router\Match;
 use Svoboda\Router\Middleware\AutomaticHeadMiddleware;
-use Svoboda\Router\Router;
 use SvobodaTest\Router\Handler;
 use SvobodaTest\Router\TestCase;
 
 class AutomaticHeadMiddlewareTest extends TestCase
 {
-    /** @var MockInterface|Router */
-    private $router;
-
     /** @var MockInterface|RequestHandlerInterface */
     private $handler;
 
@@ -32,17 +28,14 @@ class AutomaticHeadMiddlewareTest extends TestCase
 
     protected function setUp()
     {
-        $this->router = Mockery::mock(Router::class);
         $this->streamFactory = Mockery::mock(StreamFactoryInterface::class);
         $this->handler = Mockery::mock(RequestHandlerInterface::class);
-        $this->middleware = new AutomaticHeadMiddleware($this->router, $this->streamFactory);
+        $this->middleware = new AutomaticHeadMiddleware($this->streamFactory);
     }
 
     public function test_it_ignores_non_head_request()
     {
         $request = self::createRequest("POST", "/users");
-
-        $this->router->shouldNotReceive("match");
 
         $this->handler
             ->shouldReceive("handle")
@@ -62,8 +55,6 @@ class AutomaticHeadMiddlewareTest extends TestCase
         $match = new Match(new Handler("Users"), $request);
         $request = $request->withAttribute(Match::class, $match);
 
-        $this->router->shouldNotReceive("match");
-
         $this->handler
             ->shouldReceive("handle")
             ->with($request)
@@ -81,8 +72,6 @@ class AutomaticHeadMiddlewareTest extends TestCase
         $failure = new Failure([], $request);
         $request = $request->withAttribute(Failure::class, $failure);
 
-        $this->router->shouldNotReceive("match");
-
         $this->handler
             ->shouldReceive("handle")
             ->with($request)
@@ -97,10 +86,10 @@ class AutomaticHeadMiddlewareTest extends TestCase
     public function test_it_ignores_when_get_is_missing()
     {
         $request = self::createRequest("HEAD", "/users");
-        $failure = new Failure(["POST"], $request);
+        $failure = new Failure([
+            "POST" => new Handler("Post"),
+        ], $request);
         $request = $request->withAttribute(Failure::class, $failure);
-
-        $this->router->shouldNotReceive("match");
 
         $this->handler
             ->shouldReceive("handle")
@@ -117,19 +106,13 @@ class AutomaticHeadMiddlewareTest extends TestCase
     {
         $request = self::createRequest("HEAD", "/users");
 
-        $failure = new Failure(["GET"], $request);
+        $failure = new Failure([
+            "GET" => new Handler("Get"),
+        ], $request);
         $failureRequest = $request->withAttribute(Failure::class, $failure);
 
-        $getRequest = $request->withMethod("GET");
-
-        $match = new Match(new Handler("Get"), $request);
-        $matchRequest = $getRequest->withAttribute(Match::class, $match);
-
-        $this->router
-            ->shouldReceive("match")
-            ->with(Matchers::equalTo($getRequest))
-            ->andReturn($match)
-            ->once();
+        $match = new Match(new Handler("Get"), $request->withMethod("GET"));
+        $matchRequest = $request->withMethod("GET")->withAttribute(Match::class, $match);
 
         $this->handler
             ->shouldReceive("handle")

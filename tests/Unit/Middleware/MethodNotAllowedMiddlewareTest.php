@@ -87,7 +87,10 @@ class MethodNotAllowedMiddlewareTest extends TestCase
     public function test_it_returns_method_not_allowed_response()
     {
         $request = self::createRequest("POST", "/users");
-        $failure = new Failure(["POST", "PATCH"], $request);
+        $failure = new Failure([
+            "POST" => new Handler("Post"),
+            "PATCH" => new Handler("Patch"),
+        ], $request);
         $request = $request->withAttribute(Failure::class, $failure);
 
         $this->responseFactory

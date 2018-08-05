@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Svoboda\Router;
 
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Exception representing routing failure - no exact route match.
@@ -12,11 +13,12 @@ use Psr\Http\Message\ServerRequestInterface;
 class Failure extends Exception
 {
     /**
-     * Allowed methods for the request URI.
+     * Handlers that could handle the URI in a combination with a different HTTP method.
+     * Array keys are corresponding HTTP methods.
      *
-     * @var string[]
+     * @var RequestHandlerInterface[]
      */
-    private $allowedMethods;
+    private $uriHandlers;
 
     /**
      * The original request.
@@ -28,25 +30,26 @@ class Failure extends Exception
     /**
      * Constructor.
      *
-     * @param string[] $allowedMethods
+     * @param RequestHandlerInterface[] $uriHandlers
      * @param ServerRequestInterface $request
      */
-    public function __construct(array $allowedMethods, ServerRequestInterface $request)
+    public function __construct(array $uriHandlers, ServerRequestInterface $request)
     {
         parent::__construct("Failed to match incoming request");
 
-        $this->allowedMethods = $allowedMethods;
+        $this->uriHandlers = $uriHandlers;
         $this->request = $request;
     }
 
     /**
-     * Returns the allowed methods.
+     * Returns handlers that could handle the URI in a combination with a different HTTP method.
+     * Array keys are their respective HTTP methods.
      *
-     * @return string[]
+     * @return RequestHandlerInterface[]
      */
-    public function getAllowedMethods(): array
+    public function getUriHandlers(): array
     {
-        return $this->allowedMethods;
+        return $this->uriHandlers;
     }
 
     /**
@@ -56,18 +59,43 @@ class Failure extends Exception
      */
     public function isMethodFailure(): bool
     {
-        return !empty($this->allowedMethods);
+        return !empty($this->uriHandlers);
     }
 
     /**
-     * Determine if the given is allowed.
+     * Returns the allowed methods.
+     *
+     * @return string[]
+     */
+    public function getAllowedMethods(): array
+    {
+        return array_keys($this->uriHandlers);
+    }
+
+    /**
+     * Determine if the given method is allowed.
      *
      * @param string $method
      * @return bool
      */
     public function isMethodAllowed(string $method): bool
     {
-        return in_array($method, $this->allowedMethods);
+        return array_key_exists($method, $this->uriHandlers);
+    }
+
+    /**
+     * Returns the handler for given method if it exists.
+     *
+     * @param string $method
+     * @return null|RequestHandlerInterface
+     */
+    public function getUriHandlerFor(string $method): ?RequestHandlerInterface
+    {
+        if (!$this->isMethodAllowed($method)) {
+            return null;
+        }
+
+        return $this->uriHandlers[$method];
     }
 
     /**

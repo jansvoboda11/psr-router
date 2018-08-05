@@ -55,7 +55,9 @@ class MultiPatternMatcher implements Matcher
                     return $this->createResult($route, $request, $matches);
                 }
 
-                $allowedMethods = array_merge($allowedMethods, [$route->getMethod()]);
+                if (!array_key_exists($routeMethod, $allowedMethods)) {
+                    $allowedMethods[$routeMethod] = $route->getHandler();
+                }
             }
         }
 

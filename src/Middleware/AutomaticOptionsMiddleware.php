@@ -46,7 +46,7 @@ class AutomaticOptionsMiddleware implements MiddlewareInterface
         /** @var Failure|null $failure */
         $failure = $request->getAttribute(Failure::class);
 
-        if (!$failure || !$failure->isMethodFailure()) {
+        if ($failure === null || !$failure->isMethodFailure()) {
             return $handler->handle($request);
         }
 

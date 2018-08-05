@@ -78,7 +78,7 @@ The method returns a `Match` if the request matches any route definition.
 The match contains the route handler and modified request with filled route attributes.
 
 If the incoming request does not match any route definition, the method throws a `Failure`.
-The failure holds the original request and an array of HTTP methods that would result in a `Match` when used in combination with the actual URI.
+The failure holds the original request and an array of handlers that could handle a request to the same URI with a different HTTP method.
 
 ```php
 /** @var ServerRequestInterface $request */
@@ -90,7 +90,7 @@ try {
     $handler = $match->getHandler();
     $request = $match->getRequest();
 } catch (Failure $failure) {
-    $allowedMethods = $failure->getAllowedMethods();
+    $handlers = $failure->getUriHandlers();
     $request = $failure->getRequest();
 }
 ```

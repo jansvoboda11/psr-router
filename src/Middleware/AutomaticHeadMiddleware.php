@@ -12,20 +12,12 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Svoboda\Router\Failure;
 use Svoboda\Router\Match;
 use Svoboda\Router\Route\Method;
-use Svoboda\Router\Router;
 
 /**
  * Automatically responds to HEAD requests.
  */
 class AutomaticHeadMiddleware implements MiddlewareInterface
 {
-    /**
-     * The router.
-     *
-     * @var Router
-     */
-    private $router;
-
     /**
      * The stream factory.
      *
@@ -36,12 +28,10 @@ class AutomaticHeadMiddleware implements MiddlewareInterface
     /**
      * Constructor.
      *
-     * @param Router $router
      * @param StreamFactoryInterface $streamFactory
      */
-    public function __construct(Router $router, StreamFactoryInterface $streamFactory)
+    public function __construct(StreamFactoryInterface $streamFactory)
     {
-        $this->router = $router;
         $this->streamFactory = $streamFactory;
     }
 
@@ -57,7 +47,13 @@ class AutomaticHeadMiddleware implements MiddlewareInterface
         /** @var Failure|null $failure */
         $failure = $request->getAttribute(Failure::class);
 
-        if ($failure === null || !$failure->isMethodAllowed(Method::GET)) {
+        if ($failure === null) {
+            return $handler->handle($request);
+        }
+
+        $getHandler = $failure->getUriHandlerFor(Method::GET);
+
+        if ($getHandler === null) {
             return $handler->handle($request);
         }
 
@@ -65,10 +61,9 @@ class AutomaticHeadMiddleware implements MiddlewareInterface
             ->withoutAttribute(Failure::class)
             ->withMethod(Method::GET);
 
-        // cannot throw, GET method is allowed and will match
-        $match = $this->router->match($getRequest);
+        $getMatch = new Match($getHandler, $getRequest);
 
-        $response = $handler->handle($getRequest->withAttribute(Match::class, $match));
+        $response = $handler->handle($getRequest->withAttribute(Match::class, $getMatch));
 
         $emptyStream = $this->streamFactory->createStream();
 

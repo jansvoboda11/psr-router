@@ -115,7 +115,10 @@ class RouterTest extends TestCase
         $routes->patch("/orders", new Handler("Patch"));
         $routes->delete("/users", new Handler("Delete"));
 
-        $failure = new Failure(["POST", "DELETE"], $request);
+        $failure = new Failure([
+            "POST" => new Handler("Post"),
+            "DELETE" => new Handler("Delete"),
+        ], $request);
 
         $this->expectThrowable($failure);
 
