@@ -8,10 +8,21 @@ use Svoboda\Router\Exception;
 use Svoboda\Router\Parser\Input;
 
 /**
- * Invalid route definition.
+ * Represents an invalid route.
  */
 class InvalidRoute extends Exception
 {
+    /**
+     * Invalid HTTP method.
+     *
+     * @param string $method
+     * @return InvalidRoute
+     */
+    public static function invalidMethod(string $method): self
+    {
+        return new self("'$method' is not a valid HTTP method.");
+    }
+
     /**
      * Invalid route with more attributes of the same name.
      *

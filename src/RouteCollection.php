@@ -7,6 +7,7 @@ namespace Svoboda\Router;
 use Psr\Http\Server\RequestHandlerInterface;
 use Svoboda\Router\Parser\Parser;
 use Svoboda\Router\Route\InvalidRoute;
+use Svoboda\Router\Route\Method;
 use Svoboda\Router\Route\Route;
 use Svoboda\Router\Route\RouteFactory;
 use Svoboda\Router\Semantics\Validator;
@@ -89,7 +90,7 @@ class RouteCollection
      */
     public function get(string $definition, RequestHandlerInterface $handler, ?string $name = null): void
     {
-        $this->route("GET", $definition, $handler, $name);
+        $this->route(Method::GET, $definition, $handler, $name);
     }
 
     /**
@@ -102,7 +103,7 @@ class RouteCollection
      */
     public function post(string $definition, RequestHandlerInterface $handler, ?string $name = null): void
     {
-        $this->route("POST", $definition, $handler, $name);
+        $this->route(Method::POST, $definition, $handler, $name);
     }
 
     /**
@@ -115,7 +116,7 @@ class RouteCollection
      */
     public function put(string $definition, RequestHandlerInterface $handler, ?string $name = null): void
     {
-        $this->route("PUT", $definition, $handler, $name);
+        $this->route(Method::PUT, $definition, $handler, $name);
     }
 
     /**
@@ -128,7 +129,7 @@ class RouteCollection
      */
     public function patch(string $definition, RequestHandlerInterface $handler, ?string $name = null): void
     {
-        $this->route("PATCH", $definition, $handler, $name);
+        $this->route(Method::PATCH, $definition, $handler, $name);
     }
 
     /**
@@ -141,7 +142,7 @@ class RouteCollection
      */
     public function delete(string $definition, RequestHandlerInterface $handler, ?string $name = null): void
     {
-        $this->route("DELETE", $definition, $handler, $name);
+        $this->route(Method::DELETE, $definition, $handler, $name);
     }
 
     /**

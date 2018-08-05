@@ -10,6 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Svoboda\Router\Failure;
+use Svoboda\Router\Route\Method;
 
 /**
  * Automatically responds to OPTIONS requests.
@@ -38,7 +39,7 @@ class AutomaticOptionsMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if ($request->getMethod() !== "OPTIONS") {
+        if ($request->getMethod() !== Method::OPTIONS) {
             return $handler->handle($request);
         }
 

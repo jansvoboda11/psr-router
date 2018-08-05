@@ -40,6 +40,13 @@ class RouteFactoryTest extends TestCase
         $this->factory = new RouteFactory($this->parser, $this->validator);
     }
 
+    public function test_it_rejects_invalid_http_method()
+    {
+        $this->expectException(InvalidRoute::class);
+
+        $this->factory->create("INVALID", "/path", new Handler("Handler"), $this->types);
+    }
+
     public function test_it_parses_and_validates_definition()
     {
         $path = new StaticPath("/path");

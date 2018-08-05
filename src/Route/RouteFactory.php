@@ -52,6 +52,10 @@ class RouteFactory
      */
     public function create(string $method, string $definition, RequestHandlerInterface $handler, Types $types): Route
     {
+        if (!Method::isValid($method)) {
+            throw InvalidRoute::invalidMethod($method);
+        }
+
         $path = $this->parser->parse($definition);
 
         $this->validator->validate($path, $types);

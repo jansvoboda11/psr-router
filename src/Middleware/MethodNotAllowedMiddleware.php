@@ -10,6 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Svoboda\Router\Failure;
+use Svoboda\Router\Route\Method;
 
 /**
  * Automatically creates 405 responses (method not allowed).
@@ -38,9 +39,7 @@ class MethodNotAllowedMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $alwaysAllowed = ["GET", "HEAD"];
-
-        if (in_array($request->getMethod(), $alwaysAllowed)) {
+        if (Method::isAlwaysAllowed($request->getMethod())) {
             return $handler->handle($request);
         }
 

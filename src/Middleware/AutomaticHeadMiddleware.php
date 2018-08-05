@@ -11,6 +11,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Svoboda\Router\Failure;
 use Svoboda\Router\Match;
+use Svoboda\Router\Route\Method;
 use Svoboda\Router\Router;
 
 /**
@@ -49,20 +50,20 @@ class AutomaticHeadMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if ($request->getMethod() !== "HEAD") {
+        if ($request->getMethod() !== Method::HEAD) {
             return $handler->handle($request);
         }
 
         /** @var Failure|null $failure */
         $failure = $request->getAttribute(Failure::class);
 
-        if ($failure === null || !$failure->isMethodAllowed("GET")) {
+        if ($failure === null || !$failure->isMethodAllowed(Method::GET)) {
             return $handler->handle($request);
         }
 
         $getRequest = $request
             ->withoutAttribute(Failure::class)
-            ->withMethod("GET");
+            ->withMethod(Method::GET);
 
         // cannot throw, GET method is allowed and will match
         $match = $this->router->match($getRequest);
