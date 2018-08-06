@@ -9,6 +9,8 @@ use Mockery\MockInterface;
 use Svoboda\Router\Compiler\Compiler;
 use Svoboda\Router\Compiler\Matcher;
 use Svoboda\Router\Match;
+use Svoboda\Router\Route\Path\StaticPath;
+use Svoboda\Router\Route\Route;
 use Svoboda\Router\RouteCollection;
 use Svoboda\Router\Router;
 use SvobodaTest\Router\Handler;
@@ -60,7 +62,8 @@ class RouterTest extends TestCase
     {
         $request = self::createRequest("GET", "/users");
 
-        $expectedMatch = new Match(new Handler("Users"), $request);
+        $route = new Route("GET", new StaticPath("/users"), new Handler("Users"));
+        $expectedMatch = new Match($route, $request);
 
         $this->compiler
             ->shouldReceive("compile")

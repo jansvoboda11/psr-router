@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Svoboda\Router;
 
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
+use Svoboda\Router\Route\Route;
 
 /**
  * Exception representing routing failure - no exact route match.
@@ -13,12 +13,12 @@ use Psr\Http\Server\RequestHandlerInterface;
 class Failure extends Exception
 {
     /**
-     * Handlers that could handle the URI in a combination with a different HTTP method.
-     * Array keys are corresponding HTTP methods.
+     * Routes that would match the URI in a combination with a different HTTP method.
+     * Array keys are their respective HTTP methods.
      *
-     * @var RequestHandlerInterface[]
+     * @var Route[]
      */
-    private $uriHandlers;
+    private $uriRoutes;
 
     /**
      * The original request.
@@ -30,26 +30,26 @@ class Failure extends Exception
     /**
      * Constructor.
      *
-     * @param RequestHandlerInterface[] $uriHandlers
+     * @param Route[] $uriRoutes
      * @param ServerRequestInterface $request
      */
-    public function __construct(array $uriHandlers, ServerRequestInterface $request)
+    public function __construct(array $uriRoutes, ServerRequestInterface $request)
     {
         parent::__construct("Failed to match incoming request");
 
-        $this->uriHandlers = $uriHandlers;
+        $this->uriRoutes = $uriRoutes;
         $this->request = $request;
     }
 
     /**
-     * Returns handlers that could handle the URI in a combination with a different HTTP method.
+     * Returns routes that would match the URI in a combination with a different HTTP method.
      * Array keys are their respective HTTP methods.
      *
-     * @return RequestHandlerInterface[]
+     * @return Route[]
      */
-    public function getUriHandlers(): array
+    public function getUriRoutes(): array
     {
-        return $this->uriHandlers;
+        return $this->uriRoutes;
     }
 
     /**
@@ -59,7 +59,7 @@ class Failure extends Exception
      */
     public function isMethodFailure(): bool
     {
-        return !empty($this->uriHandlers);
+        return !empty($this->uriRoutes);
     }
 
     /**
@@ -69,7 +69,7 @@ class Failure extends Exception
      */
     public function getAllowedMethods(): array
     {
-        return array_keys($this->uriHandlers);
+        return array_keys($this->uriRoutes);
     }
 
     /**
@@ -80,22 +80,22 @@ class Failure extends Exception
      */
     public function isMethodAllowed(string $method): bool
     {
-        return array_key_exists($method, $this->uriHandlers);
+        return array_key_exists($method, $this->uriRoutes);
     }
 
     /**
-     * Returns the handler for given method if it exists.
+     * Returns the route for the given method if it exists.
      *
      * @param string $method
-     * @return null|RequestHandlerInterface
+     * @return null|Route
      */
-    public function getUriHandlerFor(string $method): ?RequestHandlerInterface
+    public function getUriRouteFor(string $method): ?Route
     {
         if (!$this->isMethodAllowed($method)) {
             return null;
         }
 
-        return $this->uriHandlers[$method];
+        return $this->uriRoutes[$method];
     }
 
     /**

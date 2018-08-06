@@ -12,6 +12,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Svoboda\Router\Failure;
 use Svoboda\Router\Match;
 use Svoboda\Router\Middleware\AutomaticHeadMiddleware;
+use Svoboda\Router\Route\Path\StaticPath;
+use Svoboda\Router\Route\Route;
 use SvobodaTest\Router\Handler;
 use SvobodaTest\Router\TestCase;
 
@@ -52,7 +54,8 @@ class AutomaticHeadMiddlewareTest extends TestCase
     public function test_it_ignores_matched_head_route()
     {
         $request = self::createRequest("HEAD", "/users");
-        $match = new Match(new Handler("Users"), $request);
+        $route = new Route("HEAD", new StaticPath("/users"), new Handler("Users"));
+        $match = new Match($route, $request);
         $request = $request->withAttribute(Match::class, $match);
 
         $this->handler
@@ -106,12 +109,14 @@ class AutomaticHeadMiddlewareTest extends TestCase
     {
         $request = self::createRequest("HEAD", "/users");
 
+        $route = new Route("GET", new StaticPath("/users"), new Handler("Users"));
+
         $failure = new Failure([
-            "GET" => new Handler("Get"),
+            "GET" => $route,
         ], $request);
         $failureRequest = $request->withAttribute(Failure::class, $failure);
 
-        $match = new Match(new Handler("Get"), $request->withMethod("GET"));
+        $match = new Match($route, $request->withMethod("GET"));
         $matchRequest = $request->withMethod("GET")->withAttribute(Match::class, $match);
 
         $this->handler

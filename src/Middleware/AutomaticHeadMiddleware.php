@@ -51,9 +51,9 @@ class AutomaticHeadMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
-        $getHandler = $failure->getUriHandlerFor(Method::GET);
+        $getRoute = $failure->getUriRouteFor(Method::GET);
 
-        if ($getHandler === null) {
+        if ($getRoute === null) {
             return $handler->handle($request);
         }
 
@@ -61,7 +61,7 @@ class AutomaticHeadMiddleware implements MiddlewareInterface
             ->withoutAttribute(Failure::class)
             ->withMethod(Method::GET);
 
-        $getMatch = new Match($getHandler, $getRequest);
+        $getMatch = new Match($getRoute, $getRequest);
 
         $response = $handler->handle($getRequest->withAttribute(Match::class, $getMatch));
 

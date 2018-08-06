@@ -18,11 +18,11 @@ class RouterTest extends TestCase
         $handler = new Handler("Users");
 
         $routes = RouteCollection::create();
-        $routes->get("/users", $handler);
+        $route = $routes->get("/users", $handler);
 
         $match = Router::create($routes)->match($request);
 
-        self::assertEquals($handler, $match->getHandler());
+        self::assertEquals($route, $match->getRoute());
     }
 
     public function test_it_matches_second_from_two_static_routes()
@@ -33,12 +33,12 @@ class RouterTest extends TestCase
         $adminsHandler = new Handler("Admins");
 
         $routes = RouteCollection::create();
-        $routes->get("/users", $usersHandler);
-        $routes->get("/admins", $adminsHandler);
+        $usersRoute = $routes->get("/users", $usersHandler);
+        $adminsRoute = $routes->get("/admins", $adminsHandler);
 
         $match = Router::create($routes)->match($request);
 
-        self::assertEquals($adminsHandler, $match->getHandler());
+        self::assertEquals($adminsRoute, $match->getRoute());
     }
 
     public function test_it_matches_first_from_two_ambiguous_routes()
@@ -49,12 +49,12 @@ class RouterTest extends TestCase
         $secondHandler = new Handler("Admins2");
 
         $routes = RouteCollection::create();
-        $routes->get("/admins", $firstHandler);
-        $routes->get("/admins", $secondHandler);
+        $firstRoute = $routes->get("/admins", $firstHandler);
+        $secondRoute = $routes->get("/admins", $secondHandler);
 
         $match = Router::create($routes)->match($request);
 
-        self::assertEquals($firstHandler, $match->getHandler());
+        self::assertEquals($firstRoute, $match->getRoute());
     }
 
     public function test_it_matches_single_route_with_attributes()
@@ -64,7 +64,7 @@ class RouterTest extends TestCase
         $handler = new Handler("Admins");
 
         $routes = RouteCollection::create();
-        $routes->get("/admins/{name}/{id}", $handler);
+        $route = $routes->get("/admins/{name}/{id}", $handler);
 
         $match = Router::create($routes)->match($request);
 
@@ -72,7 +72,7 @@ class RouterTest extends TestCase
 
         self::assertEquals("jan", $matchRequest->getAttribute("name"));
         self::assertEquals("123", $matchRequest->getAttribute("id"));
-        self::assertEquals($handler, $match->getHandler());
+        self::assertEquals($route, $match->getRoute());
     }
 
     public function test_it_matches_second_from_two_routes_with_attributes()
@@ -83,8 +83,8 @@ class RouterTest extends TestCase
         $usersHandler = new Handler("Users");
 
         $routes = RouteCollection::create();
-        $routes->get("/admins/{name}/{id}", $adminsHandler);
-        $routes->get("/users/{name}/{id}", $usersHandler);
+        $adminsRoute = $routes->get("/admins/{name}/{id}", $adminsHandler);
+        $usersRoute = $routes->get("/users/{name}/{id}", $usersHandler);
 
         $match = Router::create($routes)->match($request);
 
@@ -92,7 +92,7 @@ class RouterTest extends TestCase
 
         self::assertEquals("jan", $matchRequest->getAttribute("name"));
         self::assertEquals("123", $matchRequest->getAttribute("id"));
-        self::assertEquals($usersHandler, $match->getHandler());
+        self::assertEquals($usersRoute, $match->getRoute());
     }
 
     public function test_it_matches_request_with_optional_attribute()
@@ -102,7 +102,7 @@ class RouterTest extends TestCase
         $handler = new Handler("Users");
 
         $routes = RouteCollection::create();
-        $routes->get("/users/{name}[/{id}]", $handler);
+        $route = $routes->get("/users/{name}[/{id}]", $handler);
 
         $match = Router::create($routes)->match($request);
 
@@ -110,7 +110,7 @@ class RouterTest extends TestCase
 
         self::assertEquals("jan", $matchRequest->getAttribute("name"));
         self::assertEquals(null, $matchRequest->getAttribute("id"));
-        self::assertEquals($handler, $match->getHandler());
+        self::assertEquals($route, $match->getRoute());
     }
 
     public function test_it_matches_based_on_request_method()
@@ -121,12 +121,12 @@ class RouterTest extends TestCase
         $postHandler = new Handler("Post");
 
         $routes = RouteCollection::create();
-        $routes->get("/users", $getHandler);
-        $routes->post("/users", $postHandler);
+        $getRoute = $routes->get("/users", $getHandler);
+        $postRoute = $routes->post("/users", $postHandler);
 
         $match = Router::create($routes)->match($request);
 
-        self::assertEquals($postHandler, $match->getHandler());
+        self::assertEquals($postRoute, $match->getRoute());
     }
 
     public function test_it_provides_allowed_methods_on_only_uri_match()
@@ -138,13 +138,13 @@ class RouterTest extends TestCase
         $deleteHandler = new Handler("Delete");
 
         $routes = RouteCollection::create();
-        $routes->post("/users", $postHandler);
-        $routes->patch("/orders", $patchHandler);
-        $routes->delete("/users", $deleteHandler);
+        $postRoute = $routes->post("/users", $postHandler);
+        $patchRoute = $routes->patch("/orders", $patchHandler);
+        $deleteRoute = $routes->delete("/users", $deleteHandler);
 
         $failure = new Failure([
-            "POST" => $postHandler,
-            "DELETE" => $deleteHandler,
+            "POST" => $postRoute,
+            "DELETE" => $deleteRoute,
         ], $request);
 
         $this->expectThrowable($failure);
@@ -209,11 +209,11 @@ class RouterTest extends TestCase
         $handler = new Handler("Users");
 
         $routes = RouteCollection::create();
-        $routes->get("/users", $handler);
+        $route = $routes->get("/users", $handler);
 
         $match = Router::create($routes)->match($request);
 
-        self::assertEquals($handler, $match->getHandler());
+        self::assertEquals($route, $match->getRoute());
     }
 
     public function test_it_ignores_hash()
@@ -223,10 +223,10 @@ class RouterTest extends TestCase
         $handler = new Handler("Users");
 
         $routes = RouteCollection::create();
-        $routes->get("/users", $handler);
+        $route = $routes->get("/users", $handler);
 
         $match = Router::create($routes)->match($request);
 
-        self::assertEquals($handler, $match->getHandler());
+        self::assertEquals($route, $match->getRoute());
     }
 }

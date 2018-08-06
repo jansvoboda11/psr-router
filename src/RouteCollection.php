@@ -76,11 +76,12 @@ class RouteCollection
      * @param Handler $handler
      * @param null|string $name
      * @param null|mixed $data
+     * @return Route
      * @throws InvalidRoute
      */
-    public function get(string $definition, Handler $handler, ?string $name = null, $data = null): void
+    public function get(string $definition, Handler $handler, ?string $name = null, $data = null): Route
     {
-        $this->route(Method::GET, $definition, $handler, $name, $data);
+        return $this->route(Method::GET, $definition, $handler, $name, $data);
     }
 
     /**
@@ -90,11 +91,12 @@ class RouteCollection
      * @param Handler $handler
      * @param null|string $name
      * @param null|mixed $data
+     * @return Route
      * @throws InvalidRoute
      */
-    public function post(string $definition, Handler $handler, ?string $name = null, $data = null): void
+    public function post(string $definition, Handler $handler, ?string $name = null, $data = null): Route
     {
-        $this->route(Method::POST, $definition, $handler, $name, $data);
+        return $this->route(Method::POST, $definition, $handler, $name, $data);
     }
 
     /**
@@ -104,11 +106,12 @@ class RouteCollection
      * @param Handler $handler
      * @param null|string $name
      * @param null|mixed $data
+     * @return Route
      * @throws InvalidRoute
      */
-    public function put(string $definition, Handler $handler, ?string $name = null, $data = null): void
+    public function put(string $definition, Handler $handler, ?string $name = null, $data = null): Route
     {
-        $this->route(Method::PUT, $definition, $handler, $name, $data);
+        return $this->route(Method::PUT, $definition, $handler, $name, $data);
     }
 
     /**
@@ -118,11 +121,12 @@ class RouteCollection
      * @param Handler $handler
      * @param null|string $name
      * @param null|mixed $data
+     * @return Route
      * @throws InvalidRoute
      */
-    public function patch(string $definition, Handler $handler, ?string $name = null, $data = null): void
+    public function patch(string $definition, Handler $handler, ?string $name = null, $data = null): Route
     {
-        $this->route(Method::PATCH, $definition, $handler, $name, $data);
+        return $this->route(Method::PATCH, $definition, $handler, $name, $data);
     }
 
     /**
@@ -132,11 +136,12 @@ class RouteCollection
      * @param Handler $handler
      * @param null|string $name
      * @param null|mixed $data
+     * @return Route
      * @throws InvalidRoute
      */
-    public function delete(string $definition, Handler $handler, ?string $name = null, $data = null): void
+    public function delete(string $definition, Handler $handler, ?string $name = null, $data = null): Route
     {
-        $this->route(Method::DELETE, $definition, $handler, $name, $data);
+        return $this->route(Method::DELETE, $definition, $handler, $name, $data);
     }
 
     /**
@@ -147,9 +152,10 @@ class RouteCollection
      * @param Handler $handler
      * @param null|string $name
      * @param null|mixed $data
+     * @return Route
      * @throws InvalidRoute
      */
-    public function route(string $method, string $definition, Handler $handler, ?string $name = null, $data = null): void
+    public function route(string $method, string $definition, Handler $handler, ?string $name = null, $data = null): Route
     {
         $route = $this->factory->create($method, $definition, $handler, $data);
 
@@ -158,6 +164,8 @@ class RouteCollection
         if ($name !== null) {
             $this->named[$name] = $route;
         }
+
+        return $route;
     }
 
     /**

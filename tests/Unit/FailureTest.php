@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace SvobodaTest\Router\Unit;
 
 use Svoboda\Router\Failure;
+use Svoboda\Router\Route\Path\StaticPath;
+use Svoboda\Router\Route\Route;
 use SvobodaTest\Router\Handler;
 use SvobodaTest\Router\TestCase;
 
@@ -25,7 +27,7 @@ class FailureTest extends TestCase
 
         $failure = new Failure([], $request);
 
-        self::assertEmpty($failure->getUriHandlers());
+        self::assertEmpty($failure->getUriRoutes());
     }
 
     public function test_uri_failure_has_no_allowed_methods()
@@ -53,20 +55,20 @@ class FailureTest extends TestCase
 
         $failure = new Failure([], $request);
 
-        self::assertNull($failure->getUriHandlerFor("GET"));
-        self::assertNull($failure->getUriHandlerFor("POST"));
+        self::assertNull($failure->getUriRouteFor("GET"));
+        self::assertNull($failure->getUriRouteFor("POST"));
     }
 
     public function test_method_failure_is_recognized()
     {
         $request = self::createRequest("GET", "/");
 
-        $postHandler = new Handler("Post");
-        $deleteHandler = new Handler("Delete");
+        $postRoute = new Route("GET", new StaticPath("/"), new Handler("Post"));
+        $deleteRoute = new Route("DELETE", new StaticPath("/"), new Handler("Delete"));
 
         $failure = new Failure([
-            "POST" => $postHandler,
-            "DELETE" => $deleteHandler,
+            "POST" => $postRoute,
+            "DELETE" => $deleteRoute,
         ], $request);
 
         self::assertTrue($failure->isMethodFailure());
@@ -76,29 +78,29 @@ class FailureTest extends TestCase
     {
         $request = self::createRequest("GET", "/");
 
-        $postHandler = new Handler("Post");
-        $deleteHandler = new Handler("Delete");
+        $postRoute = new Route("GET", new StaticPath("/"), new Handler("Post"));
+        $deleteRoute = new Route("DELETE", new StaticPath("/"), new Handler("Delete"));
 
         $failure = new Failure([
-            "POST" => $postHandler,
-            "DELETE" => $deleteHandler,
+            "POST" => $postRoute,
+            "DELETE" => $deleteRoute,
         ], $request);
 
-        self::assertCount(2, $failure->getUriHandlers());
-        self::assertContains($postHandler, $failure->getUriHandlers());
-        self::assertContains($deleteHandler, $failure->getUriHandlers());
+        self::assertCount(2, $failure->getUriRoutes());
+        self::assertContains($postRoute, $failure->getUriRoutes());
+        self::assertContains($deleteRoute, $failure->getUriRoutes());
     }
 
     public function test_method_failure_returns_allowed_methods()
     {
         $request = self::createRequest("GET", "/");
 
-        $postHandler = new Handler("Post");
-        $deleteHandler = new Handler("Delete");
+        $postRoute = new Route("GET", new StaticPath("/"), new Handler("Post"));
+        $deleteRoute = new Route("DELETE", new StaticPath("/"), new Handler("Delete"));
 
         $failure = new Failure([
-            "POST" => $postHandler,
-            "DELETE" => $deleteHandler,
+            "POST" => $postRoute,
+            "DELETE" => $deleteRoute,
         ], $request);
 
         self::assertCount(2, $failure->getAllowedMethods());
@@ -110,12 +112,12 @@ class FailureTest extends TestCase
     {
         $request = self::createRequest("GET", "/");
 
-        $postHandler = new Handler("Post");
-        $deleteHandler = new Handler("Delete");
+        $postRoute = new Route("GET", new StaticPath("/"), new Handler("Post"));
+        $deleteRoute = new Route("DELETE", new StaticPath("/"), new Handler("Delete"));
 
         $failure = new Failure([
-            "POST" => $postHandler,
-            "DELETE" => $deleteHandler,
+            "POST" => $postRoute,
+            "DELETE" => $deleteRoute,
         ], $request);
 
         self::assertTrue($failure->isMethodAllowed("POST"));
@@ -126,16 +128,16 @@ class FailureTest extends TestCase
     {
         $request = self::createRequest("GET", "/");
 
-        $postHandler = new Handler("Post");
-        $deleteHandler = new Handler("Delete");
+        $postRoute = new Route("GET", new StaticPath("/"), new Handler("Post"));
+        $deleteRoute = new Route("DELETE", new StaticPath("/"), new Handler("Delete"));
 
         $failure = new Failure([
-            "POST" => $postHandler,
-            "DELETE" => $deleteHandler,
+            "POST" => $postRoute,
+            "DELETE" => $deleteRoute,
         ], $request);
 
 
-        self::assertEquals($postHandler, $failure->getUriHandlerFor("POST"));
+        self::assertEquals($postRoute, $failure->getUriRouteFor("POST"));
     }
 
     public function test_it_returns_request()

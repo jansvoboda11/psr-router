@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Svoboda\Router;
 
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
+use Svoboda\Router\Route\Route;
 
 /**
  * Routing match.
@@ -13,11 +13,11 @@ use Psr\Http\Server\RequestHandlerInterface;
 class Match
 {
     /**
-     * The registered handler.
+     * The matched route.
      *
-     * @var RequestHandlerInterface
+     * @var Route
      */
-    private $handler;
+    private $route;
 
     /**
      * The matched request with all route attributes.
@@ -29,23 +29,23 @@ class Match
     /**
      * Constructor.
      *
-     * @param RequestHandlerInterface $handler
+     * @param Route $route
      * @param ServerRequestInterface $request
      */
-    public function __construct(RequestHandlerInterface $handler, ServerRequestInterface $request)
+    public function __construct(Route $route, ServerRequestInterface $request)
     {
-        $this->handler = $handler;
+        $this->route = $route;
         $this->request = $request;
     }
 
     /**
-     * Returns the handler.
+     * Returns the route.
      *
-     * @return RequestHandlerInterface
+     * @return Route
      */
-    public function getHandler(): RequestHandlerInterface
+    public function getRoute(): Route
     {
-        return $this->handler;
+        return $this->route;
     }
 
     /**

@@ -56,7 +56,7 @@ class MultiPatternMatcher implements Matcher
                 }
 
                 if (!array_key_exists($routeMethod, $allowedMethods)) {
-                    $allowedMethods[$routeMethod] = $route->getHandler();
+                    $allowedMethods[$routeMethod] = $route;
                 }
             }
         }
@@ -74,7 +74,6 @@ class MultiPatternMatcher implements Matcher
      */
     private function createResult(Route $route, ServerRequestInterface $request, array $matches): Match
     {
-        $handler = $route->getHandler();
         $attributes = $route->getAttributes();
 
         foreach ($attributes as $attribute) {
@@ -85,6 +84,6 @@ class MultiPatternMatcher implements Matcher
             }
         }
 
-        return new Match($handler, $request);
+        return new Match($route, $request);
     }
 }

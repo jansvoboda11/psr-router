@@ -9,6 +9,8 @@ use Mockery\MockInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Svoboda\Router\Match;
 use Svoboda\Router\Middleware\RouteDispatchingMiddleware;
+use Svoboda\Router\Route\Path\StaticPath;
+use Svoboda\Router\Route\Route;
 use SvobodaTest\Router\TestCase;
 
 class RouteDispatchingMiddlewareTest extends TestCase
@@ -55,10 +57,12 @@ class RouteDispatchingMiddlewareTest extends TestCase
             ->andReturn(self::createResponse(201))
             ->once();
 
+        $route = new Route("GET", new StaticPath("/users"), $handler);
+
         $match = Mockery::mock(Match::class);
         $match
-            ->shouldReceive("getHandler")
-            ->andReturn($handler)
+            ->shouldReceive("getRoute")
+            ->andReturn($route)
             ->once();
         $match
             ->shouldReceive("getRequest")

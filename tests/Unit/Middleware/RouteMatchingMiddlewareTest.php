@@ -11,6 +11,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Svoboda\Router\Failure;
 use Svoboda\Router\Match;
 use Svoboda\Router\Middleware\RouteMatchingMiddleware;
+use Svoboda\Router\Route\Path\StaticPath;
+use Svoboda\Router\Route\Route;
 use Svoboda\Router\Router;
 use SvobodaTest\Router\Handler;
 use SvobodaTest\Router\TestCase;
@@ -36,7 +38,8 @@ class RouteMatchingMiddlewareTest extends TestCase
     public function test_it_adds_match_attribute()
     {
         $request = self::createRequest("GET", "/users");
-        $match = new Match(new Handler("Match"), $request);
+        $route = new Route("GET", new StaticPath("/users"), new Handler("Match"));
+        $match = new Match($route, $request);
         $requestWithMatch = $request->withAttribute(Match::class, $match);
 
         $this->router
