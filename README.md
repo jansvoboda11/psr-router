@@ -27,13 +27,14 @@ The `Router` class matches incoming HTTP requests against defined routes and usi
 You should register your routes in the `RouteCollection`.
 You have to provide the path definition and a handler.
 If you plan to use the URI generator, you should also provide a name of the route.
+You can also add any data to the route with the fourth argument, which can be accessed later (e.g. in your custom middleware).
 
 ```php
 $routes = RouteCollection::create();
 
-$routes->get("/login", new LoginHandler(), "user.login");
-$routes->post("/users/{name}", new UserSettingsHandler(), "user.settings");
-$routes->get("/orders[/{year:number}]", new OrderListHandler(), "order.list");
+$routes->get("/login", new LoginHandler());
+$routes->post("/users/{name}", new UserDetailHandler(), "user.detail");
+$routes->get("/orders[/{year:number}]", new OrderListHandler(), "order.list", Options::AUTH);
 ```
 
 Parts of the definition can be divided into three categories.
@@ -75,10 +76,11 @@ To declare a part of the definition as optional, put it in square brackets: `[/{
 The `Router` class processes incoming requests based on the route collection.
 Its `match` method accepts instance of the `ServerRequestInterface`.
 The method returns a `Match` if the request matches any route definition.
-The match contains the route handler and modified request with filled route attributes.
+The match contains the matched route and modified request with filled route attributes.
 
 If the incoming request does not match any route definition, the method throws a `Failure`.
-The failure holds the original request and an array of handlers that could handle a request to the same URI with a different HTTP method.
+The failure holds the original request and an array of routes that would match the request with a different HTTP method.
+The array is indexed by their respective methods.
 
 ```php
 /** @var ServerRequestInterface $request */
@@ -87,10 +89,11 @@ $router = Router::create($routes);
 
 try {
     $match = $router->match($request);
-    $handler = $match->getHandler();
+    $route = $match->getRoute();
+    $handler = $route->getHandler();
     $request = $match->getRequest();
 } catch (Failure $failure) {
-    $handlers = $failure->getUriHandlers();
+    $routes = $failure->getUriRoutes();
     $request = $failure->getRequest();
 }
 ```
@@ -116,7 +119,7 @@ It accepts the route name, the attributes that will be filled in and outputs a c
 ```php
 $generator = UriGenerator::create($routes);
 
-$uri = $generator->generate("user.settings", [
+$uri = $generator->generate("user.detail", [
     "name" => "john.doe",
 ]);
 ```
