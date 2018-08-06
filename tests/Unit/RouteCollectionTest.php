@@ -10,15 +10,11 @@ use Svoboda\Router\Route\Path\StaticPath;
 use Svoboda\Router\Route\Route;
 use Svoboda\Router\Route\RouteFactory;
 use Svoboda\Router\RouteCollection;
-use Svoboda\Router\Types\Types;
 use SvobodaTest\Router\Handler;
 use SvobodaTest\Router\TestCase;
 
 class RouteCollectionTest extends TestCase
 {
-    /** @var Types */
-    private $types;
-
     /** @var MockInterface|RouteFactory */
     private $factory;
 
@@ -27,27 +23,23 @@ class RouteCollectionTest extends TestCase
 
     protected function setUp()
     {
-        $this->types = new Types([
-            "any" => "[^/]+",
-        ], "any");
-
         $this->factory = Mockery::mock(RouteFactory::class);
-        $this->collection = new RouteCollection($this->factory, $this->types);
+        $this->collection = new RouteCollection($this->factory);
     }
 
     public function test_it_registers_get_route()
     {
         $path = new StaticPath("/users");
         $handler = new Handler("UsersAction");
-        $route = new Route("GET", $path, $handler, $this->types);
+        $route = new Route("GET", $path, $handler, []);
 
         $this->factory
             ->shouldReceive("create")
-            ->with("GET", "/users", $handler, $this->types)
+            ->with("GET", "/users", $handler, [])
             ->andReturn($route)
             ->once();
 
-        $this->collection->get("/users", $handler);
+        $this->collection->get("/users", $handler, "users", []);
 
         $routes = $this->collection->all();
 
@@ -59,15 +51,15 @@ class RouteCollectionTest extends TestCase
     {
         $path = new StaticPath("/users");
         $handler = new Handler("UsersAction");
-        $route = new Route("POST", $path, $handler, $this->types);
+        $route = new Route("POST", $path, $handler);
 
         $this->factory
             ->shouldReceive("create")
-            ->with("POST", "/users", $handler, $this->types)
+            ->with("POST", "/users", $handler, [])
             ->andReturn($route)
             ->once();
 
-        $this->collection->post("/users", $handler);
+        $this->collection->post("/users", $handler, "users", []);
 
         $routes = $this->collection->all();
 
@@ -79,15 +71,15 @@ class RouteCollectionTest extends TestCase
     {
         $path = new StaticPath("/users");
         $handler = new Handler("UsersAction");
-        $route = new Route("PUT", $path, $handler, $this->types);
+        $route = new Route("PUT", $path, $handler);
 
         $this->factory
             ->shouldReceive("create")
-            ->with("PUT", "/users", $handler, $this->types)
+            ->with("PUT", "/users", $handler, [])
             ->andReturn($route)
             ->once();
 
-        $this->collection->put("/users", $handler);
+        $this->collection->put("/users", $handler, "users", []);
 
         $routes = $this->collection->all();
 
@@ -99,15 +91,15 @@ class RouteCollectionTest extends TestCase
     {
         $path = new StaticPath("/users");
         $handler = new Handler("UsersAction");
-        $route = new Route("PATCH", $path, $handler, $this->types);
+        $route = new Route("PATCH", $path, $handler, []);
 
         $this->factory
             ->shouldReceive("create")
-            ->with("PATCH", "/users", $handler, $this->types)
+            ->with("PATCH", "/users", $handler, [])
             ->andReturn($route)
             ->once();
 
-        $this->collection->patch("/users", $handler);
+        $this->collection->patch("/users", $handler, "users", []);
 
         $routes = $this->collection->all();
 
@@ -119,35 +111,15 @@ class RouteCollectionTest extends TestCase
     {
         $path = new StaticPath("/users");
         $handler = new Handler("UsersAction");
-        $route = new Route("DELETE", $path, $handler, $this->types);
+        $route = new Route("DELETE", $path, $handler, []);
 
         $this->factory
             ->shouldReceive("create")
-            ->with("DELETE", "/users", $handler, $this->types)
+            ->with("DELETE", "/users", $handler, [])
             ->andReturn($route)
             ->once();
 
-        $this->collection->delete("/users", $handler);
-
-        $routes = $this->collection->all();
-
-        self::assertCount(1, $routes);
-        self::assertEquals($route, $routes[0]);
-    }
-
-    public function test_it_registers_route_with_name()
-    {
-        $path = new StaticPath("/users");
-        $handler = new Handler("UsersAction");
-        $route = new Route("GET", $path, $handler, $this->types);
-
-        $this->factory
-            ->shouldReceive("create")
-            ->with("GET", "/users", $handler, $this->types)
-            ->andReturn($route)
-            ->once();
-
-        $this->collection->get("/users", $handler, "users.all");
+        $this->collection->delete("/users", $handler, "users", []);
 
         $routes = $this->collection->all();
 
@@ -159,15 +131,15 @@ class RouteCollectionTest extends TestCase
     {
         $path = new StaticPath("/users");
         $handler = new Handler("UsersAction");
-        $route = new Route("GET", $path, $handler, $this->types);
+        $route = new Route("GET", $path, $handler, []);
 
         $this->factory
             ->shouldReceive("create")
-            ->with("GET", "/users", $handler, $this->types)
+            ->with("GET", "/users", $handler, [])
             ->andReturn($route)
             ->once();
 
-        $this->collection->get("/users", $handler, "users.all");
+        $this->collection->get("/users", $handler, "users.all", []);
 
         $found = $this->collection->oneNamed("users.all");
 
@@ -178,15 +150,15 @@ class RouteCollectionTest extends TestCase
     {
         $path = new StaticPath("/users");
         $handler = new Handler("UsersAction");
-        $route = new Route("GET", $path, $handler, $this->types);
+        $route = new Route("GET", $path, $handler, []);
 
         $this->factory
             ->shouldReceive("create")
-            ->with("GET", "/users", $handler, $this->types)
+            ->with("GET", "/users", $handler, [])
             ->andReturn($route)
             ->once();
 
-        $this->collection->get("/users", $handler, "users.all");
+        $this->collection->get("/users", $handler, "users.all", []);
 
         $found = $this->collection->oneNamed("wrong.name");
 

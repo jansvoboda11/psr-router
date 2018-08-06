@@ -34,17 +34,26 @@ class Route
     private $handler;
 
     /**
+     * Data associated with the route.
+     *
+     * @var null|mixed
+     */
+    private $data;
+
+    /**
      * Constructor.
      *
      * @param string $method
      * @param RoutePath $path
      * @param RequestHandlerInterface $handler
+     * @param null|mixed $data
      */
-    public function __construct(string $method, RoutePath $path, RequestHandlerInterface $handler)
+    public function __construct(string $method, RoutePath $path, RequestHandlerInterface $handler, $data = null)
     {
         $this->method = $method;
         $this->path = $path;
         $this->handler = $handler;
+        $this->data = $data;
     }
 
     /**
@@ -75,6 +84,16 @@ class Route
     public function getHandler(): RequestHandlerInterface
     {
         return $this->handler;
+    }
+
+    /**
+     * Returns the data.
+     *
+     * @return null|mixed
+     */
+    public function getData()
+    {
+        return $this->data;
     }
 
     /**

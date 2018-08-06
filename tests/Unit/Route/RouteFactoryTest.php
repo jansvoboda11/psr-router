@@ -32,14 +32,16 @@ class RouteFactoryTest extends TestCase
         ], "any");
 
         $this->parser = Mockery::mock(Parser::class);
-        $this->factory = new RouteFactory($this->parser);
+        $this->factory = new RouteFactory($this->parser, $this->types);
     }
 
     public function test_it_rejects_invalid_http_method()
     {
+        $handler = new Handler("Handler");
+
         $this->expectException(InvalidRoute::class);
 
-        $this->factory->create("INVALID", "/path", new Handler("Handler"), $this->types);
+        $this->factory->create("INVALID", "/path", $handler, []);
     }
 
     public function test_it_parses_definition()
@@ -53,7 +55,7 @@ class RouteFactoryTest extends TestCase
             ->andReturn($path)
             ->once();
 
-        $route = $this->factory->create("GET", "/path", $handler, $this->types);
+        $route = $this->factory->create("GET", "/path", $handler, []);
 
         self::assertEquals("GET", $route->getMethod());
         self::assertEquals($path, $route->getPath());
@@ -62,6 +64,8 @@ class RouteFactoryTest extends TestCase
 
     public function test_it_fails_when_parser_fails()
     {
+        $handler = new Handler("Handler");
+
         $this->parser
             ->shouldReceive("parse")
             ->with("/path", $this->types)
@@ -70,6 +74,6 @@ class RouteFactoryTest extends TestCase
 
         $this->expectException(InvalidRoute::class);
 
-        $this->factory->create("GET", "/path", new Handler("Handler"), $this->types);
+        $this->factory->create("GET", "/path", $handler, []);
     }
 }

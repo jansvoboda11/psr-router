@@ -21,13 +21,22 @@ class RouteFactory
     private $parser;
 
     /**
+     * The attribute types.
+     *
+     * @var Types
+     */
+    private $types;
+
+    /**
      * Constructor.
      *
      * @param Parser $parser
+     * @param Types $types
      */
-    public function __construct(Parser $parser)
+    public function __construct(Parser $parser, Types $types)
     {
         $this->parser = $parser;
+        $this->types = $types;
     }
 
     /**
@@ -36,18 +45,18 @@ class RouteFactory
      * @param string $method
      * @param string $definition
      * @param RequestHandlerInterface $handler
-     * @param Types $types
+     * @param null|mixed $data
      * @return Route
      * @throws InvalidRoute
      */
-    public function create(string $method, string $definition, RequestHandlerInterface $handler, Types $types): Route
+    public function create(string $method, string $definition, RequestHandlerInterface $handler, $data = null): Route
     {
         if (!Method::isValid($method)) {
             throw InvalidRoute::invalidMethod($method);
         }
 
-        $path = $this->parser->parse($definition, $types);
+        $path = $this->parser->parse($definition, $this->types);
 
-        return new Route($method, $path, $handler);
+        return new Route($method, $path, $handler, $data);
     }
 }
