@@ -57,4 +57,29 @@ class TypesTest extends TestCase
             "num" => "[0-9+",
         ], "any");
     }
+
+    public function test_it_returns_patterns()
+    {
+        $types = new Types([
+            "any" => "[^/]+",
+            "num" => "[0-9]+",
+        ], "any");
+
+        $patterns = $types->getPatterns();
+
+        self::assertEquals([
+            "any" => "[^/]+",
+            "num" => "[0-9]+",
+        ], $patterns);
+    }
+
+    public function test_it_returns_implicit_pattern()
+    {
+        $types = new Types([
+            "any" => "[^/]+",
+            "num" => "[0-9]+",
+        ], "any");
+
+        self::assertEquals("any", $types->getImplicit());
+    }
 }
