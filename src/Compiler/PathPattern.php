@@ -9,7 +9,6 @@ use Svoboda\Router\Route\Path\OptionalPath;
 use Svoboda\Router\Route\Path\PathVisitor;
 use Svoboda\Router\Route\Path\RoutePath;
 use Svoboda\Router\Route\Path\StaticPath;
-use Svoboda\Router\Types\Types;
 
 /**
  * The regular expression of a path.
@@ -24,13 +23,6 @@ class PathPattern extends PathVisitor
     private $path;
 
     /**
-     * Type information.
-     *
-     * @var Types
-     */
-    private $types;
-
-    /**
      * The regular expression.
      *
      * @var string
@@ -41,12 +33,10 @@ class PathPattern extends PathVisitor
      * Constructor.
      *
      * @param RoutePath $path
-     * @param Types $types
      */
-    public function __construct(RoutePath $path, Types $types)
+    public function __construct(RoutePath $path)
     {
         $this->path = $path;
-        $this->types = $types;
         $this->pattern = "";
 
         $this->path->accept($this);
@@ -70,12 +60,9 @@ class PathPattern extends PathVisitor
     public function enterAttribute(AttributePath $path): void
     {
         $name = $path->getName();
-        $type = $path->getType() ?? $this->types->getImplicit();
+        $pattern = $path->getPattern();
 
-        $patterns = $this->types->getPatterns();
-        $typePattern = $patterns[$type];
-
-        $this->pattern .= "(?'$name'$typePattern)";
+        $this->pattern .= "(?'$name'$pattern)";
     }
 
     /**

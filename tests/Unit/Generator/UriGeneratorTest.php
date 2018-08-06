@@ -54,7 +54,9 @@ class UriGeneratorTest extends TestCase
     public function test_creates_uri_without_prefix()
     {
         $path = new StaticPath("/users");
-        $route = new Route("GET", $path, new Handler("UsersAction"), $this->types);
+        $handler = new Handler("UsersAction");
+
+        $route = new Route("GET", $path, $handler);
 
         $this->routes
             ->shouldReceive("oneNamed")
@@ -63,7 +65,7 @@ class UriGeneratorTest extends TestCase
 
         $this->factory
             ->shouldReceive("create")
-            ->with($path, $this->types, [])
+            ->with($path, [])
             ->andReturn("/users");
 
         $generator = new UriGenerator($this->routes, $this->factory, null);
@@ -76,7 +78,9 @@ class UriGeneratorTest extends TestCase
     public function test_it_creates_uri_with_prefix_from_constructor()
     {
         $path = new StaticPath("/users");
-        $route = new Route("GET", $path, new Handler("UsersAction"), $this->types);
+        $handler = new Handler("UsersAction");
+
+        $route = new Route("GET", $path, $handler);
 
         $this->routes
             ->shouldReceive("oneNamed")
@@ -85,7 +89,7 @@ class UriGeneratorTest extends TestCase
 
         $this->factory
             ->shouldReceive("create")
-            ->with($path, $this->types, [])
+            ->with($path, [])
             ->andReturn("/users");
 
         $generator = new UriGenerator($this->routes, $this->factory, "/api");
@@ -98,7 +102,9 @@ class UriGeneratorTest extends TestCase
     public function test_method_prefix_overrides_constructor_prefix()
     {
         $path = new StaticPath("/users");
-        $route = new Route("GET", $path, new Handler("UsersAction"), $this->types);
+        $handler = new Handler("UsersAction");
+
+        $route = new Route("GET", $path, $handler);
 
         $this->routes
             ->shouldReceive("oneNamed")
@@ -107,7 +113,7 @@ class UriGeneratorTest extends TestCase
 
         $this->factory
             ->shouldReceive("create")
-            ->with($path, $this->types, [])
+            ->with($path, [])
             ->andReturn("/users");
 
         $generator = new UriGenerator($this->routes, $this->factory, "/api");

@@ -108,4 +108,26 @@ class Types
     {
         return $this->implicit;
     }
+
+    /**
+     * Determines if the given type exists.
+     *
+     * @param string $type
+     * @return bool
+     */
+    public function contain(string $type): bool
+    {
+        return array_key_exists($type, $this->patterns);
+    }
+
+    /**
+     * Returns the pattern for the given type.
+     *
+     * @param string $type
+     * @return string
+     */
+    public function getPatternFor(string $type): string
+    {
+        return $this->patterns[$type];
+    }
 }

@@ -10,7 +10,6 @@ use Svoboda\Router\Route\Path\OptionalPath;
 use Svoboda\Router\Route\Path\PathVisitor;
 use Svoboda\Router\Route\Path\RoutePath;
 use Svoboda\Router\Route\Path\StaticPath;
-use Svoboda\Router\Types\Types;
 
 /**
  * URI of a route path.
@@ -23,13 +22,6 @@ class PathUri extends PathVisitor
      * @var RoutePath
      */
     private $path;
-
-    /**
-     * Type information.
-     *
-     * @var Types
-     */
-    private $types;
 
     /**
      * Provided attribute values.
@@ -56,14 +48,12 @@ class PathUri extends PathVisitor
      * Constructor.
      *
      * @param RoutePath $path
-     * @param Types $types
      * @param array $attributes
      * @throws InvalidAttribute
      */
-    public function __construct(RoutePath $path, Types $types, array $attributes = [])
+    public function __construct(RoutePath $path, array $attributes = [])
     {
         $this->path = $path;
-        $this->types = $types;
         $this->attributes = $attributes;
         $this->uri = "";
         $this->done = false;
@@ -93,12 +83,9 @@ class PathUri extends PathVisitor
             return;
         }
 
-        $implicitType = $this->types->getImplicit();
-        $typePatterns = $this->types->getPatterns();
-
         $name = $path->getName();
         $value = $this->getValue($path, $this->attributes);
-        $pattern = $this->getTypePattern($path, $implicitType, $typePatterns);
+        $pattern = $path->getPattern();
 
         $this->validateValue($name, $value, $pattern);
 
@@ -148,28 +135,6 @@ class PathUri extends PathVisitor
         }
 
         return (string)$attributes[$name];
-    }
-
-    /**
-     * Returns the regular expression for the attribute type.
-     *
-     * @param AttributePath $path
-     * @param string $implicitType
-     * @param array $typePatterns
-     * @return string
-     * @throws InvalidAttribute
-     */
-    private function getTypePattern(AttributePath $path, string $implicitType, array $typePatterns): string
-    {
-        $type = $path->getType() ?? $implicitType;
-
-        if (!array_key_exists($type, $typePatterns)) {
-            $name = $path->getName();
-
-            throw InvalidAttribute::unknownType($name, $type);
-        }
-
-        return $typePatterns[$type];
     }
 
     /**

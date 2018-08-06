@@ -26,11 +26,11 @@ class InvalidRoute extends Exception
     /**
      * Invalid route with more attributes of the same name.
      *
-     * @param string $definition
+     * @param Input $definition
      * @param string $name
      * @return InvalidRoute
      */
-    public static function ambiguousAttribute(string $definition, $name): self
+    public static function ambiguousAttribute(Input $definition, $name): self
     {
         return new self("Multiple attributes with name '$name':\n$definition");
     }
@@ -38,12 +38,12 @@ class InvalidRoute extends Exception
     /**
      * Invalid route with unknown attribute type.
      *
-     * @param string $definition
+     * @param Input $definition
      * @param string $name
      * @param string $type
      * @return InvalidRoute
      */
-    public static function unknownAttributeType(string $definition, string $name, string $type): self
+    public static function unknownAttributeType(Input $definition, string $name, string $type): self
     {
         return new self("Unknown type '$type' of attribute '$name':\n$definition");
     }

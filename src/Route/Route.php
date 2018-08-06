@@ -6,7 +6,6 @@ namespace Svoboda\Router\Route;
 
 use Psr\Http\Server\RequestHandlerInterface;
 use Svoboda\Router\Route\Path\RoutePath;
-use Svoboda\Router\Types\Types;
 
 /**
  * Route, duh.
@@ -35,26 +34,17 @@ class Route
     private $handler;
 
     /**
-     * Attribute types.
-     *
-     * @var Types
-     */
-    private $types;
-
-    /**
      * Constructor.
      *
      * @param string $method
      * @param RoutePath $path
      * @param RequestHandlerInterface $handler
-     * @param Types $types
      */
-    public function __construct(string $method, RoutePath $path, RequestHandlerInterface $handler, Types $types)
+    public function __construct(string $method, RoutePath $path, RequestHandlerInterface $handler)
     {
         $this->method = $method;
         $this->path = $path;
         $this->handler = $handler;
-        $this->types = $types;
     }
 
     /**
@@ -85,16 +75,6 @@ class Route
     public function getHandler(): RequestHandlerInterface
     {
         return $this->handler;
-    }
-
-    /**
-     * Returns the attribute types.
-     *
-     * @return Types
-     */
-    public function getTypes(): Types
-    {
-        return $this->types;
     }
 
     /**

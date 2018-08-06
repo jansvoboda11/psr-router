@@ -29,7 +29,7 @@ class PathUriTest extends TestCase
     {
         $path = new StaticPath("/home");
 
-        $uri = new PathUri($path, $this->types);
+        $uri = new PathUri($path);
 
         self::assertEquals("/home", $uri);
     }
@@ -40,11 +40,12 @@ class PathUriTest extends TestCase
             "/users/",
             new AttributePath(
                 "id",
-                "num"
+                "num",
+                $this->types
             )
         );
 
-        $uri = new PathUri($path, $this->types, [
+        $uri = new PathUri($path, [
             "id" => 42,
         ]);
 
@@ -58,17 +59,19 @@ class PathUriTest extends TestCase
             new AttributePath(
                 "id",
                 "num",
+                $this->types,
                 new StaticPath(
                     "/",
                     new AttributePath(
                         "name",
-                        null
+                        null,
+                        $this->types
                     )
                 )
             )
         );
 
-        $uri = new PathUri($path, $this->types, [
+        $uri = new PathUri($path, [
             "name" => "jansvoboda11",
             "id" => 42,
         ]);
@@ -83,19 +86,21 @@ class PathUriTest extends TestCase
             new AttributePath(
                 "id",
                 "num",
+                $this->types,
                 new OptionalPath(
                     new StaticPath(
                         "/",
                         new AttributePath(
                             "name",
-                            null
+                            null,
+                            $this->types
                         )
                     )
                 )
             )
         );
 
-        $uri = new PathUri($path, $this->types, [
+        $uri = new PathUri($path, [
             "name" => "jansvoboda11",
             "id" => 42,
         ]);
@@ -110,6 +115,7 @@ class PathUriTest extends TestCase
             new AttributePath(
                 "id",
                 "num",
+                $this->types,
                 new OptionalPath(
                     new StaticPath(
                         "/edit"
@@ -118,7 +124,7 @@ class PathUriTest extends TestCase
             )
         );
 
-        $uri = new PathUri($path, $this->types, [
+        $uri = new PathUri($path, [
             "id" => 42,
         ]);
 
@@ -132,19 +138,21 @@ class PathUriTest extends TestCase
             new AttributePath(
                 "id",
                 "num",
+                $this->types,
                 new OptionalPath(
                     new StaticPath(
                         "/",
                         new AttributePath(
                             "name",
-                            null
+                            null,
+                            $this->types
                         )
                     )
                 )
             )
         );
 
-        $uri = new PathUri($path, $this->types, [
+        $uri = new PathUri($path, [
             "id" => 42,
         ]);
 
@@ -157,11 +165,12 @@ class PathUriTest extends TestCase
             "/users/",
             new AttributePath(
                 "id",
-                null
+                null,
+                $this->types
             )
         );
 
-        $uri = new PathUri($path, $this->types, [
+        $uri = new PathUri($path, [
             "foo" => "bar",
             "id" => 42,
         ]);
@@ -175,7 +184,8 @@ class PathUriTest extends TestCase
             "/users/",
             new AttributePath(
                 "id",
-                "num"
+                "num",
+                $this->types
             )
         );
 
@@ -184,7 +194,7 @@ class PathUriTest extends TestCase
             "The value for attribute 'id' is missing"
         );
 
-        new PathUri($path, $this->types);
+        new PathUri($path);
     }
 
     public function test_it_fails_on_missing_preceding_optional_attribute()
@@ -194,18 +204,21 @@ class PathUriTest extends TestCase
             new AttributePath(
                 "id",
                 "num",
+                $this->types,
                 new OptionalPath(
                     new StaticPath(
                         "/",
                         new AttributePath(
                             "first",
                             null,
+                            $this->types,
                             new OptionalPath(
                                 new StaticPath(
                                     "/",
                                     new AttributePath(
                                         "last",
-                                        null
+                                        null,
+                                        $this->types
                                     )
                                 )
                             )
@@ -220,7 +233,7 @@ class PathUriTest extends TestCase
             "The value for attribute 'first' is missing"
         );
 
-        new PathUri($path, $this->types, [
+        new PathUri($path, [
             "id" => 42,
             "last" => "Svoboda",
         ]);
@@ -232,7 +245,8 @@ class PathUriTest extends TestCase
             "/users/",
             new AttributePath(
                 "id",
-                "num"
+                "num",
+                $this->types
             )
         );
 
@@ -241,7 +255,7 @@ class PathUriTest extends TestCase
             "The value 'i42' of attribute 'id' does not match the specified pattern: \d+"
         );
 
-        new PathUri($path, $this->types, [
+        new PathUri($path, [
             "id" => "i42",
         ]);
     }

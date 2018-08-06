@@ -7,10 +7,24 @@ namespace SvobodaTest\Router\Unit\Route\Path;
 use Svoboda\Router\Route\Attribute;
 use Svoboda\Router\Route\Path\AttributePath;
 use Svoboda\Router\Route\Path\StaticPath;
+use Svoboda\Router\Types\Types;
 use SvobodaTest\Router\TestCase;
 
 class StaticPathTest extends TestCase
 {
+    /** @var Types */
+    private $types;
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->types = new Types([
+            "any" => "[^/]+",
+            "num" => "\d+",
+        ], "any");
+    }
+
     public function test_it_creates_definition_same_as_static_string()
     {
         $path = new StaticPath("/api/users");
@@ -26,7 +40,8 @@ class StaticPathTest extends TestCase
             "/api/users/",
             new AttributePath(
                 "foo",
-                "num"
+                "num",
+                $this->types
             )
         );
 
@@ -50,7 +65,8 @@ class StaticPathTest extends TestCase
             "/api/users/",
             new AttributePath(
                 "foo",
-                "num"
+                "num",
+                $this->types
             )
         );
 

@@ -10,7 +10,6 @@ use Svoboda\Router\Route\InvalidRoute;
 use Svoboda\Router\Route\Method;
 use Svoboda\Router\Route\Route;
 use Svoboda\Router\Route\RouteFactory;
-use Svoboda\Router\Semantics\Validator;
 use Svoboda\Router\Types\InvalidTypes;
 use Svoboda\Router\Types\Types;
 
@@ -73,9 +72,8 @@ class RouteCollection
         $types = $types ?? Types::createDefault();
 
         $parser = new Parser();
-        $validator = new Validator();
 
-        $factory = new RouteFactory($parser, $validator);
+        $factory = new RouteFactory($parser);
 
         return new self($factory, $types);
     }

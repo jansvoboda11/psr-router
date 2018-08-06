@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Svoboda\Router\Route\Path;
 
 use Svoboda\Router\Route\Attribute;
+use Svoboda\Router\Types\Types;
 
 /**
  * Route part that represents user-defined attribute.
@@ -26,6 +27,13 @@ class AttributePath implements RoutePath
     private $type;
 
     /**
+     * The attribute types.
+     *
+     * @var Types
+     */
+    private $types;
+
+    /**
      * The next part of the route.
      *
      * @var RoutePath
@@ -37,12 +45,14 @@ class AttributePath implements RoutePath
      *
      * @param string $name
      * @param null|string $type
+     * @param Types $types
      * @param null|RoutePath $next
      */
-    public function __construct(string $name, ?string $type, ?RoutePath $next = null)
+    public function __construct(string $name, ?string $type, Types $types, ?RoutePath $next = null)
     {
         $this->name = $name;
         $this->type = $type;
+        $this->types = $types;
         $this->next = $next ?? new EmptyPath();
     }
 
@@ -57,13 +67,15 @@ class AttributePath implements RoutePath
     }
 
     /**
-     * Returns the attribute type.
+     * Returns the attribute pattern.
      *
-     * @return null|string
+     * @return string
      */
-    public function getType(): ?string
+    public function getPattern(): string
     {
-        return $this->type;
+        $type = $this->type ?? $this->types->getImplicit();
+
+        return $this->types->getPatternFor($type);
     }
 
     /**

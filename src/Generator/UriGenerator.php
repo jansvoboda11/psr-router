@@ -82,9 +82,8 @@ class UriGenerator
         }
 
         $path = $route->getPath();
-        $types = $route->getTypes();
 
-        $uri = $this->uriFactory->create($path, $types, $attributes);
+        $uri = $this->uriFactory->create($path, $attributes);
 
         return $prefix . $uri;
     }

@@ -28,25 +28,25 @@ class PathPatternTest extends TestCase
     {
         $static = new StaticPath("/users");
 
-        $pattern = new PathPattern($static, $this->types);
+        $pattern = new PathPattern($static);
 
         self::assertEquals("/users", $pattern);
     }
 
     public function test_build_pattern_for_attribute_path_with_type()
     {
-        $attribute = new AttributePath("foo", "number");
+        $attribute = new AttributePath("foo", "number", $this->types);
 
-        $pattern = new PathPattern($attribute, $this->types);
+        $pattern = new PathPattern($attribute);
 
         self::assertEquals("(?'foo'\d+)", $pattern);
     }
 
     public function test_build_pattern_for_attribute_path_without_type()
     {
-        $attribute = new AttributePath("foo", null);
+        $attribute = new AttributePath("foo", null, $this->types);
 
-        $pattern = new PathPattern($attribute, $this->types);
+        $pattern = new PathPattern($attribute);
 
         self::assertEquals("(?'foo'[^/]+)", $pattern);
     }
@@ -57,7 +57,7 @@ class PathPatternTest extends TestCase
             new StaticPath("/users")
         );
 
-        $pattern = new PathPattern($optional, $this->types);
+        $pattern = new PathPattern($optional);
 
         self::assertEquals("(?:/users)?", $pattern);
     }
@@ -71,13 +71,14 @@ class PathPatternTest extends TestCase
                     "/",
                     new AttributePath(
                         "id",
-                        "number"
+                        "number",
+                        $this->types
                     )
                 )
             )
         );
 
-        $pattern = new PathPattern($complex, $this->types);
+        $pattern = new PathPattern($complex);
 
         self::assertEquals("/users(?:/(?'id'\d+))?", $pattern);
     }

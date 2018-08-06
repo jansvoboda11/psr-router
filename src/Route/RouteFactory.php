@@ -6,7 +6,6 @@ namespace Svoboda\Router\Route;
 
 use Psr\Http\Server\RequestHandlerInterface;
 use Svoboda\Router\Parser\Parser;
-use Svoboda\Router\Semantics\Validator;
 use Svoboda\Router\Types\Types;
 
 /**
@@ -22,22 +21,13 @@ class RouteFactory
     private $parser;
 
     /**
-     * Route validator.
-     *
-     * @var Validator
-     */
-    private $validator;
-
-    /**
      * Constructor.
      *
      * @param Parser $parser
-     * @param Validator $validator
      */
-    public function __construct(Parser $parser, Validator $validator)
+    public function __construct(Parser $parser)
     {
         $this->parser = $parser;
-        $this->validator = $validator;
     }
 
     /**
@@ -56,10 +46,8 @@ class RouteFactory
             throw InvalidRoute::invalidMethod($method);
         }
 
-        $path = $this->parser->parse($definition);
+        $path = $this->parser->parse($definition, $types);
 
-        $this->validator->validate($path, $types);
-
-        return new Route($method, $path, $handler, $types);
+        return new Route($method, $path, $handler);
     }
 }

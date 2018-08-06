@@ -9,6 +9,7 @@ use Svoboda\Router\Route\InvalidRoute;
 use Svoboda\Router\Route\Path\AttributePath;
 use Svoboda\Router\Route\Path\OptionalPath;
 use Svoboda\Router\Route\Path\StaticPath;
+use Svoboda\Router\Types\Types;
 use SvobodaTest\Router\TestCase;
 
 class ParserTest extends TestCase
@@ -16,16 +17,24 @@ class ParserTest extends TestCase
     /** @var Parser */
     private $parser;
 
+    /** @var Types */
+    private $types;
+
     protected function setUp()
     {
         $this->parser = new Parser();
+
+        $this->types = new Types([
+            "any" => "[^/]+",
+            "num" => "\d+",
+        ], "any");
     }
 
     public function test_parse_static_path()
     {
         $definition = "/users/all";
 
-        $path = $this->parser->parse($definition);
+        $path = $this->parser->parse($definition, $this->types);
 
         $expectedPath = new StaticPath("/users/all");
 
@@ -36,13 +45,14 @@ class ParserTest extends TestCase
     {
         $definition = "/users/{id}";
 
-        $path = $this->parser->parse($definition);
+        $path = $this->parser->parse($definition, $this->types);
 
         $expectedPath = new StaticPath(
             "/users/",
             new AttributePath(
                 "id",
-                null
+                null,
+                $this->types
             )
         );
 
@@ -53,13 +63,14 @@ class ParserTest extends TestCase
     {
         $definition = "/users/{id:any}";
 
-        $path = $this->parser->parse($definition);
+        $path = $this->parser->parse($definition, $this->types);
 
         $expectedPath = new StaticPath(
             "/users/",
             new AttributePath(
                 "id",
-                "any"
+                "any",
+                $this->types
             )
         );
 
@@ -70,18 +81,20 @@ class ParserTest extends TestCase
     {
         $definition = "/users/{name}/{id:num}";
 
-        $path = $this->parser->parse($definition);
+        $path = $this->parser->parse($definition, $this->types);
 
         $expectedPath = new StaticPath(
             "/users/",
             new AttributePath(
                 "name",
                 null,
+                $this->types,
                 new StaticPath(
                     "/",
                     new AttributePath(
                         "id",
-                        "num"
+                        "num",
+                        $this->types
                     )
                 )
             )
@@ -94,7 +107,7 @@ class ParserTest extends TestCase
     {
         $definition = "/users[/{name}]";
 
-        $path = $this->parser->parse($definition);
+        $path = $this->parser->parse($definition, $this->types);
 
         $expectedPath = new StaticPath(
             "/users",
@@ -103,7 +116,8 @@ class ParserTest extends TestCase
                     "/",
                     new AttributePath(
                         "name",
-                        null
+                        null,
+                        $this->types
                     )
                 )
             )
@@ -116,19 +130,21 @@ class ParserTest extends TestCase
     {
         $definition = "/users/{name}[/{id:num}]";
 
-        $path = $this->parser->parse($definition);
+        $path = $this->parser->parse($definition, $this->types);
 
         $expectedPath = new StaticPath(
             "/users/",
             new AttributePath(
                 "name",
                 null,
+                $this->types,
                 new OptionalPath(
                     new StaticPath(
                         "/",
                         new AttributePath(
                             "id",
-                            "num"
+                            "num",
+                            $this->types
                         )
                     )
                 )
@@ -150,7 +166,7 @@ The attribute name is missing:
 MESSAGE
         );
 
-        $this->parser->parse($definition);
+        $this->parser->parse($definition, $this->types);
     }
 
     public function test_parse_path_with_missing_attribute_name()
@@ -165,7 +181,7 @@ The attribute name is missing:
 MESSAGE
         );
 
-        $this->parser->parse($definition);
+        $this->parser->parse($definition, $this->types);
     }
 
     public function test_parse_path_with_too_long_attribute_name()
@@ -180,7 +196,7 @@ The attribute name exceeded maximum allowed length of 32 characters:
 MESSAGE
         );
 
-        $this->parser->parse($definition);
+        $this->parser->parse($definition, $this->types);
     }
 
     public function test_parse_path_with_malformed_attribute_name()
@@ -195,7 +211,7 @@ Unexpected character (expected ':', '}', 'alphanumeric'):
 MESSAGE
         );
 
-        $this->parser->parse($definition);
+        $this->parser->parse($definition, $this->types);
     }
 
     public function test_parse_path_with_missing_attribute_type()
@@ -210,7 +226,7 @@ The attribute type is missing:
 MESSAGE
         );
 
-        $this->parser->parse($definition);
+        $this->parser->parse($definition, $this->types);
     }
 
     public function test_parse_path_with_malformed_attribute_type()
@@ -225,7 +241,7 @@ Unexpected character (expected '}', 'alphanumeric'):
 MESSAGE
         );
 
-        $this->parser->parse($definition);
+        $this->parser->parse($definition, $this->types);
     }
 
     public function test_parse_path_with_too_long_attribute_type()
@@ -240,7 +256,7 @@ The attribute type exceeded maximum allowed length of 32 characters:
 MESSAGE
         );
 
-        $this->parser->parse($definition);
+        $this->parser->parse($definition, $this->types);
     }
 
     public function test_parse_path_with_missing_left_attribute_brace()
@@ -255,7 +271,7 @@ Unexpected character:
 MESSAGE
         );
 
-        $this->parser->parse($definition);
+        $this->parser->parse($definition, $this->types);
     }
 
     public function test_parse_path_with_missing_right_attribute_brace()
@@ -270,7 +286,7 @@ Unexpected end of route:
 MESSAGE
         );
 
-        $this->parser->parse($definition);
+        $this->parser->parse($definition, $this->types);
     }
 
     public function test_parse_path_with_missing_left_optional_bracket()
@@ -285,7 +301,7 @@ Unexpected character:
 MESSAGE
         );
 
-        $this->parser->parse($definition);
+        $this->parser->parse($definition, $this->types);
     }
 
     public function test_parse_path_with_missing_right_optional_bracket()
@@ -300,7 +316,7 @@ Unexpected end of route:
 MESSAGE
         );
 
-        $this->parser->parse($definition);
+        $this->parser->parse($definition, $this->types);
     }
 
     public function test_parse_path_with_optional_sequence_in_the_middle()
@@ -315,7 +331,7 @@ Optional sequence cannot be followed by anything else:
 MESSAGE
         );
 
-        $this->parser->parse($definition);
+        $this->parser->parse($definition, $this->types);
     }
 
     public function test_parse_path_with_mixed_brackets_one()
@@ -330,7 +346,7 @@ Unexpected character (expected ':', '}', 'alphanumeric'):
 MESSAGE
         );
 
-        $this->parser->parse($definition);
+        $this->parser->parse($definition, $this->types);
     }
 
     public function test_parse_path_with_mixed_brackets_two()
@@ -345,6 +361,34 @@ Unexpected character (expected ':', '}', 'alphanumeric'):
 MESSAGE
         );
 
-        $this->parser->parse($definition);
+        $this->parser->parse($definition, $this->types);
+    }
+
+    public function test_parse_path_with_duplicate_attributes()
+    {
+        $definition = "/users/{id}/{id:num}";
+
+        $this->expectException(InvalidRoute::class);
+        $this->expectExceptionMessage(<<<MESSAGE
+Multiple attributes with name 'id':
+/users/{id}/{id:num}
+MESSAGE
+        );
+
+        $this->parser->parse($definition, $this->types);
+    }
+
+    public function test_parse_path_with_invalid_type()
+    {
+        $definition = "/users/{id:none}";
+
+        $this->expectException(InvalidRoute::class);
+        $this->expectExceptionMessage(<<<MESSAGE
+Unknown type 'none' of attribute 'id':
+/users/{id:none}
+MESSAGE
+        );
+
+        $this->parser->parse($definition, $this->types);
     }
 }

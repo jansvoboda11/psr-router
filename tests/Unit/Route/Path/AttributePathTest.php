@@ -6,13 +6,41 @@ namespace SvobodaTest\Router\Unit\Route\Path;
 
 use Svoboda\Router\Route\Attribute;
 use Svoboda\Router\Route\Path\AttributePath;
+use Svoboda\Router\Types\Types;
 use SvobodaTest\Router\TestCase;
 
 class AttributePathTest extends TestCase
 {
+    /** @var Types */
+    private $types;
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->types = new Types([
+            "any" => "[^/]+",
+            "num" => "\d+",
+        ], "any");
+    }
+
+    public function test_it_returns_default_pattern_without_type()
+    {
+        $path = new AttributePath("foo", null, $this->types);
+
+        self::assertEquals("[^/]+", $path->getPattern());
+    }
+
+    public function test_it_returns_correct_pattern_with_type()
+    {
+        $path = new AttributePath("foo", "num", $this->types);
+
+        self::assertEquals("\d+", $path->getPattern());
+    }
+
     public function test_it_creates_valid_definition_without_type()
     {
-        $path = new AttributePath("foo", null);
+        $path = new AttributePath("foo", null, $this->types);
 
         $definition = $path->getDefinition();
 
@@ -21,7 +49,7 @@ class AttributePathTest extends TestCase
 
     public function test_it_creates_valid_definition_with_type()
     {
-        $path = new AttributePath("foo", "any");
+        $path = new AttributePath("foo", "any", $this->types);
 
         $definition = $path->getDefinition();
 
@@ -33,9 +61,11 @@ class AttributePathTest extends TestCase
         $path = new AttributePath(
             "foo",
             null,
+            $this->types,
             new AttributePath(
                 "bar",
-                null
+                null,
+                $this->types
             )
         );
 
@@ -46,7 +76,7 @@ class AttributePathTest extends TestCase
 
     public function test_it_returns_attribute_without_type()
     {
-        $path = new AttributePath("foo", null);
+        $path = new AttributePath("foo", null, $this->types);
 
         $attributes = $path->getAttributes();
 
@@ -57,7 +87,7 @@ class AttributePathTest extends TestCase
 
     public function test_it_returns_attribute_with_type()
     {
-        $path = new AttributePath("foo", "any");
+        $path = new AttributePath("foo", "any", $this->types);
 
         $attributes = $path->getAttributes();
 
@@ -71,9 +101,11 @@ class AttributePathTest extends TestCase
         $path = new AttributePath(
             "foo",
             "num",
+            $this->types,
             new AttributePath(
                 "bar",
-                null
+                null,
+                $this->types
             )
         );
 

@@ -10,6 +10,7 @@ use Svoboda\Router\Route\Path\EmptyPath;
 use Svoboda\Router\Route\Path\OptionalPath;
 use Svoboda\Router\Route\Path\RoutePath;
 use Svoboda\Router\Route\Path\StaticPath;
+use Svoboda\Router\Types\Types;
 
 /**
  * Parses route definitions.
@@ -34,15 +35,16 @@ class Parser
      * Parse the route path definition.
      *
      * @param string $definition
+     * @param Types $types
      * @return RoutePath
      * @throws InvalidRoute
      */
-    public function parse(string $definition): RoutePath
+    public function parse(string $definition, Types $types): RoutePath
     {
         $definition = new Input($definition);
 
         try {
-            $parsed = $this->parseRoute($definition);
+            $parsed = $this->parseRoute($definition, $types, []);
         } catch (UnexpectedChar $exception) {
             if ($definition->peek() === Input::END) {
                 throw InvalidRoute::unexpectedEnd($definition);
@@ -68,46 +70,50 @@ class Parser
      * Parse the main part of the route definition.
      *
      * @param Input $definition
+     * @param Types $types
+     * @param string[] $attributes
      * @return RoutePath
      * @throws InvalidRoute
      * @throws UnexpectedChar
      */
-    private function parseRoute(Input $definition): RoutePath
+    private function parseRoute(Input $definition, Types $types, array $attributes): RoutePath
     {
         $char = $definition->peek();
 
         if ($char === "{") {
-            return $this->parseAttribute($definition);
+            return $this->parseAttribute($definition, $types, $attributes);
         }
 
         if ($char === "[") {
-            return $this->parseOptional($definition);
+            return $this->parseOptional($definition, $types, $attributes);
         }
 
         if ($char === "}") {
-            throw InvalidRoute::unexpectedCharacter($definition);
+            throw InvalidRoute::unexpectedCharacter($definition, $attributes);
         }
 
         if ($char === "]" || $char === Input::END) {
             return new EmptyPath();
         }
 
-        return $this->parseStatic($definition);
+        return $this->parseStatic($definition, $types, $attributes);
     }
 
     /**
      * Parse the static part of the route definition.
      *
      * @param Input $definition
+     * @param Types $types
+     * @param string[] $attributes
      * @return StaticPath
      * @throws InvalidRoute
      * @throws UnexpectedChar
      */
-    private function parseStatic(Input $definition): StaticPath
+    private function parseStatic(Input $definition, Types $types, array $attributes): StaticPath
     {
         $static = $definition->takeAllUntil("{}[]");
 
-        $next = $this->parseRoute($definition);
+        $next = $this->parseRoute($definition, $types, $attributes);
 
         return new StaticPath($static, $next);
     }
@@ -116,11 +122,13 @@ class Parser
      * Parse a single attribute of the route definition.
      *
      * @param Input $definition
+     * @param Types $types
+     * @param string[] $attributes
      * @return AttributePath
      * @throws InvalidRoute
      * @throws UnexpectedChar
      */
-    private function parseAttribute(Input $definition): AttributePath
+    private function parseAttribute(Input $definition, Types $types, array $attributes): AttributePath
     {
         $definition->expect("{");
 
@@ -129,24 +137,36 @@ class Parser
 
         $definition->expect("}");
 
-        $next = $this->parseRoute($definition);
+        if (in_array($name, $attributes)) {
+            throw InvalidRoute::ambiguousAttribute($definition, $name);
+        }
 
-        return new AttributePath($name, $type, $next);
+        if ($type !== null && !$types->contain($type)) {
+            throw InvalidRoute::unknownAttributeType($definition, $name, $type);
+        }
+
+        $attributes[] = $name;
+
+        $next = $this->parseRoute($definition, $types, $attributes);
+
+        return new AttributePath($name, $type, $types, $next);
     }
 
     /**
      * Parse the optional part of the route definition.
      *
      * @param Input $definition
+     * @param Types $types
+     * @param string[] $attributes
      * @return OptionalPath
      * @throws InvalidRoute
      * @throws UnexpectedChar
      */
-    private function parseOptional(Input $definition): OptionalPath
+    private function parseOptional(Input $definition, Types $types, array $attributes): OptionalPath
     {
         $definition->expect("[");
 
-        $optional = $this->parseRoute($definition);
+        $optional = $this->parseRoute($definition, $types, $attributes);
 
         $definition->expect("]");
 

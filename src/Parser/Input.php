@@ -189,6 +189,16 @@ class Input
     }
 
     /**
+     * Returns the original input.
+     *
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return $this->input;
+    }
+
+    /**
      * Returns index of the next character.
      *
      * @return int

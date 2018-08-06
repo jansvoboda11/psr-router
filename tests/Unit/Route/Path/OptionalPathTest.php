@@ -8,10 +8,24 @@ use Svoboda\Router\Route\Attribute;
 use Svoboda\Router\Route\Path\AttributePath;
 use Svoboda\Router\Route\Path\OptionalPath;
 use Svoboda\Router\Route\Path\StaticPath;
+use Svoboda\Router\Types\Types;
 use SvobodaTest\Router\TestCase;
 
 class OptionalPathTest extends TestCase
 {
+    /** @var Types */
+    private $types;
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->types = new Types([
+            "any" => "[^/]+",
+            "num" => "\d+",
+        ], "any");
+    }
+
     public function test_it_uses_brackets_in_definition()
     {
         $path = new OptionalPath(
@@ -30,7 +44,8 @@ class OptionalPathTest extends TestCase
         $path = new OptionalPath(
             new AttributePath(
                 "foo",
-                "any"
+                "any",
+                $this->types
             )
         );
 
@@ -47,7 +62,8 @@ class OptionalPathTest extends TestCase
             new OptionalPath(
                 new AttributePath(
                     "foo",
-                    "any"
+                    "any",
+                    $this->types
                 )
             )
         );
