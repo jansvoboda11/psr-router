@@ -13,15 +13,13 @@ class MethodTest extends TestCase
     {
         $methods = Method::all();
 
-        self::assertEquals([
-            "OPTIONS",
-            "GET",
-            "HEAD",
-            "POST",
-            "PUT",
-            "PATCH",
-            "DELETE",
-        ], $methods);
+        self::assertContains("OPTIONS", $methods);
+        self::assertContains("GET", $methods);
+        self::assertContains("HEAD", $methods);
+        self::assertContains("POST", $methods);
+        self::assertContains("PUT", $methods);
+        self::assertContains("PATCH", $methods);
+        self::assertContains("DELETE", $methods);
     }
 
     public function test_it_recognizes_valid_methods()
