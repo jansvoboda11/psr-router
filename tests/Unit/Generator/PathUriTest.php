@@ -180,9 +180,8 @@ class PathUriTest extends TestCase
         );
 
         $this->expectException(InvalidAttribute::class);
-        $this->expectExceptionMessage(<<<MESSAGE
-The value for attribute 'id' is missing
-MESSAGE
+        $this->expectExceptionMessage(
+            "The value for attribute 'id' is missing"
         );
 
         new PathUri($path, $this->types);
@@ -217,9 +216,8 @@ MESSAGE
         );
 
         $this->expectException(InvalidAttribute::class);
-        $this->expectExceptionMessage(<<<MESSAGE
-The value for attribute 'first' is missing
-MESSAGE
+        $this->expectExceptionMessage(
+            "The value for attribute 'first' is missing"
         );
 
         new PathUri($path, $this->types, [
@@ -239,9 +237,8 @@ MESSAGE
         );
 
         $this->expectException(InvalidAttribute::class);
-        $this->expectExceptionMessage(<<<MESSAGE
-The value 'i42' of attribute 'id' does not match the specified pattern: \d+
-MESSAGE
+        $this->expectExceptionMessage(
+            "The value 'i42' of attribute 'id' does not match the specified pattern: \d+"
         );
 
         new PathUri($path, $this->types, [
