@@ -27,7 +27,7 @@ The `Router` class matches incoming HTTP requests against defined routes and usi
 You should register your routes in the `RouteCollection`.
 You have to provide the path definition and a handler.
 If you plan to use the URI generator, you should also provide a name of the route.
-You can also add any data to the route with the fourth argument, which can be accessed later (e.g. in your custom middleware).
+You can also add any data to the route with the fourth argument, which can be accessed later on (e.g. in your custom middleware).
 
 ```php
 $routes = RouteCollection::create();
@@ -79,7 +79,7 @@ The method returns a `Match` if the request matches any route definition.
 The match contains the matched route and modified request with filled route attributes.
 
 If the incoming request does not match any route definition, the method throws a `Failure`.
-The failure holds the original request and an array of routes that would match the request with a different HTTP method.
+The failure holds the original request and an array of routes that would match the request if a different HTTP method was used.
 The array is indexed by their respective methods.
 
 ```php
