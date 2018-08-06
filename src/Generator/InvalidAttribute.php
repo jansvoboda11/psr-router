@@ -23,18 +23,6 @@ class InvalidAttribute extends Exception
     }
 
     /**
-     * The attribute has unknown type.
-     *
-     * @param string $name
-     * @param string $type
-     * @return InvalidAttribute
-     */
-    public static function unknownType(string $name, string $type): self
-    {
-        return new self("The attribute '$name' has unknown type '$type'");
-    }
-
-    /**
      * The attribute value has bad format.
      *
      * @param string $name
