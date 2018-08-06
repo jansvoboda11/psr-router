@@ -32,10 +32,12 @@ class RouterTest extends TestCase
         $this->compiler = Mockery::mock(Compiler::class);
     }
 
-    public function test_it_creates_and_uses_matcher()
+    /**
+     * @doesNotPerformAssertions
+     */
+    public function test_it_creates_matcher_only_once()
     {
         $request = self::createRequest("GET", "/users");
-        $matcherMatch = new Match(new Handler("Users"), $request);
 
         $this->compiler
             ->shouldReceive("compile")
@@ -46,13 +48,36 @@ class RouterTest extends TestCase
         $this->matcher
             ->shouldReceive("match")
             ->with($request)
-            ->andReturn($matcherMatch)
+            ->twice();
+
+        $router = new Router($this->routes, $this->compiler);
+
+        $router->match($request);
+        $router->match($request);
+    }
+
+    public function test_it_uses_created_matcher()
+    {
+        $request = self::createRequest("GET", "/users");
+
+        $expectedMatch = new Match(new Handler("Users"), $request);
+
+        $this->compiler
+            ->shouldReceive("compile")
+            ->with($this->routes)
+            ->andReturn($this->matcher)
+            ->once();
+
+        $this->matcher
+            ->shouldReceive("match")
+            ->with($request)
+            ->andReturn($expectedMatch)
             ->once();
 
         $router = new Router($this->routes, $this->compiler);
 
         $match = $router->match($request);
 
-        self::assertEquals($matcherMatch, $match);
+        self::assertEquals($expectedMatch, $match);
     }
 }
