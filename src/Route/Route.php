@@ -98,9 +98,9 @@ class Route
     /**
      * Returns the name.
      *
-     * @return string
+     * @return null|string
      */
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
