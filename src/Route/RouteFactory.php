@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Svoboda\Router\Route;
 
-use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Http\Server\RequestHandlerInterface as Handler;
 use Svoboda\Router\Parser\Parser;
 use Svoboda\Router\Types\Types;
 
@@ -44,12 +44,13 @@ class RouteFactory
      *
      * @param string $method
      * @param string $definition
-     * @param RequestHandlerInterface $handler
+     * @param Handler $handler
+     * @param null|string $name
      * @param null|mixed $data
      * @return Route
      * @throws InvalidRoute
      */
-    public function create(string $method, string $definition, RequestHandlerInterface $handler, $data = null): Route
+    public function create(string $method, string $definition, Handler $handler, ?string $name, $data): Route
     {
         if (!Method::isValid($method)) {
             throw InvalidRoute::invalidMethod($method);
@@ -57,6 +58,6 @@ class RouteFactory
 
         $path = $this->parser->parse($definition, $this->types);
 
-        return new Route($method, $path, $handler, $data);
+        return new Route($method, $path, $handler, $name, $data);
     }
 }

@@ -41,21 +41,21 @@ class RouteFactoryTest extends TestCase
 
         $this->expectException(InvalidRoute::class);
 
-        $this->factory->create("INVALID", "/path", $handler, []);
+        $this->factory->create("INVALID", "/users", $handler, "users", []);
     }
 
     public function test_it_parses_definition()
     {
-        $path = new StaticPath("/path");
+        $path = new StaticPath("/users");
         $handler = new Handler("Handler");
 
         $this->parser
             ->shouldReceive("parse")
-            ->with("/path", $this->types)
+            ->with("/users", $this->types)
             ->andReturn($path)
             ->once();
 
-        $route = $this->factory->create("GET", "/path", $handler, []);
+        $route = $this->factory->create("GET", "/users", $handler, "users", []);
 
         self::assertEquals("GET", $route->getMethod());
         self::assertEquals($path, $route->getPath());
@@ -68,12 +68,12 @@ class RouteFactoryTest extends TestCase
 
         $this->parser
             ->shouldReceive("parse")
-            ->with("/path", $this->types)
+            ->with("/users", $this->types)
             ->andThrow(InvalidRoute::class)
             ->once();
 
         $this->expectException(InvalidRoute::class);
 
-        $this->factory->create("GET", "/path", $handler, []);
+        $this->factory->create("GET", "/users", $handler, "users", []);
     }
 }

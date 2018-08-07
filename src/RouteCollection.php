@@ -157,7 +157,7 @@ class RouteCollection
      */
     public function route(string $method, string $definition, Handler $handler, ?string $name = null, $data = null): Route
     {
-        $route = $this->factory->create($method, $definition, $handler, $data);
+        $route = $this->factory->create($method, $definition, $handler, $name, $data);
 
         $this->routes[] = $route;
 

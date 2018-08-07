@@ -31,11 +31,11 @@ class RouteCollectionTest extends TestCase
     {
         $path = new StaticPath("/users");
         $handler = new Handler("UsersAction");
-        $route = new Route("GET", $path, $handler, []);
+        $route = new Route("GET", $path, $handler, "users", []);
 
         $this->factory
             ->shouldReceive("create")
-            ->with("GET", "/users", $handler, [])
+            ->with("GET", "/users", $handler, "users", [])
             ->andReturn($route)
             ->once();
 
@@ -51,11 +51,11 @@ class RouteCollectionTest extends TestCase
     {
         $path = new StaticPath("/users");
         $handler = new Handler("UsersAction");
-        $route = new Route("POST", $path, $handler);
+        $route = new Route("POST", $path, $handler, "users");
 
         $this->factory
             ->shouldReceive("create")
-            ->with("POST", "/users", $handler, [])
+            ->with("POST", "/users", $handler, "users", [])
             ->andReturn($route)
             ->once();
 
@@ -71,11 +71,11 @@ class RouteCollectionTest extends TestCase
     {
         $path = new StaticPath("/users");
         $handler = new Handler("UsersAction");
-        $route = new Route("PUT", $path, $handler);
+        $route = new Route("PUT", $path, $handler, "users", []);
 
         $this->factory
             ->shouldReceive("create")
-            ->with("PUT", "/users", $handler, [])
+            ->with("PUT", "/users", $handler, "users", [])
             ->andReturn($route)
             ->once();
 
@@ -91,11 +91,11 @@ class RouteCollectionTest extends TestCase
     {
         $path = new StaticPath("/users");
         $handler = new Handler("UsersAction");
-        $route = new Route("PATCH", $path, $handler, []);
+        $route = new Route("PATCH", $path, $handler, "users", []);
 
         $this->factory
             ->shouldReceive("create")
-            ->with("PATCH", "/users", $handler, [])
+            ->with("PATCH", "/users", $handler, "users", [])
             ->andReturn($route)
             ->once();
 
@@ -111,11 +111,11 @@ class RouteCollectionTest extends TestCase
     {
         $path = new StaticPath("/users");
         $handler = new Handler("UsersAction");
-        $route = new Route("DELETE", $path, $handler, []);
+        $route = new Route("DELETE", $path, $handler, "users", []);
 
         $this->factory
             ->shouldReceive("create")
-            ->with("DELETE", "/users", $handler, [])
+            ->with("DELETE", "/users", $handler, "users", [])
             ->andReturn($route)
             ->once();
 
@@ -131,11 +131,11 @@ class RouteCollectionTest extends TestCase
     {
         $path = new StaticPath("/users");
         $handler = new Handler("UsersAction");
-        $route = new Route("GET", $path, $handler, []);
+        $route = new Route("GET", $path, $handler, "users.all", []);
 
         $this->factory
             ->shouldReceive("create")
-            ->with("GET", "/users", $handler, [])
+            ->with("GET", "/users", $handler, "users.all", [])
             ->andReturn($route)
             ->once();
 
@@ -150,11 +150,11 @@ class RouteCollectionTest extends TestCase
     {
         $path = new StaticPath("/users");
         $handler = new Handler("UsersAction");
-        $route = new Route("GET", $path, $handler, []);
+        $route = new Route("GET", $path, $handler, "users.all", []);
 
         $this->factory
             ->shouldReceive("create")
-            ->with("GET", "/users", $handler, [])
+            ->with("GET", "/users", $handler, "users.all", [])
             ->andReturn($route)
             ->once();
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Svoboda\Router\Route;
 
-use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Http\Server\RequestHandlerInterface as Handler;
 use Svoboda\Router\Route\Path\RoutePath;
 
 /**
@@ -29,9 +29,16 @@ class Route
     /**
      * The handler.
      *
-     * @var RequestHandlerInterface
+     * @var Handler
      */
     private $handler;
+
+    /**
+     * The name.
+     *
+     * @var null|string
+     */
+    private $name;
 
     /**
      * Data associated with the route.
@@ -45,14 +52,16 @@ class Route
      *
      * @param string $method
      * @param RoutePath $path
-     * @param RequestHandlerInterface $handler
+     * @param Handler $handler
+     * @param null|string $name
      * @param null|mixed $data
      */
-    public function __construct(string $method, RoutePath $path, RequestHandlerInterface $handler, $data = null)
+    public function __construct(string $method, RoutePath $path, Handler $handler, ?string $name = null, $data = null)
     {
         $this->method = $method;
         $this->path = $path;
         $this->handler = $handler;
+        $this->name = $name;
         $this->data = $data;
     }
 
@@ -79,11 +88,21 @@ class Route
     /**
      * Returns the handler.
      *
-     * @return RequestHandlerInterface
+     * @return Handler
      */
-    public function getHandler(): RequestHandlerInterface
+    public function getHandler(): Handler
     {
         return $this->handler;
+    }
+
+    /**
+     * Returns the name.
+     *
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
     }
 
     /**
