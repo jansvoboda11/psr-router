@@ -10,7 +10,7 @@ use Svoboda\Router\Route\Path\StaticPath;
 use Svoboda\Router\Types\Types;
 use SvobodaTest\Router\TestCase;
 
-class PartsVisitorTest extends TestCase
+class PathVisitorTest extends TestCase
 {
     public function test_it_visits_path_parts_in_correct_order()
     {
