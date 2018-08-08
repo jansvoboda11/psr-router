@@ -25,7 +25,7 @@ class RouterBench
     }
 
     /**
-     * @Iterations(5)
+     * @Iterations(10)
      * @Revs(1000)
      */
     public function benchMultiPatternMatcher()
