@@ -4,11 +4,7 @@ declare(strict_types=1);
 
 namespace SvobodaTest\Router\Integration;
 
-use Mockery;
-use Mockery\MockInterface;
-use Psr\Http\Message\ResponseFactoryInterface;
-use Psr\Http\Message\StreamFactoryInterface;
-use Psr\Http\Server\RequestHandlerInterface;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use Svoboda\Dispatcher\Dispatcher;
 use Svoboda\Router\Middleware\AutomaticHeadMiddleware;
 use Svoboda\Router\Middleware\AutomaticOptionsMiddleware;
@@ -34,19 +30,14 @@ class MiddlewareTest extends TestCase
         self::assertEquals(404, $response->getStatusCode());
     }
 
-    public function test_with_match_uses_matched_middleware()
+    public function test_with_match_uses_matched_handler()
     {
         $request = self::createRequest("POST", "/users");
 
-        /** @var MockInterface|RequestHandlerInterface $usersHandler */
-        $usersHandler = Mockery::mock(RequestHandlerInterface::class);
-        $usersHandler
-            ->shouldReceive("handle")
-            ->andReturn(self::createResponse(201))
-            ->once();
+        $postHandler = new Handler(self::createResponse(201));
 
         $routes = RouteCollection::create();
-        $routes->post("/users", $usersHandler);
+        $routes->post("/users", $postHandler);
 
         $dispatcher = self::createDispatcher($routes);
 
@@ -59,13 +50,8 @@ class MiddlewareTest extends TestCase
     {
         $request = self::createRequest("OPTIONS", "/users");
 
-        /** @var MockInterface|RequestHandlerInterface $getHandler */
-        $getHandler = Mockery::mock(RequestHandlerInterface::class);
-        $getHandler->shouldNotReceive("handle");
-
-        /** @var MockInterface|RequestHandlerInterface $postHandler */
-        $postHandler = Mockery::mock(RequestHandlerInterface::class);
-        $postHandler->shouldNotReceive("handle");
+        $getHandler = new Handler(self::createResponse(202));
+        $postHandler = new Handler(self::createResponse(203));
 
         $routes = RouteCollection::create();
 
@@ -84,12 +70,7 @@ class MiddlewareTest extends TestCase
     {
         $request = self::createRequest("HEAD", "/users");
 
-        /** @var MockInterface|RequestHandlerInterface $getHandler */
-        $getHandler = Mockery::mock(RequestHandlerInterface::class);
-        $getHandler
-            ->shouldReceive("handle")
-            ->andReturn(self::createResponse(201, "Created", "The GET response body."))
-            ->once();
+        $getHandler = new Handler(self::createResponse(201, "Created", "The GET response body."));
 
         $routes = RouteCollection::create();
         $routes->get("/users", $getHandler);
@@ -106,9 +87,7 @@ class MiddlewareTest extends TestCase
     {
         $request = self::createRequest("POST", "/users");
 
-        /** @var MockInterface|RequestHandlerInterface $patchHandler */
-        $patchHandler = Mockery::mock(RequestHandlerInterface::class);
-        $patchHandler->shouldNotReceive("handle");
+        $patchHandler = new Handler(self::createResponse(201));
 
         $routes = RouteCollection::create();
         $routes->patch("/users", $patchHandler);
@@ -132,30 +111,10 @@ class MiddlewareTest extends TestCase
     {
         $router = Router::create($routes);
 
-        /** @var MockInterface|ResponseFactoryInterface $responseFactory */
-        $responseFactory = Mockery::mock(ResponseFactoryInterface::class);
-        $responseFactory
-            ->shouldReceive("createResponse")
-            ->with(200, "OK")
-            ->andReturn(self::createResponse(200, "OK"));
-        $responseFactory
-            ->shouldReceive("createResponse")
-            ->with(405, "Method Not Allowed")
-            ->andReturn(self::createResponse(405, "Method Not Allowed"));
+        $responseFactory = new Psr17Factory();
+        $streamFactory = new Psr17Factory();
 
-        /** @var MockInterface|StreamFactoryInterface $streamFactory */
-        $streamFactory = Mockery::mock(StreamFactoryInterface::class);
-        $streamFactory
-            ->shouldReceive("createStream")
-            ->andReturn(self::createStream());
-
-        /** @var MockInterface|RequestHandlerInterface $handler */
-        $handler = Mockery::mock(RequestHandlerInterface::class);
-        $handler
-            ->shouldReceive("handle")
-            ->andReturn(self::createResponse(404, "Not Found", "Route does not exist."))
-            ->atMost()
-            ->once();
+        $handler = new Handler(self::createResponse(404));
 
         return new Dispatcher([
             new RouteMatchingMiddleware($router),

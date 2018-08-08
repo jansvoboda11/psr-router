@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace SvobodaTest\Router\Unit\Middleware;
 
-use Hamcrest\Matchers;
-use Mockery;
-use Mockery\MockInterface;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Server\RequestHandlerInterface;
 use Svoboda\Router\Failure;
 use Svoboda\Router\Match;
@@ -19,44 +17,39 @@ use SvobodaTest\Router\TestCase;
 
 class RouteMatchingMiddlewareTest extends TestCase
 {
-    /** @var MockInterface|Router */
+    /** @var ObjectProphecy|Router */
     private $router;
 
-    /** @var MockInterface|RequestHandlerInterface */
-    private $handler;
+    /** @var ObjectProphecy|RequestHandlerInterface */
+    private $nextHandler;
 
     /** @var RouteMatchingMiddleware */
     private $middleware;
 
     protected function setUp()
     {
-        $this->router = Mockery::mock(Router::class);
-        $this->handler = Mockery::mock(RequestHandlerInterface::class);
-        $this->middleware = new RouteMatchingMiddleware($this->router);
+        $this->router = $this->prophesize(Router::class);
+        $this->nextHandler = $this->prophesize(RequestHandlerInterface::class);
+        $this->middleware = new RouteMatchingMiddleware($this->router->reveal());
     }
 
     public function test_it_adds_match_attribute()
     {
-        $request = self::createRequest("GET", "/users");
         $route = new Route("GET", new StaticPath("/users"), new Handler("Match"));
+
+        $request = self::createRequest("GET", "/users");
         $match = new Match($route, $request);
         $requestWithMatch = $request->withAttribute(Match::class, $match);
 
-        $this->router
-            ->shouldReceive("match")
-            ->with($request)
-            ->andReturn($match)
-            ->once();
+        $nextHandlerResponse = self::createResponse(404);
 
-        $this->handler
-            ->shouldReceive("handle")
-            ->with(Matchers::equalTo($requestWithMatch))
-            ->andReturn(self::createResponse(404))
-            ->once();
+        $this->router->match($request)->willReturn($match);
 
-        $response = $this->middleware->process($request, $this->handler);
+        $this->nextHandler->handle($requestWithMatch)->willReturn($nextHandlerResponse);
 
-        self::assertSame(404, $response->getStatusCode());
+        $response = $this->middleware->process($request, $this->nextHandler->reveal());
+
+        self::assertEquals($nextHandlerResponse, $response);
     }
 
     public function test_it_adds_failure_attribute()
@@ -65,20 +58,14 @@ class RouteMatchingMiddlewareTest extends TestCase
         $failure = new Failure(["GET", "POST"], $request);
         $requestWithFailure = $request->withAttribute(Failure::class, $failure);
 
-        $this->router
-            ->shouldReceive("match")
-            ->with($request)
-            ->andThrow($failure)
-            ->once();
+        $nextHandlerResponse = self::createResponse(404);
 
-        $this->handler
-            ->shouldReceive("handle")
-            ->with(Matchers::equalTo($requestWithFailure))
-            ->andReturn(self::createResponse(404))
-            ->once();
+        $this->router->match($request)->willThrow($failure);
 
-        $response = $this->middleware->process($request, $this->handler);
+        $this->nextHandler->handle($requestWithFailure)->willReturn($nextHandlerResponse);
 
-        self::assertSame(404, $response->getStatusCode());
+        $response = $this->middleware->process($request, $this->nextHandler->reveal());
+
+        self::assertSame($nextHandlerResponse, $response);
     }
 }

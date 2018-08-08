@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace SvobodaTest\Router;
 
-use Mockery;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
+use Svoboda\Router\Failure;
+use Svoboda\Router\Match;
+use Svoboda\Router\Route\Route;
 
 class TestCase extends \PHPUnit\Framework\TestCase
 {
@@ -24,11 +26,6 @@ class TestCase extends \PHPUnit\Framework\TestCase
         $this->handleThrowableExpectations(function () {
             parent::runTest();
         });
-    }
-
-    protected function tearDown()
-    {
-        Mockery::close();
     }
 
     /**
@@ -67,5 +64,19 @@ class TestCase extends \PHPUnit\Framework\TestCase
     protected static function createStream(string $string = ""): StreamInterface
     {
         return (new Psr17Factory())->createStream($string);
+    }
+
+    protected static function requestWithMatch(ServerRequestInterface $request, Route $route): ServerRequestInterface
+    {
+        $match = new Match($route, $request);
+
+        return $request->withAttribute(Match::class, $match);
+    }
+
+    protected static function requestWithFailure(ServerRequestInterface $request, array $uriRoutes): ServerRequestInterface
+    {
+        $failure = new Failure($uriRoutes, $request);
+
+        return $request->withAttribute(Failure::class, $failure);
     }
 }

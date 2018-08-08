@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace SvobodaTest\Router\Unit\Middleware;
 
-use Mockery;
-use Mockery\MockInterface;
+use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Svoboda\Router\Failure;
-use Svoboda\Router\Match;
 use Svoboda\Router\Middleware\MethodNotAllowedMiddleware;
 use Svoboda\Router\Route\Path\StaticPath;
 use Svoboda\Router\Route\Route;
@@ -18,10 +16,10 @@ use SvobodaTest\Router\TestCase;
 
 class MethodNotAllowedMiddlewareTest extends TestCase
 {
-    /** @var MockInterface|RequestHandlerInterface */
-    private $handler;
+    /** @var ObjectProphecy|RequestHandlerInterface */
+    private $nextHandler;
 
-    /** @var MockInterface|ResponseFactoryInterface */
+    /** @var ObjectProphecy|ResponseFactoryInterface */
     private $responseFactory;
 
     /** @var MethodNotAllowedMiddleware */
@@ -29,59 +27,50 @@ class MethodNotAllowedMiddlewareTest extends TestCase
 
     protected function setUp()
     {
-        $this->handler = Mockery::mock(RequestHandlerInterface::class);
-        $this->responseFactory = Mockery::mock(ResponseFactoryInterface::class);
-        $this->middleware = new MethodNotAllowedMiddleware($this->responseFactory);
+        $this->nextHandler = $this->prophesize(RequestHandlerInterface::class);
+        $this->responseFactory = $this->prophesize(ResponseFactoryInterface::class);
+        $this->middleware = new MethodNotAllowedMiddleware($this->responseFactory->reveal());
     }
 
     public function test_it_ignores_request_with_method_that_is_always_allowed()
     {
         $request = self::createRequest("GET", "/users");
 
-        $this->handler
-            ->shouldReceive("handle")
-            ->with($request)
-            ->andReturn(self::createResponse(201, "Created", "Foobar"))
-            ->once();
+        $nextHandlerResponse = self::createResponse(201, "Created", "Foobar");
 
-        $response = $this->middleware->process($request, $this->handler);
+        $this->nextHandler->handle($request)->willReturn($nextHandlerResponse);
 
-        self::assertEquals(201, $response->getStatusCode());
-        self::assertEquals("Foobar", $response->getBody());
+        $response = $this->middleware->process($request, $this->nextHandler->reveal());
+
+        self::assertEquals($nextHandlerResponse, $response);
     }
 
     public function test_it_ignores_matched_route()
     {
-        $request = self::createRequest("POST", "/users");
         $route = new Route("POST", new StaticPath("/users"), new Handler("Users"));
-        $match = new Match($route, $request);
-        $request = $request->withAttribute(Match::class, $match);
 
-        $this->handler
-            ->shouldReceive("handle")
-            ->with($request)
-            ->andReturn(self::createResponse(201, "Created", "Foobar"))
-            ->once();
+        $request = self::createRequest("POST", "/users");
+        $request = self::requestWithMatch($request, $route);
 
-        $response = $this->middleware->process($request, $this->handler);
+        $nextHandlerResponse = self::createResponse(201, "Created", "Foobar");
 
-        self::assertEquals(201, $response->getStatusCode());
-        self::assertEquals("Foobar", $response->getBody());
+        $this->nextHandler->handle($request)->willReturn($nextHandlerResponse);
+
+        $response = $this->middleware->process($request, $this->nextHandler->reveal());
+
+        self::assertEquals($nextHandlerResponse, $response);
     }
 
     public function test_it_ignores_uri_failure()
     {
         $request = self::createRequest("POST", "/users");
-        $failure = new Failure([], $request);
-        $request = $request->withAttribute(Failure::class, $failure);
+        $request = self::requestWithFailure($request, []);
 
-        $this->handler
-            ->shouldReceive("handle")
-            ->with($request)
-            ->andReturn(self::createResponse(201, "Created", "Foobar"))
-            ->once();
+        $nextHandlerResponse = self::createResponse(201, "Created", "Foobar");
 
-        $response = $this->middleware->process($request, $this->handler);
+        $this->nextHandler->handle($request)->willReturn($nextHandlerResponse);
+
+        $response = $this->middleware->process($request, $this->nextHandler->reveal());
 
         self::assertEquals(201, $response->getStatusCode());
         self::assertEquals("Foobar", $response->getBody());
@@ -90,21 +79,18 @@ class MethodNotAllowedMiddlewareTest extends TestCase
     public function test_it_returns_method_not_allowed_response()
     {
         $request = self::createRequest("POST", "/users");
-        $failure = new Failure([
+        $request = self::requestWithFailure($request, [
             "POST" => new Handler("Post"),
             "PATCH" => new Handler("Patch"),
-        ], $request);
-        $request = $request->withAttribute(Failure::class, $failure);
+        ]);
 
-        $this->responseFactory
-            ->shouldReceive("createResponse")
-            ->with(405, "Method Not Allowed")
-            ->andReturn(self::createResponse(405, "Method Not Allowed"))
-            ->once();
+        $factoryResponse = self::createResponse(405, "Method Not Allowed");
 
-        $this->handler->shouldNotReceive("handle");
+        $this->responseFactory->createResponse(405, "Method Not Allowed")->willReturn($factoryResponse);
 
-        $response = $this->middleware->process($request, $this->handler);
+        $response = $this->middleware->process($request, $this->nextHandler->reveal());
+
+        $this->nextHandler->handle(Argument::any())->shouldNotHaveBeenCalled();
 
         self::assertEquals(405, $response->getStatusCode());
         self::assertEquals("Method Not Allowed", $response->getReasonPhrase());

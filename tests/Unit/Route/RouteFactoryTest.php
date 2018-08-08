@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace SvobodaTest\Router\Unit\Route;
 
-use Mockery;
-use Mockery\MockInterface;
+use Prophecy\Prophecy\ObjectProphecy;
 use Svoboda\Router\Parser\Parser;
 use Svoboda\Router\Route\InvalidRoute;
 use Svoboda\Router\Route\Path\StaticPath;
+use Svoboda\Router\Route\Route;
 use Svoboda\Router\Route\RouteFactory;
 use Svoboda\Router\Types\Types;
 use SvobodaTest\Router\Handler;
@@ -19,7 +19,7 @@ class RouteFactoryTest extends TestCase
     /** @var Types */
     private $types;
 
-    /** @var MockInterface|Parser */
+    /** @var ObjectProphecy|Parser */
     private $parser;
 
     /** @var RouteFactory */
@@ -31,8 +31,8 @@ class RouteFactoryTest extends TestCase
             "any" => "[^/]+",
         ], "any");
 
-        $this->parser = Mockery::mock(Parser::class);
-        $this->factory = new RouteFactory($this->parser, $this->types);
+        $this->parser = $this->prophesize(Parser::class);
+        $this->factory = new RouteFactory($this->parser->reveal(), $this->types);
     }
 
     public function test_it_rejects_invalid_http_method()
@@ -48,32 +48,23 @@ class RouteFactoryTest extends TestCase
     {
         $path = new StaticPath("/users");
         $handler = new Handler("Handler");
+        $expectedRoute = new Route("GET", $path, $handler, "users", []);
 
-        $this->parser
-            ->shouldReceive("parse")
-            ->with("/users", $this->types)
-            ->andReturn($path)
-            ->once();
+        $this->parser->parse("/users", $this->types)->willReturn($path);
 
         $route = $this->factory->create("GET", "/users", $handler, "users", []);
 
-        self::assertEquals("GET", $route->getMethod());
-        self::assertEquals($path, $route->getPath());
-        self::assertEquals($handler, $route->getHandler());
+        self::assertEquals($expectedRoute, $route);
     }
 
     public function test_it_fails_when_parser_fails()
     {
         $handler = new Handler("Handler");
 
-        $this->parser
-            ->shouldReceive("parse")
-            ->with("/users", $this->types)
-            ->andThrow(InvalidRoute::class)
-            ->once();
+        $this->parser->parse("/users/{id", $this->types)->willThrow(InvalidRoute::class);
 
         $this->expectException(InvalidRoute::class);
 
-        $this->factory->create("GET", "/users", $handler, "users", []);
+        $this->factory->create("GET", "/users/{id", $handler, "users", []);
     }
 }

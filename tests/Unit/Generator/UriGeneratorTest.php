@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace SvobodaTest\Router\Unit\Generator;
 
-use Mockery;
-use Mockery\MockInterface;
+use Prophecy\Prophecy\ObjectProphecy;
 use Svoboda\Router\Generator\RouteNotFound;
 use Svoboda\Router\Generator\UriFactory;
 use Svoboda\Router\Generator\UriGenerator;
@@ -21,10 +20,10 @@ class UriGeneratorTest extends TestCase
     /** @var Types */
     private $types;
 
-    /** @var MockInterface|RouteCollection */
+    /** @var ObjectProphecy|RouteCollection */
     private $routes;
 
-    /** @var MockInterface|UriFactory */
+    /** @var ObjectProphecy|UriFactory */
     private $factory;
 
     protected function setUp()
@@ -33,18 +32,15 @@ class UriGeneratorTest extends TestCase
             "any" => "[^/]+",
         ], "any");
 
-        $this->routes = Mockery::mock(RouteCollection::class);
-        $this->factory = Mockery::mock(UriFactory::class);
+        $this->routes = $this->prophesize(RouteCollection::class);
+        $this->factory = $this->prophesize(UriFactory::class);
     }
 
     public function test_it_fails_on_missing_route()
     {
-        $this->routes
-            ->shouldReceive("oneNamed")
-            ->with("users.all")
-            ->andReturn(null);
+        $this->routes->oneNamed("users.all")->willReturn(null);
 
-        $generator = new UriGenerator($this->routes, $this->factory, null);
+        $generator = new UriGenerator($this->routes->reveal(), $this->factory->reveal(), null);
 
         $this->expectException(RouteNotFound::class);
 
@@ -55,44 +51,30 @@ class UriGeneratorTest extends TestCase
     {
         $path = new StaticPath("/users");
         $handler = new Handler("UsersAction");
-
         $route = new Route("GET", $path, $handler);
 
-        $this->routes
-            ->shouldReceive("oneNamed")
-            ->with("users.all")
-            ->andReturn($route);
+        $this->routes->oneNamed("users.all")->willReturn($route);
 
-        $this->factory
-            ->shouldReceive("create")
-            ->with($path, [])
-            ->andReturn("/users");
+        $this->factory->create($path, [])->willReturn("/users");
 
-        $generator = new UriGenerator($this->routes, $this->factory, null);
+        $generator = new UriGenerator($this->routes->reveal(), $this->factory->reveal(), null);
 
         $uri = $generator->generate("users.all", []);
 
         self::assertEquals("/users", $uri);
     }
 
-    public function test_it_creates_uri_with_prefix_from_constructor()
+    public function test_it_creates_uri_with_constructor_prefix()
     {
         $path = new StaticPath("/users");
         $handler = new Handler("UsersAction");
-
         $route = new Route("GET", $path, $handler);
 
-        $this->routes
-            ->shouldReceive("oneNamed")
-            ->with("users.all")
-            ->andReturn($route);
+        $this->routes->oneNamed("users.all")->willReturn($route);
 
-        $this->factory
-            ->shouldReceive("create")
-            ->with($path, [])
-            ->andReturn("/users");
+        $this->factory->create($path, [])->willReturn("/users");
 
-        $generator = new UriGenerator($this->routes, $this->factory, "/api");
+        $generator = new UriGenerator($this->routes->reveal(), $this->factory->reveal(), "/api");
 
         $uri = $generator->generate("users.all", []);
 
@@ -103,20 +85,13 @@ class UriGeneratorTest extends TestCase
     {
         $path = new StaticPath("/users");
         $handler = new Handler("UsersAction");
-
         $route = new Route("GET", $path, $handler);
 
-        $this->routes
-            ->shouldReceive("oneNamed")
-            ->with("users.all")
-            ->andReturn($route);
+        $this->routes->oneNamed("users.all")->willReturn($route);
 
-        $this->factory
-            ->shouldReceive("create")
-            ->with($path, [])
-            ->andReturn("/users");
+        $this->factory->create($path, [])->willReturn("/users");
 
-        $generator = new UriGenerator($this->routes, $this->factory, "/api");
+        $generator = new UriGenerator($this->routes->reveal(), $this->factory->reveal(), "/api");
 
         $uri = $generator->generate("users.all", [], "/web");
 

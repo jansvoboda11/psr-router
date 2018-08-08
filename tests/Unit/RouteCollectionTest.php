@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace SvobodaTest\Router\Unit;
 
-use Mockery;
-use Mockery\MockInterface;
+use Prophecy\Prophecy\ObjectProphecy;
 use Svoboda\Router\Route\Path\StaticPath;
 use Svoboda\Router\Route\Route;
 use Svoboda\Router\Route\RouteFactory;
@@ -15,7 +14,7 @@ use SvobodaTest\Router\TestCase;
 
 class RouteCollectionTest extends TestCase
 {
-    /** @var MockInterface|RouteFactory */
+    /** @var ObjectProphecy|RouteFactory */
     private $factory;
 
     /** @var RouteCollection */
@@ -23,8 +22,8 @@ class RouteCollectionTest extends TestCase
 
     protected function setUp()
     {
-        $this->factory = Mockery::mock(RouteFactory::class);
-        $this->collection = new RouteCollection($this->factory);
+        $this->factory = $this->prophesize(RouteFactory::class);
+        $this->collection = new RouteCollection($this->factory->reveal());
     }
 
     public function test_it_registers_get_route()
@@ -33,18 +32,13 @@ class RouteCollectionTest extends TestCase
         $handler = new Handler("UsersAction");
         $route = new Route("GET", $path, $handler, "users", []);
 
-        $this->factory
-            ->shouldReceive("create")
-            ->with("GET", "/users", $handler, "users", [])
-            ->andReturn($route)
-            ->once();
+        $this->factory->create("GET", "/users", $handler, "users", [])->willReturn($route);
 
         $this->collection->get("/users", $handler, "users", []);
 
         $routes = $this->collection->all();
 
-        self::assertCount(1, $routes);
-        self::assertEquals($route, $routes[0]);
+        self::assertEquals([$route], $routes);
     }
 
     public function test_it_registers_post_route()
@@ -53,18 +47,13 @@ class RouteCollectionTest extends TestCase
         $handler = new Handler("UsersAction");
         $route = new Route("POST", $path, $handler, "users");
 
-        $this->factory
-            ->shouldReceive("create")
-            ->with("POST", "/users", $handler, "users", [])
-            ->andReturn($route)
-            ->once();
+        $this->factory->create("POST", "/users", $handler, "users", [])->willReturn($route);
 
         $this->collection->post("/users", $handler, "users", []);
 
         $routes = $this->collection->all();
 
-        self::assertCount(1, $routes);
-        self::assertEquals($route, $routes[0]);
+        self::assertEquals([$route], $routes);
     }
 
     public function test_it_registers_put_route()
@@ -73,18 +62,13 @@ class RouteCollectionTest extends TestCase
         $handler = new Handler("UsersAction");
         $route = new Route("PUT", $path, $handler, "users", []);
 
-        $this->factory
-            ->shouldReceive("create")
-            ->with("PUT", "/users", $handler, "users", [])
-            ->andReturn($route)
-            ->once();
+        $this->factory->create("PUT", "/users", $handler, "users", [])->willReturn($route);
 
         $this->collection->put("/users", $handler, "users", []);
 
         $routes = $this->collection->all();
 
-        self::assertCount(1, $routes);
-        self::assertEquals($route, $routes[0]);
+        self::assertEquals([$route], $routes);
     }
 
     public function test_it_registers_patch_route()
@@ -93,18 +77,13 @@ class RouteCollectionTest extends TestCase
         $handler = new Handler("UsersAction");
         $route = new Route("PATCH", $path, $handler, "users", []);
 
-        $this->factory
-            ->shouldReceive("create")
-            ->with("PATCH", "/users", $handler, "users", [])
-            ->andReturn($route)
-            ->once();
+        $this->factory->create("PATCH", "/users", $handler, "users", [])->willReturn($route);
 
         $this->collection->patch("/users", $handler, "users", []);
 
         $routes = $this->collection->all();
 
-        self::assertCount(1, $routes);
-        self::assertEquals($route, $routes[0]);
+        self::assertEquals([$route], $routes);
     }
 
     public function test_it_registers_delete_route()
@@ -113,18 +92,13 @@ class RouteCollectionTest extends TestCase
         $handler = new Handler("UsersAction");
         $route = new Route("DELETE", $path, $handler, "users", []);
 
-        $this->factory
-            ->shouldReceive("create")
-            ->with("DELETE", "/users", $handler, "users", [])
-            ->andReturn($route)
-            ->once();
+        $this->factory->create("DELETE", "/users", $handler, "users", [])->willReturn($route);
 
         $this->collection->delete("/users", $handler, "users", []);
 
         $routes = $this->collection->all();
 
-        self::assertCount(1, $routes);
-        self::assertEquals($route, $routes[0]);
+        self::assertEquals([$route], $routes);
     }
 
     public function test_it_finds_named_route()
@@ -133,11 +107,7 @@ class RouteCollectionTest extends TestCase
         $handler = new Handler("UsersAction");
         $route = new Route("GET", $path, $handler, "users.all", []);
 
-        $this->factory
-            ->shouldReceive("create")
-            ->with("GET", "/users", $handler, "users.all", [])
-            ->andReturn($route)
-            ->once();
+        $this->factory->create("GET", "/users", $handler, "users.all", [])->willReturn($route);
 
         $this->collection->get("/users", $handler, "users.all", []);
 
@@ -152,11 +122,7 @@ class RouteCollectionTest extends TestCase
         $handler = new Handler("UsersAction");
         $route = new Route("GET", $path, $handler, "users.all", []);
 
-        $this->factory
-            ->shouldReceive("create")
-            ->with("GET", "/users", $handler, "users.all", [])
-            ->andReturn($route)
-            ->once();
+        $this->factory->create("GET", "/users", $handler, "users.all", [])->willReturn($route);
 
         $this->collection->get("/users", $handler, "users.all", []);
 
