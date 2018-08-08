@@ -116,16 +116,6 @@ class Route
     }
 
     /**
-     * Returns the route definition.
-     *
-     * @return string
-     */
-    public function getDefinition(): string
-    {
-        return $this->path->getDefinition();
-    }
-
-    /**
      * Returns all route attributes.
      *
      * @return Attribute[]
