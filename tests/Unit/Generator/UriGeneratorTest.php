@@ -36,6 +36,13 @@ class UriGeneratorTest extends TestCase
         $this->factory = $this->prophesize(UriFactory::class);
     }
 
+    public function test_static_constructor_works()
+    {
+        $generator = UriGenerator::create($this->routes->reveal());
+
+        self::assertInstanceOf(UriGenerator::class, $generator);
+    }
+
     public function test_it_fails_on_missing_route()
     {
         $this->routes->oneNamed("users.all")->willReturn(null);
