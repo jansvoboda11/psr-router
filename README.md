@@ -33,8 +33,8 @@ You can also add any data to the route with the fourth argument, which can be ac
 $routes = RouteCollection::create();
 
 $routes->get("/login", new LoginHandler());
-$routes->post("/users/{name}", new UserDetailHandler(), "user.detail");
-$routes->get("/orders[/{year:number}]", new OrderListHandler(), "order.list", Options::AUTH);
+$routes->post("/users/{name}", new UserHandler(), "user");
+$routes->get("/orders[/{year:number}]", new OrdersHandler(), "orders", ["auth" => true]);
 ```
 
 Parts of the definition can be divided into three categories.
