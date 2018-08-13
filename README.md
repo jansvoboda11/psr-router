@@ -119,7 +119,7 @@ It accepts the route name, the attributes that will be filled in and outputs a c
 ```php
 $generator = UriGenerator::create($routes);
 
-$uri = $generator->generate("user.detail", [
+$uri = $generator->generate("user", [
     "name" => "john.doe",
 ]);
 ```
