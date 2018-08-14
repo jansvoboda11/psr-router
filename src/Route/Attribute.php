@@ -51,7 +51,7 @@ class Attribute
      */
     public function createOptional(): self
     {
-        return new self($this->getName(), $this->getType(), false);
+        return new self($this->name, $this->type, false);
     }
 
     /**
