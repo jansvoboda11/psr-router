@@ -74,14 +74,14 @@ class AttributePathTest extends TestCase
         self::assertEquals("{foo}{bar}", $definition);
     }
 
-    public function test_it_returns_attribute_without_type()
+    public function test_it_returns_attribute_with_implicit_type()
     {
         $path = new AttributePath("foo", null, $this->types);
 
         $attributes = $path->getAttributes();
 
         self::assertEquals([
-            new Attribute("foo", null, true),
+            new Attribute("foo", "any", true),
         ], $attributes);
     }
 
@@ -104,7 +104,7 @@ class AttributePathTest extends TestCase
             $this->types,
             new AttributePath(
                 "bar",
-                null,
+                "any",
                 $this->types
             )
         );
@@ -113,7 +113,7 @@ class AttributePathTest extends TestCase
 
         self::assertEquals([
             new Attribute("foo", "num", true),
-            new Attribute("bar", null, true),
+            new Attribute("bar", 'any', true),
         ], $attributes);
     }
 }

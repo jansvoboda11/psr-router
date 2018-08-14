@@ -67,13 +67,23 @@ class AttributePath implements RoutePath
     }
 
     /**
+     * Returns the attribute type.
+     *
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->type ?? $this->types->getImplicit();
+    }
+
+    /**
      * Returns the attribute pattern.
      *
      * @return string
      */
     public function getPattern(): string
     {
-        $type = $this->type ?? $this->types->getImplicit();
+        $type = $this->getType();
 
         return $this->types->getPatternFor($type);
     }
@@ -98,7 +108,7 @@ class AttributePath implements RoutePath
      */
     public function getAttributes(): array
     {
-        $attribute = new Attribute($this->name, $this->type, true);
+        $attribute = new Attribute($this->getName(), $this->getType(), true);
 
         $nextAttributes = $this->next->getAttributes();
 

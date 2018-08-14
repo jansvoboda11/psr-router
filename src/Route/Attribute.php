@@ -19,7 +19,7 @@ class Attribute
     /**
      * Data type of the attribute.
      *
-     * @var null|string
+     * @var string
      */
     private $type;
 
@@ -34,10 +34,10 @@ class Attribute
      * Constructor.
      *
      * @param string $name
-     * @param null|string $type
+     * @param string $type
      * @param bool $required
      */
-    public function __construct(string $name, ?string $type, bool $required)
+    public function __construct(string $name, string $type, bool $required)
     {
         $this->name = $name;
         $this->type = $type;
@@ -67,9 +67,9 @@ class Attribute
     /**
      * Returns the attribute type.
      *
-     * @return null|string
+     * @return string
      */
-    public function getType(): ?string
+    public function getType(): string
     {
         return $this->type;
     }
