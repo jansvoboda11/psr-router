@@ -28,9 +28,7 @@ class UriGeneratorTest extends TestCase
 
     protected function setUp()
     {
-        $this->types = new Types([
-            "any" => "[^/]+",
-        ], "any");
+        $this->types = Types::createDefault();
 
         $this->routes = $this->prophesize(RouteCollection::class);
         $this->factory = $this->prophesize(UriFactory::class);

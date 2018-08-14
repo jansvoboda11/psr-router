@@ -66,6 +66,13 @@ class TestCase extends \PHPUnit\Framework\TestCase
         return (new Psr17Factory())->createStream($string);
     }
 
+    /**
+     * Creates new request that contains a match with the given route.
+     *
+     * @param ServerRequestInterface $request
+     * @param Route $route
+     * @return ServerRequestInterface
+     */
     protected static function requestWithMatch(ServerRequestInterface $request, Route $route): ServerRequestInterface
     {
         $match = new Match($route, $request);
@@ -73,6 +80,13 @@ class TestCase extends \PHPUnit\Framework\TestCase
         return $request->withAttribute(Match::class, $match);
     }
 
+    /**
+     * Creates new request that contains a failure with the given URI routes.
+     *
+     * @param ServerRequestInterface $request
+     * @param Route[] $uriRoutes
+     * @return ServerRequestInterface
+     */
     protected static function requestWithFailure(ServerRequestInterface $request, array $uriRoutes): ServerRequestInterface
     {
         $failure = new Failure($uriRoutes, $request);

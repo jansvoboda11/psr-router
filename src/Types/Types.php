@@ -90,16 +90,6 @@ class Types
     }
 
     /**
-     * Returns regular expressions of all attribute types.
-     *
-     * @return string[]
-     */
-    public function getPatterns(): array
-    {
-        return $this->patterns;
-    }
-
-    /**
      * Returns the implicit attribute type.
      *
      * @return string

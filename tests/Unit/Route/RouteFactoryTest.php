@@ -27,9 +27,7 @@ class RouteFactoryTest extends TestCase
 
     protected function setUp()
     {
-        $this->types = new Types([
-            "any" => "[^/]+",
-        ], "any");
+        $this->types = Types::createDefault();
 
         $this->parser = $this->prophesize(Parser::class);
         $this->factory = new RouteFactory($this->parser->reveal(), $this->types);

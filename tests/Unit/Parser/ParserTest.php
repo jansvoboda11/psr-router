@@ -24,10 +24,7 @@ class ParserTest extends TestCase
     {
         $this->parser = new Parser();
 
-        $this->types = new Types([
-            "any" => "[^/]+",
-            "num" => "\d+",
-        ], "any");
+        $this->types = Types::createDefault();
     }
 
     public function test_parse_static_path()
@@ -79,7 +76,7 @@ class ParserTest extends TestCase
 
     public function test_parse_path_with_multiple_attributes()
     {
-        $definition = "/users/{name}/{id:num}";
+        $definition = "/users/{name}/{id:number}";
 
         $path = $this->parser->parse($definition, $this->types);
 
@@ -93,7 +90,7 @@ class ParserTest extends TestCase
                     "/",
                     new AttributePath(
                         "id",
-                        "num",
+                        "number",
                         $this->types
                     )
                 )
@@ -128,7 +125,7 @@ class ParserTest extends TestCase
 
     public function test_parse_path_with_required_and_optional_attributes()
     {
-        $definition = "/users/{name}[/{id:num}]";
+        $definition = "/users/{name}[/{id:number}]";
 
         $path = $this->parser->parse($definition, $this->types);
 
@@ -143,7 +140,7 @@ class ParserTest extends TestCase
                         "/",
                         new AttributePath(
                             "id",
-                            "num",
+                            "number",
                             $this->types
                         )
                     )
@@ -366,12 +363,12 @@ MESSAGE
 
     public function test_parse_path_with_duplicate_attributes()
     {
-        $definition = "/users/{id}/{id:num}";
+        $definition = "/users/{id}/{id:number}";
 
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
 Multiple attributes with name 'id':
-/users/{id}/{id:num}
+/users/{id}/{id:number}
 MESSAGE
         );
 

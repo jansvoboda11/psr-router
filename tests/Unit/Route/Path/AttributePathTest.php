@@ -18,10 +18,7 @@ class AttributePathTest extends TestCase
     {
         parent::setUp();
 
-        $this->types = new Types([
-            "any" => "[^/]+",
-            "num" => "\d+",
-        ], "any");
+        $this->types = Types::createDefault();
     }
 
     public function test_it_returns_default_pattern_without_type()
@@ -33,7 +30,7 @@ class AttributePathTest extends TestCase
 
     public function test_it_returns_correct_pattern_with_type()
     {
-        $path = new AttributePath("foo", "num", $this->types);
+        $path = new AttributePath("foo", "number", $this->types);
 
         self::assertEquals("\d+", $path->getPattern());
     }
@@ -100,7 +97,7 @@ class AttributePathTest extends TestCase
     {
         $path = new AttributePath(
             "foo",
-            "num",
+            "number",
             $this->types,
             new AttributePath(
                 "bar",
@@ -112,7 +109,7 @@ class AttributePathTest extends TestCase
         $attributes = $path->getAttributes();
 
         self::assertEquals([
-            new Attribute("foo", "num", true),
+            new Attribute("foo", "number", true),
             new Attribute("bar", 'any', true),
         ], $attributes);
     }

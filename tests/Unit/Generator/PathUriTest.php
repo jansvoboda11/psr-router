@@ -19,10 +19,7 @@ class PathUriTest extends TestCase
 
     protected function setUp()
     {
-        $this->types = new Types([
-            "any" => "[^/]+",
-            "num" => "\d+",
-        ], "any");
+        $this->types = Types::createDefault();
     }
 
     public function test_it_generates_static_uri()
@@ -40,7 +37,7 @@ class PathUriTest extends TestCase
             "/users/",
             new AttributePath(
                 "id",
-                "num",
+                "number",
                 $this->types
             )
         );
@@ -58,7 +55,7 @@ class PathUriTest extends TestCase
             "/users/",
             new AttributePath(
                 "id",
-                "num",
+                "number",
                 $this->types,
                 new StaticPath(
                     "/",
@@ -85,7 +82,7 @@ class PathUriTest extends TestCase
             "/users/",
             new AttributePath(
                 "id",
-                "num",
+                "number",
                 $this->types,
                 new OptionalPath(
                     new StaticPath(
@@ -114,7 +111,7 @@ class PathUriTest extends TestCase
             "/users/",
             new AttributePath(
                 "id",
-                "num",
+                "number",
                 $this->types,
                 new OptionalPath(
                     new StaticPath(
@@ -137,7 +134,7 @@ class PathUriTest extends TestCase
             "/users/",
             new AttributePath(
                 "id",
-                "num",
+                "number",
                 $this->types,
                 new OptionalPath(
                     new StaticPath(
@@ -184,7 +181,7 @@ class PathUriTest extends TestCase
             "/users/",
             new AttributePath(
                 "id",
-                "num",
+                "number",
                 $this->types
             )
         );
@@ -203,7 +200,7 @@ class PathUriTest extends TestCase
             "/users/",
             new AttributePath(
                 "id",
-                "num",
+                "number",
                 $this->types,
                 new OptionalPath(
                     new StaticPath(
@@ -245,7 +242,7 @@ class PathUriTest extends TestCase
             "/users/",
             new AttributePath(
                 "id",
-                "num",
+                "number",
                 $this->types
             )
         );

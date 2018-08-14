@@ -20,10 +20,7 @@ class OptionalPathTest extends TestCase
     {
         parent::setUp();
 
-        $this->types = new Types([
-            "any" => "[^/]+",
-            "num" => "\d+",
-        ], "any");
+        $this->types = Types::createDefault();
     }
 
     public function test_it_uses_brackets_in_definition()

@@ -18,10 +18,7 @@ class PathPatternTest extends TestCase
 
     protected function setUp()
     {
-        $this->types = new Types([
-            "any" => "[^/]+",
-            "number" => "\d+",
-        ], "any");
+        $this->types = Types::createDefault();
     }
 
     public function test_build_pattern_for_static_path()

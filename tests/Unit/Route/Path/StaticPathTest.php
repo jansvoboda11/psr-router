@@ -19,10 +19,7 @@ class StaticPathTest extends TestCase
     {
         parent::setUp();
 
-        $this->types = new Types([
-            "any" => "[^/]+",
-            "num" => "\d+",
-        ], "any");
+        $this->types = Types::createDefault();
     }
 
     public function test_it_creates_definition_same_as_static_string()
@@ -40,14 +37,14 @@ class StaticPathTest extends TestCase
             "/api/users/",
             new AttributePath(
                 "foo",
-                "num",
+                "number",
                 $this->types
             )
         );
 
         $definition = $path->getDefinition();
 
-        self::assertEquals("/api/users/{foo:num}", $definition);
+        self::assertEquals("/api/users/{foo:number}", $definition);
     }
 
     public function test_it_returns_no_attributes()
@@ -65,7 +62,7 @@ class StaticPathTest extends TestCase
             "/api/users/",
             new AttributePath(
                 "foo",
-                "num",
+                "number",
                 $this->types
             )
         );
@@ -73,7 +70,7 @@ class StaticPathTest extends TestCase
         $attributes = $path->getAttributes();
 
         self::assertEquals([
-            new Attribute("foo", "num", true),
+            new Attribute("foo", "number", true),
         ], $attributes);
     }
 }

@@ -28,7 +28,7 @@ class TypesTest extends TestCase
         );
 
         new Types([
-            "num" => "\d+",
+            "number" => "\d+",
         ], "any");
     }
 
@@ -36,12 +36,12 @@ class TypesTest extends TestCase
     {
         $this->expectException(InvalidTypes::class);
         $this->expectExceptionMessage(
-            "The type name 'num!' is invalid, only alphanumeric characters and underscore are allowed"
+            "The type name 'number!' is invalid, only alphanumeric characters and underscore are allowed"
         );
 
         new Types([
             "any" => "[^/]+",
-            "num!" => "\d+",
+            "number!" => "\d+",
         ], "any");
     }
 
@@ -49,37 +49,53 @@ class TypesTest extends TestCase
     {
         $this->expectException(InvalidTypes::class);
         $this->expectExceptionMessage(
-            "The pattern '[0-9+' of attribute 'num' is invalid"
+            "The pattern '[0-9+' of attribute 'number' is invalid"
         );
 
         new Types([
             "any" => "[^/]+",
-            "num" => "[0-9+",
+            "number" => "[0-9+",
         ], "any");
-    }
-
-    public function test_it_returns_patterns()
-    {
-        $types = new Types([
-            "any" => "[^/]+",
-            "num" => "[0-9]+",
-        ], "any");
-
-        $patterns = $types->getPatterns();
-
-        self::assertEquals([
-            "any" => "[^/]+",
-            "num" => "[0-9]+",
-        ], $patterns);
     }
 
     public function test_it_returns_implicit_pattern()
     {
         $types = new Types([
             "any" => "[^/]+",
-            "num" => "[0-9]+",
+            "number" => "[0-9]+",
         ], "any");
 
         self::assertEquals("any", $types->getImplicit());
+    }
+
+    public function test_it_contains_registered_pattern()
+    {
+        $types = new Types([
+            "any" => "[^/]+",
+            "number" => "[0-9]+",
+        ], "any");
+
+        self::assertTrue($types->contain("number"));
+    }
+
+    public function test_it_does_not_contain_not_registered_pattern()
+    {
+        $types = new Types([
+            "any" => "[^/]+",
+            "number" => "[0-9]+",
+        ], "any");
+
+        self::assertFalse($types->contain("empty"));
+    }
+
+    public function test_it_returns_pattern_of_registered_pattern()
+    {
+
+        $types = new Types([
+            "any" => "[^/]+",
+            "number" => "[0-9]+",
+        ], "any");
+
+        self::assertEquals("[0-9]+", $types->getPatternFor("number"));
     }
 }

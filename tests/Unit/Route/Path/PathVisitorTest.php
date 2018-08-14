@@ -14,10 +14,7 @@ class PathVisitorTest extends TestCase
 {
     public function test_it_visits_path_parts_in_correct_order()
     {
-        $types = new Types([
-            "any" => "[^/]+",
-            "num" => "\d+",
-        ], "any");
+        $types = Types::createDefault();
 
         $path = new StaticPath(
             "/users",
@@ -26,7 +23,7 @@ class PathVisitorTest extends TestCase
                     "/",
                     new AttributePath(
                         "id",
-                        "num",
+                        "number",
                         $types
                     )
                 )
