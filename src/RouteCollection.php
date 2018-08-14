@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Svoboda\Router;
 
-use Psr\Http\Server\RequestHandlerInterface as Handler;
+use Psr\Http\Server\RequestHandlerInterface;
 use Svoboda\Router\Parser\Parser;
 use Svoboda\Router\Route\InvalidRoute;
 use Svoboda\Router\Route\Method;
@@ -73,14 +73,18 @@ class RouteCollection
      * Creates a GET route.
      *
      * @param string $definition
-     * @param Handler $handler
+     * @param RequestHandlerInterface $handler
      * @param null|string $name
      * @param null|mixed $data
      * @return Route
      * @throws InvalidRoute
      */
-    public function get(string $definition, Handler $handler, ?string $name = null, $data = null): Route
-    {
+    public function get(
+        string $definition,
+        RequestHandlerInterface $handler,
+        ?string $name = null,
+        $data = null
+    ): Route {
         return $this->route(Method::GET, $definition, $handler, $name, $data);
     }
 
@@ -88,14 +92,18 @@ class RouteCollection
      * Creates a POST route.
      *
      * @param string $definition
-     * @param Handler $handler
+     * @param RequestHandlerInterface $handler
      * @param null|string $name
      * @param null|mixed $data
      * @return Route
      * @throws InvalidRoute
      */
-    public function post(string $definition, Handler $handler, ?string $name = null, $data = null): Route
-    {
+    public function post(
+        string $definition,
+        RequestHandlerInterface $handler,
+        ?string $name = null,
+        $data = null
+    ): Route {
         return $this->route(Method::POST, $definition, $handler, $name, $data);
     }
 
@@ -103,14 +111,18 @@ class RouteCollection
      * Creates a PUT route.
      *
      * @param string $definition
-     * @param Handler $handler
+     * @param RequestHandlerInterface $handler
      * @param null|string $name
      * @param null|mixed $data
      * @return Route
      * @throws InvalidRoute
      */
-    public function put(string $definition, Handler $handler, ?string $name = null, $data = null): Route
-    {
+    public function put(
+        string $definition,
+        RequestHandlerInterface $handler,
+        ?string $name = null,
+        $data = null
+    ): Route {
         return $this->route(Method::PUT, $definition, $handler, $name, $data);
     }
 
@@ -118,14 +130,18 @@ class RouteCollection
      * Creates a PATCH route.
      *
      * @param string $definition
-     * @param Handler $handler
+     * @param RequestHandlerInterface $handler
      * @param null|string $name
      * @param null|mixed $data
      * @return Route
      * @throws InvalidRoute
      */
-    public function patch(string $definition, Handler $handler, ?string $name = null, $data = null): Route
-    {
+    public function patch(
+        string $definition,
+        RequestHandlerInterface $handler,
+        ?string $name = null,
+        $data = null
+    ): Route {
         return $this->route(Method::PATCH, $definition, $handler, $name, $data);
     }
 
@@ -133,14 +149,18 @@ class RouteCollection
      * Creates a DELETE route.
      *
      * @param string $definition
-     * @param Handler $handler
+     * @param RequestHandlerInterface $handler
      * @param null|string $name
      * @param null|mixed $data
      * @return Route
      * @throws InvalidRoute
      */
-    public function delete(string $definition, Handler $handler, ?string $name = null, $data = null): Route
-    {
+    public function delete(
+        string $definition,
+        RequestHandlerInterface $handler,
+        ?string $name = null,
+        $data = null
+    ): Route {
         return $this->route(Method::DELETE, $definition, $handler, $name, $data);
     }
 
@@ -149,14 +169,19 @@ class RouteCollection
      *
      * @param string $method
      * @param string $definition
-     * @param Handler $handler
+     * @param RequestHandlerInterface $handler
      * @param null|string $name
      * @param null|mixed $data
      * @return Route
      * @throws InvalidRoute
      */
-    public function route(string $method, string $definition, Handler $handler, ?string $name = null, $data = null): Route
-    {
+    public function route(
+        string $method,
+        string $definition,
+        RequestHandlerInterface $handler,
+        ?string $name = null,
+        $data = null
+    ): Route {
         $route = $this->factory->create($method, $definition, $handler, $name, $data);
 
         $this->routes[] = $route;
