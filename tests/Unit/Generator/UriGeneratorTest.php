@@ -11,13 +11,13 @@ use Svoboda\Router\Generator\UriGenerator;
 use Svoboda\Router\Route\Path\StaticPath;
 use Svoboda\Router\Route\Route;
 use Svoboda\Router\RouteCollection;
-use Svoboda\Router\Types\Types;
+use Svoboda\Router\Types\TypeCollection;
 use SvobodaTest\Router\Handler;
 use SvobodaTest\Router\TestCase;
 
 class UriGeneratorTest extends TestCase
 {
-    /** @var Types */
+    /** @var TypeCollection */
     private $types;
 
     /** @var ObjectProphecy|RouteCollection */
@@ -28,7 +28,7 @@ class UriGeneratorTest extends TestCase
 
     protected function setUp()
     {
-        $this->types = Types::createDefault();
+        $this->types = TypeCollection::createDefault();
 
         $this->routes = $this->prophesize(RouteCollection::class);
         $this->factory = $this->prophesize(UriFactory::class);

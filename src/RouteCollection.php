@@ -11,7 +11,7 @@ use Svoboda\Router\Route\Method;
 use Svoboda\Router\Route\Route;
 use Svoboda\Router\Route\RouteFactory;
 use Svoboda\Router\Types\InvalidTypes;
-use Svoboda\Router\Types\Types;
+use Svoboda\Router\Types\TypeCollection;
 
 /**
  * Collection of routes.
@@ -54,13 +54,13 @@ class RouteCollection
     /**
      * Creates new empty route collection.
      *
-     * @param null|Types $types
+     * @param null|TypeCollection $types
      * @return RouteCollection
      * @throws InvalidTypes
      */
-    public static function create(?Types $types = null): self
+    public static function create(?TypeCollection $types = null): self
     {
-        $types = $types ?? Types::createDefault();
+        $types = $types ?? TypeCollection::createDefault();
 
         $parser = new Parser();
 

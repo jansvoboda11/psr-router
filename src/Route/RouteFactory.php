@@ -6,7 +6,7 @@ namespace Svoboda\Router\Route;
 
 use Psr\Http\Server\RequestHandlerInterface;
 use Svoboda\Router\Parser\Parser;
-use Svoboda\Router\Types\Types;
+use Svoboda\Router\Types\TypeCollection;
 
 /**
  * Creates parsed and validated routes.
@@ -23,7 +23,7 @@ class RouteFactory
     /**
      * The attribute types.
      *
-     * @var Types
+     * @var TypeCollection
      */
     private $types;
 
@@ -31,9 +31,9 @@ class RouteFactory
      * Constructor.
      *
      * @param Parser $parser
-     * @param Types $types
+     * @param TypeCollection $types
      */
-    public function __construct(Parser $parser, Types $types)
+    public function __construct(Parser $parser, TypeCollection $types)
     {
         $this->parser = $parser;
         $this->types = $types;

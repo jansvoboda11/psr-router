@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace SvobodaTest\Router\Unit\Types;
 
 use Svoboda\Router\Types\InvalidTypes;
-use Svoboda\Router\Types\Types;
+use Svoboda\Router\Types\TypeCollection;
 use SvobodaTest\Router\TestCase;
 
 class TypesTest extends TestCase
@@ -17,7 +17,7 @@ class TypesTest extends TestCase
             "At least one type pattern must be provided"
         );
 
-        new Types([], "");
+        new TypeCollection([], "");
     }
 
     public function test_it_requires_existing_implicit_type()
@@ -27,7 +27,7 @@ class TypesTest extends TestCase
             "The implicit attribute type 'any' has no pattern"
         );
 
-        new Types([
+        new TypeCollection([
             "number" => "\d+",
         ], "any");
     }
@@ -39,7 +39,7 @@ class TypesTest extends TestCase
             "The type name 'number!' is invalid, only alphanumeric characters and underscore are allowed"
         );
 
-        new Types([
+        new TypeCollection([
             "any" => "[^/]+",
             "number!" => "\d+",
         ], "any");
@@ -52,7 +52,7 @@ class TypesTest extends TestCase
             "The pattern '[0-9+' of attribute 'number' is invalid"
         );
 
-        new Types([
+        new TypeCollection([
             "any" => "[^/]+",
             "number" => "[0-9+",
         ], "any");
@@ -60,7 +60,7 @@ class TypesTest extends TestCase
 
     public function test_it_returns_implicit_pattern()
     {
-        $types = new Types([
+        $types = new TypeCollection([
             "any" => "[^/]+",
             "number" => "[0-9]+",
         ], "any");
@@ -70,28 +70,28 @@ class TypesTest extends TestCase
 
     public function test_it_contains_registered_pattern()
     {
-        $types = new Types([
+        $types = new TypeCollection([
             "any" => "[^/]+",
             "number" => "[0-9]+",
         ], "any");
 
-        self::assertTrue($types->contain("number"));
+        self::assertTrue($types->hasNamed("number"));
     }
 
     public function test_it_does_not_contain_not_registered_pattern()
     {
-        $types = new Types([
+        $types = new TypeCollection([
             "any" => "[^/]+",
             "number" => "[0-9]+",
         ], "any");
 
-        self::assertFalse($types->contain("empty"));
+        self::assertFalse($types->hasNamed("empty"));
     }
 
     public function test_it_returns_pattern_of_registered_pattern()
     {
 
-        $types = new Types([
+        $types = new TypeCollection([
             "any" => "[^/]+",
             "number" => "[0-9]+",
         ], "any");

@@ -8,17 +8,17 @@ use Svoboda\Router\Compiler\PathPattern;
 use Svoboda\Router\Route\Path\AttributePath;
 use Svoboda\Router\Route\Path\OptionalPath;
 use Svoboda\Router\Route\Path\StaticPath;
-use Svoboda\Router\Types\Types;
+use Svoboda\Router\Types\TypeCollection;
 use SvobodaTest\Router\TestCase;
 
 class PathPatternTest extends TestCase
 {
-    /** @var Types */
+    /** @var TypeCollection */
     private $types;
 
     protected function setUp()
     {
-        $this->types = Types::createDefault();
+        $this->types = TypeCollection::createDefault();
     }
 
     public function test_build_pattern_for_static_path()

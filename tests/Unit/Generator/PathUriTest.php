@@ -9,17 +9,17 @@ use Svoboda\Router\Generator\PathUri;
 use Svoboda\Router\Route\Path\AttributePath;
 use Svoboda\Router\Route\Path\OptionalPath;
 use Svoboda\Router\Route\Path\StaticPath;
-use Svoboda\Router\Types\Types;
+use Svoboda\Router\Types\TypeCollection;
 use SvobodaTest\Router\TestCase;
 
 class PathUriTest extends TestCase
 {
-    /** @var Types */
+    /** @var TypeCollection */
     private $types;
 
     protected function setUp()
     {
-        $this->types = Types::createDefault();
+        $this->types = TypeCollection::createDefault();
     }
 
     public function test_it_generates_static_uri()

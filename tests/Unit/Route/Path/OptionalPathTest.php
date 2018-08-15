@@ -8,19 +8,19 @@ use Svoboda\Router\Route\Attribute;
 use Svoboda\Router\Route\Path\AttributePath;
 use Svoboda\Router\Route\Path\OptionalPath;
 use Svoboda\Router\Route\Path\StaticPath;
-use Svoboda\Router\Types\Types;
+use Svoboda\Router\Types\TypeCollection;
 use SvobodaTest\Router\TestCase;
 
 class OptionalPathTest extends TestCase
 {
-    /** @var Types */
+    /** @var TypeCollection */
     private $types;
 
     protected function setUp()
     {
         parent::setUp();
 
-        $this->types = Types::createDefault();
+        $this->types = TypeCollection::createDefault();
     }
 
     public function test_it_uses_brackets_in_definition()

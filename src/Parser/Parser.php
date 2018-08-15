@@ -10,7 +10,7 @@ use Svoboda\Router\Route\Path\EmptyPath;
 use Svoboda\Router\Route\Path\OptionalPath;
 use Svoboda\Router\Route\Path\RoutePath;
 use Svoboda\Router\Route\Path\StaticPath;
-use Svoboda\Router\Types\Types;
+use Svoboda\Router\Types\TypeCollection;
 
 /**
  * Parses route definitions.
@@ -35,11 +35,11 @@ class Parser
      * Parse the route path definition.
      *
      * @param string $definition
-     * @param Types $types
+     * @param TypeCollection $types
      * @return RoutePath
      * @throws InvalidRoute
      */
-    public function parse(string $definition, Types $types): RoutePath
+    public function parse(string $definition, TypeCollection $types): RoutePath
     {
         $definition = new Input($definition);
 
@@ -70,13 +70,13 @@ class Parser
      * Parse the main part of the route definition.
      *
      * @param Input $definition
-     * @param Types $types
+     * @param TypeCollection $types
      * @param string[] $attributes
      * @return RoutePath
      * @throws InvalidRoute
      * @throws UnexpectedChar
      */
-    private function parseRoute(Input $definition, Types $types, array $attributes): RoutePath
+    private function parseRoute(Input $definition, TypeCollection $types, array $attributes): RoutePath
     {
         $char = $definition->peek();
 
@@ -103,13 +103,13 @@ class Parser
      * Parse the static part of the route definition.
      *
      * @param Input $definition
-     * @param Types $types
+     * @param TypeCollection $types
      * @param string[] $attributes
      * @return StaticPath
      * @throws InvalidRoute
      * @throws UnexpectedChar
      */
-    private function parseStatic(Input $definition, Types $types, array $attributes): StaticPath
+    private function parseStatic(Input $definition, TypeCollection $types, array $attributes): StaticPath
     {
         $static = $definition->takeAllUntil("{}[]");
 
@@ -122,13 +122,13 @@ class Parser
      * Parse a single attribute of the route definition.
      *
      * @param Input $definition
-     * @param Types $types
+     * @param TypeCollection $types
      * @param string[] $attributes
      * @return AttributePath
      * @throws InvalidRoute
      * @throws UnexpectedChar
      */
-    private function parseAttribute(Input $definition, Types $types, array $attributes): AttributePath
+    private function parseAttribute(Input $definition, TypeCollection $types, array $attributes): AttributePath
     {
         $definition->expect("{");
 
@@ -141,7 +141,7 @@ class Parser
             throw InvalidRoute::ambiguousAttribute($definition, $name);
         }
 
-        if ($type !== null && !$types->contain($type)) {
+        if ($type !== null && !$types->hasNamed($type)) {
             throw InvalidRoute::unknownAttributeType($definition, $name, $type);
         }
 
@@ -156,13 +156,13 @@ class Parser
      * Parse the optional part of the route definition.
      *
      * @param Input $definition
-     * @param Types $types
+     * @param TypeCollection $types
      * @param string[] $attributes
      * @return OptionalPath
      * @throws InvalidRoute
      * @throws UnexpectedChar
      */
-    private function parseOptional(Input $definition, Types $types, array $attributes): OptionalPath
+    private function parseOptional(Input $definition, TypeCollection $types, array $attributes): OptionalPath
     {
         $definition->expect("[");
 

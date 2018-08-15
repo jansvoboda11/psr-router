@@ -10,13 +10,13 @@ use Svoboda\Router\Route\InvalidRoute;
 use Svoboda\Router\Route\Path\StaticPath;
 use Svoboda\Router\Route\Route;
 use Svoboda\Router\Route\RouteFactory;
-use Svoboda\Router\Types\Types;
+use Svoboda\Router\Types\TypeCollection;
 use SvobodaTest\Router\Handler;
 use SvobodaTest\Router\TestCase;
 
 class RouteFactoryTest extends TestCase
 {
-    /** @var Types */
+    /** @var TypeCollection */
     private $types;
 
     /** @var ObjectProphecy|Parser */
@@ -27,7 +27,7 @@ class RouteFactoryTest extends TestCase
 
     protected function setUp()
     {
-        $this->types = Types::createDefault();
+        $this->types = TypeCollection::createDefault();
 
         $this->parser = $this->prophesize(Parser::class);
         $this->factory = new RouteFactory($this->parser->reveal(), $this->types);

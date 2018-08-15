@@ -22,17 +22,6 @@ class InvalidTypes extends Exception
     }
 
     /**
-     * The implicit type is missing from type patterns.
-     *
-     * @param string $implicit
-     * @return InvalidTypes
-     */
-    public static function implicitTypeMissing(string $implicit): self
-    {
-        return new self("The implicit attribute type '$implicit' has no pattern");
-    }
-
-    /**
      * Type has invalid name.
      *
      * @param string $name

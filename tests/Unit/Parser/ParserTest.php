@@ -9,7 +9,7 @@ use Svoboda\Router\Route\InvalidRoute;
 use Svoboda\Router\Route\Path\AttributePath;
 use Svoboda\Router\Route\Path\OptionalPath;
 use Svoboda\Router\Route\Path\StaticPath;
-use Svoboda\Router\Types\Types;
+use Svoboda\Router\Types\TypeCollection;
 use SvobodaTest\Router\TestCase;
 
 class ParserTest extends TestCase
@@ -17,14 +17,14 @@ class ParserTest extends TestCase
     /** @var Parser */
     private $parser;
 
-    /** @var Types */
+    /** @var TypeCollection */
     private $types;
 
     protected function setUp()
     {
         $this->parser = new Parser();
 
-        $this->types = Types::createDefault();
+        $this->types = TypeCollection::createDefault();
     }
 
     public function test_parse_static_path()
