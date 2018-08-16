@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace SvobodaTest\Router\Integration;
 
+use Svoboda\Router\Compiler\Compiler;
+use Svoboda\Router\Compiler\MultiPatternCompiler;
+use Svoboda\Router\Compiler\PatternFactory;
 use Svoboda\Router\Failure;
 use Svoboda\Router\RouteCollection;
 use Svoboda\Router\Router;
@@ -12,7 +15,10 @@ use SvobodaTest\Router\TestCase;
 
 class RouterTest extends TestCase
 {
-    public function test_it_matches_single_static_route()
+    /**
+     * @dataProvider getCompilers
+     */
+    public function test_it_matches_single_static_route(Compiler $compiler)
     {
         $request = self::createRequest("GET", "/users");
         $handler = new Handler("Users");
@@ -20,12 +26,15 @@ class RouterTest extends TestCase
         $routes = RouteCollection::create();
         $route = $routes->get("/users", $handler);
 
-        $match = Router::create($routes)->match($request);
+        $match = (new Router($routes, $compiler))->match($request);
 
         self::assertEquals($route, $match->getRoute());
     }
 
-    public function test_it_matches_second_from_two_static_routes()
+    /**
+     * @dataProvider getCompilers
+     */
+    public function test_it_matches_second_from_two_static_routes(Compiler $compiler)
     {
         $request = self::createRequest("GET", "/admins");
 
@@ -36,12 +45,15 @@ class RouterTest extends TestCase
         $usersRoute = $routes->get("/users", $usersHandler);
         $adminsRoute = $routes->get("/admins", $adminsHandler);
 
-        $match = Router::create($routes)->match($request);
+        $match = (new Router($routes, $compiler))->match($request);
 
         self::assertEquals($adminsRoute, $match->getRoute());
     }
 
-    public function test_it_matches_first_from_two_ambiguous_routes()
+    /**
+     * @dataProvider getCompilers
+     */
+    public function test_it_matches_first_from_two_ambiguous_routes(Compiler $compiler)
     {
         $request = self::createRequest("GET", "/admins");
 
@@ -52,12 +64,15 @@ class RouterTest extends TestCase
         $firstRoute = $routes->get("/admins", $firstHandler);
         $secondRoute = $routes->get("/admins", $secondHandler);
 
-        $match = Router::create($routes)->match($request);
+        $match = (new Router($routes, $compiler))->match($request);
 
         self::assertEquals($firstRoute, $match->getRoute());
     }
 
-    public function test_it_matches_single_route_with_attributes()
+    /**
+     * @dataProvider getCompilers
+     */
+    public function test_it_matches_single_route_with_attributes(Compiler $compiler)
     {
         $request = self::createRequest("GET", "/admins/jan/123");
 
@@ -66,7 +81,7 @@ class RouterTest extends TestCase
         $routes = RouteCollection::create();
         $route = $routes->get("/admins/{name}/{id}", $handler);
 
-        $match = Router::create($routes)->match($request);
+        $match = (new Router($routes, $compiler))->match($request);
 
         $matchRequest = $match->getRequest();
 
@@ -75,7 +90,10 @@ class RouterTest extends TestCase
         self::assertEquals($route, $match->getRoute());
     }
 
-    public function test_it_matches_second_from_two_routes_with_attributes()
+    /**
+     * @dataProvider getCompilers
+     */
+    public function test_it_matches_second_from_two_routes_with_attributes(Compiler $compiler)
     {
         $request = self::createRequest("GET", "/users/jan/123");
 
@@ -86,7 +104,7 @@ class RouterTest extends TestCase
         $adminsRoute = $routes->get("/admins/{name}/{id}", $adminsHandler);
         $usersRoute = $routes->get("/users/{name}/{id}", $usersHandler);
 
-        $match = Router::create($routes)->match($request);
+        $match = (new Router($routes, $compiler))->match($request);
 
         $matchRequest = $match->getRequest();
 
@@ -95,7 +113,10 @@ class RouterTest extends TestCase
         self::assertEquals($usersRoute, $match->getRoute());
     }
 
-    public function test_it_matches_request_with_optional_attribute()
+    /**
+     * @dataProvider getCompilers
+     */
+    public function test_it_matches_request_with_optional_attribute(Compiler $compiler)
     {
         $request = self::createRequest("GET", "/users/jan");
 
@@ -104,7 +125,7 @@ class RouterTest extends TestCase
         $routes = RouteCollection::create();
         $route = $routes->get("/users/{name}[/{id}]", $handler);
 
-        $match = Router::create($routes)->match($request);
+        $match = (new Router($routes, $compiler))->match($request);
 
         $matchRequest = $match->getRequest();
 
@@ -113,7 +134,10 @@ class RouterTest extends TestCase
         self::assertEquals($route, $match->getRoute());
     }
 
-    public function test_it_matches_based_on_request_method()
+    /**
+     * @dataProvider getCompilers
+     */
+    public function test_it_matches_based_on_request_method(Compiler $compiler)
     {
         $request = self::createRequest("POST", "/users");
 
@@ -124,12 +148,15 @@ class RouterTest extends TestCase
         $getRoute = $routes->get("/users", $getHandler);
         $postRoute = $routes->post("/users", $postHandler);
 
-        $match = Router::create($routes)->match($request);
+        $match = (new Router($routes, $compiler))->match($request);
 
         self::assertEquals($postRoute, $match->getRoute());
     }
 
-    public function test_it_provides_allowed_methods_on_only_uri_match()
+    /**
+     * @dataProvider getCompilers
+     */
+    public function test_it_provides_allowed_methods_on_only_uri_match(Compiler $compiler)
     {
         $request = self::createRequest("GET", "/users");
 
@@ -149,10 +176,13 @@ class RouterTest extends TestCase
 
         $this->expectThrowable($failure);
 
-        Router::create($routes)->match($request);
+        (new Router($routes, $compiler))->match($request);
     }
 
-    public function test_it_does_not_provide_allow_methods_on_no_uri_match()
+    /**
+     * @dataProvider getCompilers
+     */
+    public function test_it_does_not_provide_allow_methods_on_no_uri_match(Compiler $compiler)
     {
         $request = self::createRequest("GET", "/orders");
 
@@ -167,10 +197,13 @@ class RouterTest extends TestCase
 
         $this->expectThrowable($failure);
 
-        Router::create($routes)->match($request);
+        (new Router($routes, $compiler))->match($request);
     }
 
-    public function test_it_does_not_match_route_with_extra_suffix()
+    /**
+     * @dataProvider getCompilers
+     */
+    public function test_it_does_not_match_route_with_extra_suffix(Compiler $compiler)
     {
         $request = self::createRequest("GET", "/users/jan/123");
 
@@ -183,10 +216,13 @@ class RouterTest extends TestCase
 
         $this->expectThrowable($failure);
 
-        Router::create($routes)->match($request);
+        (new Router($routes, $compiler))->match($request);
     }
 
-    public function test_it_does_not_match_route_with_extra_prefix()
+    /**
+     * @dataProvider getCompilers
+     */
+    public function test_it_does_not_match_route_with_extra_prefix(Compiler $compiler)
     {
         $request = self::createRequest("GET", "/api/users/jan");
 
@@ -199,10 +235,13 @@ class RouterTest extends TestCase
 
         $this->expectThrowable($failure);
 
-        Router::create($routes)->match($request);
+        (new Router($routes, $compiler))->match($request);
     }
 
-    public function test_it_ignores_query_string()
+    /**
+     * @dataProvider getCompilers
+     */
+    public function test_it_ignores_query_string(Compiler $compiler)
     {
         $request = self::createRequest("GET", "/users?key=value");
 
@@ -211,12 +250,15 @@ class RouterTest extends TestCase
         $routes = RouteCollection::create();
         $route = $routes->get("/users", $handler);
 
-        $match = Router::create($routes)->match($request);
+        $match = (new Router($routes, $compiler))->match($request);
 
         self::assertEquals($route, $match->getRoute());
     }
 
-    public function test_it_ignores_hash()
+    /**
+     * @dataProvider getCompilers
+     */
+    public function test_it_ignores_hash(Compiler $compiler)
     {
         $request = self::createRequest("GET", "/users#main");
 
@@ -225,8 +267,20 @@ class RouterTest extends TestCase
         $routes = RouteCollection::create();
         $route = $routes->get("/users", $handler);
 
-        $match = Router::create($routes)->match($request);
+        $match = (new Router($routes, $compiler))->match($request);
 
         self::assertEquals($route, $match->getRoute());
+    }
+
+    /**
+     * The data provider for various implementations of the Compiler interface.
+     *
+     * @return array
+     */
+    public function getCompilers()
+    {
+        return [
+            [new MultiPatternCompiler(new PatternFactory())],
+        ];
     }
 }
