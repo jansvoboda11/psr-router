@@ -22,8 +22,6 @@ class PathUriTest extends TestCase
 
     protected function setUp()
     {
-        parent::setUp();
-
         $this->any = new Type("any", "[^/]+");
         $this->number = new Type("number", "\d+");
     }

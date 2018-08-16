@@ -35,7 +35,9 @@ class Failure extends Exception
      */
     public function __construct(array $uriRoutes, ServerRequestInterface $request)
     {
-        parent::__construct("Failed to match incoming request");
+        $acceptableMethods = implode(", ", array_keys($uriRoutes));
+
+        parent::__construct("Failed to match incoming request, acceptable methods: [$acceptableMethods]");
 
         $this->uriRoutes = $uriRoutes;
         $this->request = $request;

@@ -22,8 +22,6 @@ class AttributePathTest extends TestCase
 
     protected function setUp()
     {
-        parent::setUp();
-
         $this->implicit = new Type("any", "[^/]+", true);
         $this->any = new Type("any", "[^/]+");
         $this->number = new Type("number", "\d+");

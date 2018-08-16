@@ -18,8 +18,6 @@ class PathPatternTest extends TestCase
 
     protected function setUp()
     {
-        parent::setUp();
-
         $this->number = new Type("number", "\d+");
     }
 

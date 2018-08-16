@@ -14,20 +14,6 @@ use Svoboda\Router\Route\Route;
 
 class TestCase extends \PHPUnit\Framework\TestCase
 {
-    use ThrowableExpectations;
-
-    protected function setUp()
-    {
-        $this->setUpThrowableExpectations();
-    }
-
-    protected function runTest()
-    {
-        $this->handleThrowableExpectations(function () {
-            parent::runTest();
-        });
-    }
-
     /**
      * Creates new server request with given method and URI.
      *

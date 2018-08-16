@@ -165,16 +165,14 @@ class RouterTest extends TestCase
         $deleteHandler = new Handler("Delete");
 
         $routes = RouteCollection::create();
-        $postRoute = $routes->post("/users", $postHandler);
-        $patchRoute = $routes->patch("/orders", $patchHandler);
-        $deleteRoute = $routes->delete("/users", $deleteHandler);
+        $routes->post("/users", $postHandler);
+        $routes->patch("/orders", $patchHandler);
+        $routes->delete("/users", $deleteHandler);
 
-        $failure = new Failure([
-            "POST" => $postRoute,
-            "DELETE" => $deleteRoute,
-        ], $request);
-
-        $this->expectThrowable($failure);
+        $this->expectException(Failure::class);
+        $this->expectExceptionMessage(
+            "Failed to match incoming request, acceptable methods: [POST, DELETE]"
+        );
 
         (new Router($routes, $compiler))->match($request);
     }
@@ -193,9 +191,8 @@ class RouterTest extends TestCase
         $routes->post("/users", $postHandler);
         $routes->delete("/users", $deleteHandler);
 
-        $failure = new Failure([], $request);
-
-        $this->expectThrowable($failure);
+        $this->expectException(Failure::class);
+        $this->expectExceptionMessage("Failed to match incoming request, acceptable methods: []");
 
         (new Router($routes, $compiler))->match($request);
     }
@@ -212,9 +209,8 @@ class RouterTest extends TestCase
         $routes = RouteCollection::create();
         $routes->get("/users/{name}", $handler);
 
-        $failure = new Failure([], $request);
-
-        $this->expectThrowable($failure);
+        $this->expectException(Failure::class);
+        $this->expectExceptionMessage("Failed to match incoming request, acceptable methods: []");
 
         (new Router($routes, $compiler))->match($request);
     }
@@ -231,9 +227,8 @@ class RouterTest extends TestCase
         $routes = RouteCollection::create();
         $routes->get("/users/{name}", $handler);
 
-        $failure = new Failure([], $request);
-
-        $this->expectThrowable($failure);
+        $this->expectException(Failure::class);
+        $this->expectExceptionMessage("Failed to match incoming request, acceptable methods: []");
 
         (new Router($routes, $compiler))->match($request);
     }

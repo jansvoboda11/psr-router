@@ -18,8 +18,6 @@ class OptionalPathTest extends TestCase
 
     protected function setUp()
     {
-        parent::setUp();
-
         $this->any = new Type("any", "[^/]+");
     }
 
