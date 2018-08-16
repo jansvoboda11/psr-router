@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace SvobodaTest\Router\Integration;
 
+use Svoboda\Router\Compiler\CallbackFactory;
 use Svoboda\Router\Compiler\Compiler;
+use Svoboda\Router\Compiler\MultiCallbackCompiler;
 use Svoboda\Router\Compiler\MultiPatternCompiler;
 use Svoboda\Router\Compiler\PatternFactory;
 use Svoboda\Router\Failure;
@@ -276,6 +278,7 @@ class RouterTest extends TestCase
     {
         return [
             [new MultiPatternCompiler(new PatternFactory())],
+            [new MultiCallbackCompiler(new CallbackFactory())],
         ];
     }
 }
