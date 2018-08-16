@@ -7,19 +7,19 @@ namespace SvobodaTest\Router\Unit\Route\Path;
 use Svoboda\Router\Route\Attribute;
 use Svoboda\Router\Route\Path\AttributePath;
 use Svoboda\Router\Route\Path\StaticPath;
-use Svoboda\Router\Types\TypeCollection;
+use Svoboda\Router\Types\Type;
 use SvobodaTest\Router\TestCase;
 
 class StaticPathTest extends TestCase
 {
-    /** @var TypeCollection */
-    private $types;
+    /** @var Type */
+    private $number;
 
     protected function setUp()
     {
         parent::setUp();
 
-        $this->types = TypeCollection::createDefault();
+        $this->number = new Type("number", "\d+");
     }
 
     public function test_it_creates_definition_same_as_static_string()
@@ -37,8 +37,7 @@ class StaticPathTest extends TestCase
             "/api/users/",
             new AttributePath(
                 "foo",
-                "number",
-                $this->types
+                $this->number
             )
         );
 
@@ -62,15 +61,14 @@ class StaticPathTest extends TestCase
             "/api/users/",
             new AttributePath(
                 "foo",
-                "number",
-                $this->types
+                $this->number
             )
         );
 
         $attributes = $path->getAttributes();
 
         self::assertEquals([
-            new Attribute("foo", "number", true),
+            new Attribute("foo", $this->number, true),
         ], $attributes);
     }
 }

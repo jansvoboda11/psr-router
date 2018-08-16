@@ -8,17 +8,19 @@ use Svoboda\Router\Compiler\PathPattern;
 use Svoboda\Router\Route\Path\AttributePath;
 use Svoboda\Router\Route\Path\OptionalPath;
 use Svoboda\Router\Route\Path\StaticPath;
-use Svoboda\Router\Types\TypeCollection;
+use Svoboda\Router\Types\Type;
 use SvobodaTest\Router\TestCase;
 
 class PathPatternTest extends TestCase
 {
-    /** @var TypeCollection */
-    private $types;
+    /** @var Type */
+    private $number;
 
     protected function setUp()
     {
-        $this->types = TypeCollection::createDefault();
+        parent::setUp();
+
+        $this->number = new Type("number", "\d+");
     }
 
     public function test_build_pattern_for_static_path()
@@ -32,20 +34,11 @@ class PathPatternTest extends TestCase
 
     public function test_build_pattern_for_attribute_path_with_type()
     {
-        $attribute = new AttributePath("foo", "number", $this->types);
+        $attribute = new AttributePath("foo", $this->number);
 
         $pattern = new PathPattern($attribute);
 
         self::assertEquals("(?'foo'\d+)", $pattern);
-    }
-
-    public function test_build_pattern_for_attribute_path_without_type()
-    {
-        $attribute = new AttributePath("foo", null, $this->types);
-
-        $pattern = new PathPattern($attribute);
-
-        self::assertEquals("(?'foo'[^/]+)", $pattern);
     }
 
     public function test_build_pattern_for_optional_path()
@@ -68,8 +61,7 @@ class PathPatternTest extends TestCase
                     "/",
                     new AttributePath(
                         "id",
-                        "number",
-                        $this->types
+                        $this->number
                     )
                 )
             )

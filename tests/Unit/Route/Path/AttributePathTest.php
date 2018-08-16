@@ -6,47 +6,39 @@ namespace SvobodaTest\Router\Unit\Route\Path;
 
 use Svoboda\Router\Route\Attribute;
 use Svoboda\Router\Route\Path\AttributePath;
-use Svoboda\Router\Types\TypeCollection;
+use Svoboda\Router\Types\Type;
 use SvobodaTest\Router\TestCase;
 
 class AttributePathTest extends TestCase
 {
-    /** @var TypeCollection */
-    private $types;
+    /** @var Type */
+    private $implicit;
+
+    /** @var Type */
+    private $any;
+
+    /** @var Type */
+    private $number;
 
     protected function setUp()
     {
         parent::setUp();
 
-        $this->types = TypeCollection::createDefault();
+        $this->implicit = new Type("any", "[^/]+", true);
+        $this->any = new Type("any", "[^/]+");
+        $this->number = new Type("number", "\d+");
     }
 
-    public function test_it_returns_default_pattern_without_type()
+    public function test_it_returns_correct_pattern()
     {
-        $path = new AttributePath("foo", null, $this->types);
+        $path = new AttributePath("foo", $this->number);
 
-        self::assertEquals("[^/]+", $path->getPattern());
+        self::assertEquals("\d+", $path->getTypePattern());
     }
 
-    public function test_it_returns_correct_pattern_with_type()
+    public function test_it_creates_valid_definition()
     {
-        $path = new AttributePath("foo", "number", $this->types);
-
-        self::assertEquals("\d+", $path->getPattern());
-    }
-
-    public function test_it_creates_valid_definition_without_type()
-    {
-        $path = new AttributePath("foo", null, $this->types);
-
-        $definition = $path->getDefinition();
-
-        self::assertEquals("{foo}", $definition);
-    }
-
-    public function test_it_creates_valid_definition_with_type()
-    {
-        $path = new AttributePath("foo", "any", $this->types);
+        $path = new AttributePath("foo", $this->any);
 
         $definition = $path->getDefinition();
 
@@ -57,12 +49,10 @@ class AttributePathTest extends TestCase
     {
         $path = new AttributePath(
             "foo",
-            null,
-            $this->types,
+            $this->implicit,
             new AttributePath(
                 "bar",
-                null,
-                $this->types
+                $this->implicit
             )
         );
 
@@ -71,25 +61,14 @@ class AttributePathTest extends TestCase
         self::assertEquals("{foo}{bar}", $definition);
     }
 
-    public function test_it_returns_attribute_with_implicit_type()
+    public function test_it_returns_attribute()
     {
-        $path = new AttributePath("foo", null, $this->types);
+        $path = new AttributePath("foo", $this->any);
 
         $attributes = $path->getAttributes();
 
         self::assertEquals([
-            new Attribute("foo", "any", true),
-        ], $attributes);
-    }
-
-    public function test_it_returns_attribute_with_type()
-    {
-        $path = new AttributePath("foo", "any", $this->types);
-
-        $attributes = $path->getAttributes();
-
-        self::assertEquals([
-            new Attribute("foo", "any", true),
+            new Attribute("foo", $this->any, true),
         ], $attributes);
     }
 
@@ -97,20 +76,18 @@ class AttributePathTest extends TestCase
     {
         $path = new AttributePath(
             "foo",
-            "number",
-            $this->types,
+            $this->number,
             new AttributePath(
                 "bar",
-                "any",
-                $this->types
+                $this->any
             )
         );
 
         $attributes = $path->getAttributes();
 
         self::assertEquals([
-            new Attribute("foo", "number", true),
-            new Attribute("bar", 'any', true),
+            new Attribute("foo", $this->number, true),
+            new Attribute("bar", $this->any, true),
         ], $attributes);
     }
 }

@@ -7,14 +7,14 @@ namespace SvobodaTest\Router\Unit\Route\Path;
 use Svoboda\Router\Route\Path\AttributePath;
 use Svoboda\Router\Route\Path\OptionalPath;
 use Svoboda\Router\Route\Path\StaticPath;
-use Svoboda\Router\Types\TypeCollection;
+use Svoboda\Router\Types\Type;
 use SvobodaTest\Router\TestCase;
 
 class PathVisitorTest extends TestCase
 {
     public function test_it_visits_path_parts_in_correct_order()
     {
-        $types = TypeCollection::createDefault();
+        $number = new Type("number", "\d+");
 
         $path = new StaticPath(
             "/users",
@@ -23,8 +23,7 @@ class PathVisitorTest extends TestCase
                     "/",
                     new AttributePath(
                         "id",
-                        "number",
-                        $types
+                        $number
                     )
                 )
             )

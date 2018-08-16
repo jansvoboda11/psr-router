@@ -8,19 +8,19 @@ use Svoboda\Router\Route\Attribute;
 use Svoboda\Router\Route\Path\AttributePath;
 use Svoboda\Router\Route\Path\OptionalPath;
 use Svoboda\Router\Route\Path\StaticPath;
-use Svoboda\Router\Types\TypeCollection;
+use Svoboda\Router\Types\Type;
 use SvobodaTest\Router\TestCase;
 
 class OptionalPathTest extends TestCase
 {
-    /** @var TypeCollection */
-    private $types;
+    /** @var Type */
+    private $any;
 
     protected function setUp()
     {
         parent::setUp();
 
-        $this->types = TypeCollection::createDefault();
+        $this->any = new Type("any", "[^/]+");
     }
 
     public function test_it_uses_brackets_in_definition()
@@ -41,15 +41,14 @@ class OptionalPathTest extends TestCase
         $path = new OptionalPath(
             new AttributePath(
                 "foo",
-                "any",
-                $this->types
+                $this->any
             )
         );
 
         $attributes = $path->getAttributes();
 
         self::assertEquals([
-            new Attribute("foo", "any", false),
+            new Attribute("foo", $this->any, false),
         ], $attributes);
     }
 
@@ -59,8 +58,7 @@ class OptionalPathTest extends TestCase
             new OptionalPath(
                 new AttributePath(
                     "foo",
-                    "any",
-                    $this->types
+                    $this->any
                 )
             )
         );
@@ -68,7 +66,7 @@ class OptionalPathTest extends TestCase
         $attributes = $path->getAttributes();
 
         self::assertEquals([
-            new Attribute("foo", "any", false),
+            new Attribute("foo", $this->any, false),
         ], $attributes);
     }
 }

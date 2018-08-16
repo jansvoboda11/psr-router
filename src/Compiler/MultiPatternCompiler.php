@@ -12,6 +12,8 @@ use Svoboda\Router\RouteCollection;
 class MultiPatternCompiler implements Compiler
 {
     /**
+     * The pattern factory.
+     *
      * @var PatternFactory
      */
     private $patternFactory;

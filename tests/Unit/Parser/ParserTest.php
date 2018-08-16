@@ -9,6 +9,7 @@ use Svoboda\Router\Route\InvalidRoute;
 use Svoboda\Router\Route\Path\AttributePath;
 use Svoboda\Router\Route\Path\OptionalPath;
 use Svoboda\Router\Route\Path\StaticPath;
+use Svoboda\Router\Types\Type;
 use Svoboda\Router\Types\TypeCollection;
 use SvobodaTest\Router\TestCase;
 
@@ -17,6 +18,15 @@ class ParserTest extends TestCase
     /** @var Parser */
     private $parser;
 
+    /** @var Type */
+    private $implicit;
+
+    /** @var Type */
+    private $any;
+
+    /** @var Type */
+    private $number;
+
     /** @var TypeCollection */
     private $types;
 
@@ -24,7 +34,14 @@ class ParserTest extends TestCase
     {
         $this->parser = new Parser();
 
-        $this->types = TypeCollection::createDefault();
+        $this->implicit = new Type("any", "[^/]+", true);
+        $this->any = new Type("any", "[^/]+");
+        $this->number = new Type("number", "\d+");
+
+        $this->types = new TypeCollection([
+            $this->any,
+            $this->number,
+        ]);
     }
 
     public function test_parse_static_path()
@@ -48,8 +65,7 @@ class ParserTest extends TestCase
             "/users/",
             new AttributePath(
                 "id",
-                null,
-                $this->types
+                $this->implicit
             )
         );
 
@@ -66,8 +82,7 @@ class ParserTest extends TestCase
             "/users/",
             new AttributePath(
                 "id",
-                "any",
-                $this->types
+                 $this->any
             )
         );
 
@@ -76,7 +91,7 @@ class ParserTest extends TestCase
 
     public function test_parse_path_with_multiple_attributes()
     {
-        $definition = "/users/{name}/{id:number}";
+        $definition = "/users/{name:any}/{id:number}";
 
         $path = $this->parser->parse($definition, $this->types);
 
@@ -84,14 +99,12 @@ class ParserTest extends TestCase
             "/users/",
             new AttributePath(
                 "name",
-                null,
-                $this->types,
+                $this->any,
                 new StaticPath(
                     "/",
                     new AttributePath(
                         "id",
-                        "number",
-                        $this->types
+                        $this->number
                     )
                 )
             )
@@ -102,7 +115,7 @@ class ParserTest extends TestCase
 
     public function test_parse_path_with_optional_attribute()
     {
-        $definition = "/users[/{name}]";
+        $definition = "/users[/{name:any}]";
 
         $path = $this->parser->parse($definition, $this->types);
 
@@ -113,8 +126,7 @@ class ParserTest extends TestCase
                     "/",
                     new AttributePath(
                         "name",
-                        null,
-                        $this->types
+                        $this->any
                     )
                 )
             )
@@ -125,7 +137,7 @@ class ParserTest extends TestCase
 
     public function test_parse_path_with_required_and_optional_attributes()
     {
-        $definition = "/users/{name}[/{id:number}]";
+        $definition = "/users/{name:any}[/{id:number}]";
 
         $path = $this->parser->parse($definition, $this->types);
 
@@ -133,15 +145,13 @@ class ParserTest extends TestCase
             "/users/",
             new AttributePath(
                 "name",
-                null,
-                $this->types,
+                $this->any,
                 new OptionalPath(
                     new StaticPath(
                         "/",
                         new AttributePath(
                             "id",
-                            "number",
-                            $this->types
+                            $this->number
                         )
                     )
                 )

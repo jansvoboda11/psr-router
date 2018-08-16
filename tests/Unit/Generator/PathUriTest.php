@@ -9,17 +9,23 @@ use Svoboda\Router\Generator\PathUri;
 use Svoboda\Router\Route\Path\AttributePath;
 use Svoboda\Router\Route\Path\OptionalPath;
 use Svoboda\Router\Route\Path\StaticPath;
-use Svoboda\Router\Types\TypeCollection;
+use Svoboda\Router\Types\Type;
 use SvobodaTest\Router\TestCase;
 
 class PathUriTest extends TestCase
 {
-    /** @var TypeCollection */
-    private $types;
+    /** @var Type */
+    private $any;
+
+    /** @var Type */
+    private $number;
 
     protected function setUp()
     {
-        $this->types = TypeCollection::createDefault();
+        parent::setUp();
+
+        $this->any = new Type("any", "[^/]+");
+        $this->number = new Type("number", "\d+");
     }
 
     public function test_it_generates_static_uri()
@@ -37,8 +43,7 @@ class PathUriTest extends TestCase
             "/users/",
             new AttributePath(
                 "id",
-                "number",
-                $this->types
+                $this->number
             )
         );
 
@@ -55,14 +60,12 @@ class PathUriTest extends TestCase
             "/users/",
             new AttributePath(
                 "id",
-                "number",
-                $this->types,
+                $this->number,
                 new StaticPath(
                     "/",
                     new AttributePath(
                         "name",
-                        null,
-                        $this->types
+                        $this->any
                     )
                 )
             )
@@ -82,15 +85,13 @@ class PathUriTest extends TestCase
             "/users/",
             new AttributePath(
                 "id",
-                "number",
-                $this->types,
+                $this->number,
                 new OptionalPath(
                     new StaticPath(
                         "/",
                         new AttributePath(
                             "name",
-                            null,
-                            $this->types
+                            $this->any
                         )
                     )
                 )
@@ -111,8 +112,7 @@ class PathUriTest extends TestCase
             "/users/",
             new AttributePath(
                 "id",
-                "number",
-                $this->types,
+                $this->number,
                 new OptionalPath(
                     new StaticPath(
                         "/edit"
@@ -134,15 +134,13 @@ class PathUriTest extends TestCase
             "/users/",
             new AttributePath(
                 "id",
-                "number",
-                $this->types,
+                $this->number,
                 new OptionalPath(
                     new StaticPath(
                         "/",
                         new AttributePath(
                             "name",
-                            null,
-                            $this->types
+                            $this->any
                         )
                     )
                 )
@@ -162,8 +160,7 @@ class PathUriTest extends TestCase
             "/users/",
             new AttributePath(
                 "id",
-                null,
-                $this->types
+                $this->any
             )
         );
 
@@ -181,8 +178,7 @@ class PathUriTest extends TestCase
             "/users/",
             new AttributePath(
                 "id",
-                "number",
-                $this->types
+                $this->number
             )
         );
 
@@ -200,22 +196,19 @@ class PathUriTest extends TestCase
             "/users/",
             new AttributePath(
                 "id",
-                "number",
-                $this->types,
+                $this->number,
                 new OptionalPath(
                     new StaticPath(
                         "/",
                         new AttributePath(
                             "first",
-                            null,
-                            $this->types,
+                            $this->any,
                             new OptionalPath(
                                 new StaticPath(
                                     "/",
                                     new AttributePath(
                                         "last",
-                                        null,
-                                        $this->types
+                                        $this->any
                                     )
                                 )
                             )
@@ -242,8 +235,7 @@ class PathUriTest extends TestCase
             "/users/",
             new AttributePath(
                 "id",
-                "number",
-                $this->types
+                $this->number
             )
         );
 

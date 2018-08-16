@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Svoboda\Router\Route\Path;
 
 use Svoboda\Router\Route\Attribute;
-use Svoboda\Router\Types\TypeCollection;
+use Svoboda\Router\Types\Type;
 
 /**
  * Route part that represents user-defined attribute.
@@ -22,16 +22,9 @@ class AttributePath implements RoutePath
     /**
      * The attribute type.
      *
-     * @var null|string
+     * @var Type
      */
     private $type;
-
-    /**
-     * The attribute types.
-     *
-     * @var TypeCollection
-     */
-    private $types;
 
     /**
      * The next part of the route.
@@ -44,15 +37,13 @@ class AttributePath implements RoutePath
      * Constructor.
      *
      * @param string $name
-     * @param null|string $type
-     * @param TypeCollection $types
+     * @param Type $type
      * @param null|RoutePath $next
      */
-    public function __construct(string $name, ?string $type, TypeCollection $types, ?RoutePath $next = null)
+    public function __construct(string $name, Type $type, ?RoutePath $next = null)
     {
         $this->name = $name;
         $this->type = $type;
-        $this->types = $types;
         $this->next = $next ?? new EmptyPath();
     }
 
@@ -67,25 +58,13 @@ class AttributePath implements RoutePath
     }
 
     /**
-     * Returns the attribute type.
+     * Returns the pattern of the attribute type.
      *
      * @return string
      */
-    public function getType(): string
+    public function getTypePattern(): string
     {
-        return $this->type ?? $this->types->getImplicit()->getName();
-    }
-
-    /**
-     * Returns the attribute pattern.
-     *
-     * @return string
-     */
-    public function getPattern(): string
-    {
-        $type = $this->getType();
-
-        return $this->types->getPatternFor($type);
+        return $this->type->getPattern();
     }
 
     /**
@@ -94,9 +73,9 @@ class AttributePath implements RoutePath
     public function getDefinition(): string
     {
         $name = $this->name;
-        $type = $this->type;
+        $type = $this->type->getName();
 
-        $typeDefinition = ($type === null) ? "" : ":$type";
+        $typeDefinition = ($type === "") ? "" : ":$type";
 
         $nextDefinition = $this->next->getDefinition();
 
@@ -108,7 +87,7 @@ class AttributePath implements RoutePath
      */
     public function getAttributes(): array
     {
-        $attribute = new Attribute($this->getName(), $this->getType(), true);
+        $attribute = new Attribute($this->name, $this->type, true);
 
         $nextAttributes = $this->next->getAttributes();
 

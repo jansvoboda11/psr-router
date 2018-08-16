@@ -16,9 +16,9 @@ class InvalidTypes extends Exception
      *
      * @return InvalidTypes
      */
-    public static function emptyPatterns(): self
+    public static function emptyCollection(): self
     {
-        return new self("At least one type pattern must be provided");
+        return new self("At least one type must be provided");
     }
 
     /**
@@ -41,6 +41,6 @@ class InvalidTypes extends Exception
      */
     public static function invalidTypePattern(string $name, string $pattern): self
     {
-        return new self("The pattern '$pattern' of attribute '$name' is invalid");
+        return new self("The pattern '$pattern' of type '$name' is invalid");
     }
 }

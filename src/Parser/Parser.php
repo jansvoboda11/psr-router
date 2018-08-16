@@ -133,7 +133,7 @@ class Parser
         $definition->expect("{");
 
         $name = $this->parseAttributeName($definition);
-        $type = $this->parseAttributeType($definition);
+        $type = $this->parseAttributeType($definition) ?? "";
 
         $definition->expect("}");
 
@@ -141,15 +141,17 @@ class Parser
             throw InvalidRoute::ambiguousAttribute($definition, $name);
         }
 
-        if ($type !== null && !$types->hasNamed($type)) {
+        if (!$types->hasNamed($type)) {
             throw InvalidRoute::unknownAttributeType($definition, $name, $type);
         }
+
+        $type = $types->getNamed($type);
 
         $attributes[] = $name;
 
         $next = $this->parseRoute($definition, $types, $attributes);
 
-        return new AttributePath($name, $type, $types, $next);
+        return new AttributePath($name, $type, $next);
     }
 
     /**

@@ -17,13 +17,6 @@ class TypeCollection
     private $types;
 
     /**
-     * Name of the implicit type.
-     *
-     * @var string
-     */
-    private $implicit;
-
-    /**
      * Constructor.
      *
      * @param Type[] $types
@@ -32,21 +25,20 @@ class TypeCollection
     public function __construct(array $types)
     {
         if (empty($types)) {
-            throw InvalidTypes::emptyPatterns();
+            throw InvalidTypes::emptyCollection();
         }
 
-        $typesMap = [];
+        $this->types = [
+            "" => $types[0]->createImplicit(),
+        ];
 
         foreach ($types as $type) {
-            $typesMap[$type->getName()] = $type;
+            $this->types[$type->getName()] = $type;
         }
-
-        $this->types = $typesMap;
-        $this->implicit = $types[0]->getName();
     }
 
     /**
-     * Creates the default attribute types.
+     * Creates a collection with the default types.
      *
      * @return TypeCollection
      * @throws InvalidTypes
@@ -65,17 +57,7 @@ class TypeCollection
     }
 
     /**
-     * Returns the implicit attribute type.
-     *
-     * @return Type
-     */
-    public function getImplicit(): Type
-    {
-        return $this->types[$this->implicit];
-    }
-
-    /**
-     * Determines if the given type exists.
+     * Determines if the collection has a type with given name.
      *
      * @param string $name
      * @return bool
@@ -83,6 +65,17 @@ class TypeCollection
     public function hasNamed(string $name): bool
     {
         return array_key_exists($name, $this->types);
+    }
+
+    /**
+     * Returns type with the given name.
+     *
+     * @param string $name
+     * @return Type
+     */
+    public function getNamed(string $name): Type
+    {
+        return $this->types[$name];
     }
 
     /**

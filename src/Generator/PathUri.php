@@ -85,7 +85,7 @@ class PathUri extends PathVisitor
 
         $name = $path->getName();
         $value = $this->getValue($path, $this->attributes);
-        $pattern = $path->getPattern();
+        $pattern = $path->getTypePattern();
 
         $this->validateValue($name, $value, $pattern);
 

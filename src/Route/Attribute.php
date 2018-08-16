@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Svoboda\Router\Route;
 
+use Svoboda\Router\Types\Type;
+
 /**
  * The route attribute.
  */
@@ -19,7 +21,7 @@ class Attribute
     /**
      * Data type of the attribute.
      *
-     * @var string
+     * @var Type
      */
     private $type;
 
@@ -34,10 +36,10 @@ class Attribute
      * Constructor.
      *
      * @param string $name
-     * @param string $type
+     * @param Type $type
      * @param bool $required
      */
-    public function __construct(string $name, string $type, bool $required)
+    public function __construct(string $name, Type $type, bool $required)
     {
         $this->name = $name;
         $this->type = $type;
@@ -67,9 +69,9 @@ class Attribute
     /**
      * Returns the attribute type.
      *
-     * @return string
+     * @return Type
      */
-    public function getType(): string
+    public function getType(): Type
     {
         return $this->type;
     }
