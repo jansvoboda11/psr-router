@@ -7,7 +7,11 @@ namespace Svoboda\Router\Compiler;
 use Psr\Http\Message\ServerRequestInterface;
 use Svoboda\Router\Failure;
 use Svoboda\Router\Match;
+use Svoboda\Router\Route\Route;
 
+/**
+ * Iterates over an array of individual callbacks and calls them one-by-one.
+ */
 class MultiCallbackMatcher implements Matcher
 {
     /**
@@ -32,8 +36,54 @@ class MultiCallbackMatcher implements Matcher
      */
     public function match(ServerRequestInterface $request): Match
     {
-        // todo: implement
+        $allowedMethods = [];
 
-        throw new Failure([], $request);
+        $requestMethod = $request->getMethod();
+        $requestPath = $request->getUri()->getPath();
+
+        foreach ($this->records as $record) {
+            $matches = [];
+
+            /** @var Route $route */
+            [$callback, $route] = $record;
+
+            $routeMethod = $route->getMethod();
+
+            // todo: implement
+            if (false) {
+                if ($requestMethod === $routeMethod) {
+                    return $this->createResult($route, $request, $matches);
+                }
+
+                if (!array_key_exists($routeMethod, $allowedMethods)) {
+                    $allowedMethods[$routeMethod] = $route;
+                }
+            }
+        }
+
+        throw new Failure($allowedMethods, $request);
+    }
+
+    /**
+     * Creates a match.
+     *
+     * @param Route $route
+     * @param ServerRequestInterface $request
+     * @param array $matches
+     * @return Match
+     */
+    private function createResult(Route $route, ServerRequestInterface $request, array $matches): Match
+    {
+        $attributes = $route->getAttributes();
+
+        foreach ($attributes as $attribute) {
+            $name = $attribute->getName();
+
+            if (array_key_exists($name, $matches)) {
+                $request = $request->withAttribute($name, $matches[$name]);
+            }
+        }
+
+        return new Match($route, $request);
     }
 }

@@ -7,6 +7,9 @@ namespace Svoboda\Router\Compiler;
 use Svoboda\Router\Route\Path\PathVisitor;
 use Svoboda\Router\Route\Path\RoutePath;
 
+/**
+ * The matching callback of a path.
+ */
 class PathCallback extends PathVisitor
 {
     /**
@@ -33,6 +36,7 @@ class PathCallback extends PathVisitor
         $this->path = $path;
         $this->callbacks = [];
 
+        // todo: implement
         $this->path->accept($this);
     }
 

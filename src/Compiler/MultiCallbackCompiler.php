@@ -6,6 +6,9 @@ namespace Svoboda\Router\Compiler;
 
 use Svoboda\Router\RouteCollection;
 
+/**
+ * Creates an array of callbacks per route.
+ */
 class MultiCallbackCompiler implements Compiler
 {
     /**

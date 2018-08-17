@@ -10,8 +10,7 @@ use Svoboda\Router\Match;
 use Svoboda\Router\Route\Route;
 
 /**
- * Iterates over array of individual regular expressions and matches them
- * one-by-one.
+ * Iterates over an array of individual regular expressions and matches them one-by-one.
  */
 class MultiPatternMatcher implements Matcher
 {
