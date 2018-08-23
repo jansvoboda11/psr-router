@@ -7,9 +7,9 @@ namespace Svoboda\Router\Compiler;
 use Svoboda\Router\RouteCollection;
 
 /**
- * Creates multiple small regular expressions - one for each route.
+ * Creates one big regular expression combining all routes.
  */
-class MultiPatternCompiler implements Compiler
+class SinglePatternCompiler implements Compiler
 {
     /**
      * The pattern factory.
@@ -33,18 +33,25 @@ class MultiPatternCompiler implements Compiler
      */
     public function compile(RouteCollection $routes): Matcher
     {
-        $records = [];
+        $patterns = [];
 
-        foreach ($routes->all() as $route) {
+        $routesArray = $routes->all();
+
+        foreach ($routes->all() as $index => $route) {
+            $method = $route->getMethod();
             $path = $route->getPath();
 
             $pathPattern = $this->patternFactory->create($path);
 
-            $pattern = "#^$pathPattern$#";
+            $pattern = "$pathPattern{}$method(*MARK:$index)";
 
-            $records[] = [$pattern, $route];
+            $patterns[] = $pattern;
         }
 
-        return new MultiPatternMatcher($records);
+        $patterns = implode("|", $patterns);
+
+        $pattern = "#^(?|$patterns)$#";
+
+        return new SinglePatternMatcher($pattern, $routesArray);
     }
 }

@@ -59,10 +59,9 @@ class PathPattern extends PathVisitor
      */
     public function enterAttribute(AttributePath $path): void
     {
-        $name = $path->getName();
         $pattern = $path->getTypePattern();
 
-        $this->pattern .= "(?'$name'$pattern)";
+        $this->pattern .= "($pattern)";
     }
 
     /**

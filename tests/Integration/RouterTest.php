@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace SvobodaTest\Router\Integration;
 
-use Svoboda\Router\Compiler\CallbackFactory;
 use Svoboda\Router\Compiler\Compiler;
-use Svoboda\Router\Compiler\MultiCallbackCompiler;
 use Svoboda\Router\Compiler\MultiPatternCompiler;
 use Svoboda\Router\Compiler\PatternFactory;
+use Svoboda\Router\Compiler\SinglePatternCompiler;
 use Svoboda\Router\Failure;
 use Svoboda\Router\RouteCollection;
 use Svoboda\Router\Router;
@@ -277,8 +276,8 @@ class RouterTest extends TestCase
     public function getCompilers()
     {
         return [
-            [new MultiPatternCompiler(new PatternFactory())],
-            [new MultiCallbackCompiler(new CallbackFactory())],
+            "multi pattern" => [new MultiPatternCompiler(new PatternFactory())],
+            "single pattern" => [new SinglePatternCompiler(new PatternFactory())],
         ];
     }
 }

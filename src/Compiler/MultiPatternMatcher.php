@@ -12,7 +12,7 @@ use Svoboda\Router\Route\Route;
 /**
  * Iterates over an array of individual regular expressions and matches them one-by-one.
  */
-class MultiPatternMatcher implements Matcher
+class MultiPatternMatcher extends AbstractMatcher
 {
     /**
      * Array of routes and their regular expressions.
@@ -51,6 +51,8 @@ class MultiPatternMatcher implements Matcher
 
             if (preg_match($pattern, $requestPath, $matches)) {
                 if ($requestMethod === $routeMethod) {
+                    $matches = $this->normalize($matches);
+
                     return $this->createResult($route, $request, $matches);
                 }
 
@@ -64,25 +66,16 @@ class MultiPatternMatcher implements Matcher
     }
 
     /**
-     * Creates a match.
+     * Normalizes the matches array.
      *
-     * @param Route $route
-     * @param ServerRequestInterface $request
-     * @param array $matches
-     * @return Match
+     * @param string[] $matches
+     * @return string[]
      */
-    private function createResult(Route $route, ServerRequestInterface $request, array $matches): Match
+    private function normalize(array $matches): array
     {
-        $attributes = $route->getAttributes();
+        // remove the full match
+        array_shift($matches);
 
-        foreach ($attributes as $attribute) {
-            $name = $attribute->getName();
-
-            if (array_key_exists($name, $matches)) {
-                $request = $request->withAttribute($name, $matches[$name]);
-            }
-        }
-
-        return new Match($route, $request);
+        return $matches;
     }
 }

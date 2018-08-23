@@ -36,7 +36,7 @@ class PathPatternTest extends TestCase
 
         $pattern = new PathPattern($attribute);
 
-        self::assertEquals("(?'foo'\d+)", $pattern);
+        self::assertEquals("(\d+)", $pattern);
     }
 
     public function test_build_pattern_for_optional_path()
@@ -67,6 +67,6 @@ class PathPatternTest extends TestCase
 
         $pattern = new PathPattern($complex);
 
-        self::assertEquals("/users(?:/(?'id'\d+))?", $pattern);
+        self::assertEquals("/users(?:/(\d+))?", $pattern);
     }
 }

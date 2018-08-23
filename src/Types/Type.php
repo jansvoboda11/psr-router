@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Svoboda\Router\Types;
 
+/**
+ * Attribute type.
+ */
 class Type
 {
     /**
