@@ -37,7 +37,7 @@ class SinglePatternCompiler implements Compiler
 
         $routesArray = $routes->all();
 
-        foreach ($routes->all() as $index => $route) {
+        foreach ($routesArray as $index => $route) {
             $method = $route->getMethod();
             $path = $route->getPath();
 
