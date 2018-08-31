@@ -27,14 +27,14 @@ class AttributePathTest extends TestCase
         $this->number = new Type("number", "\d+");
     }
 
-    public function test_it_returns_correct_pattern()
+    public function test_type_pattern_is_returned()
     {
         $path = new AttributePath("foo", $this->number);
 
         self::assertEquals("\d+", $path->getTypePattern());
     }
 
-    public function test_it_creates_valid_definition()
+    public function test_definition_is_created()
     {
         $path = new AttributePath("foo", $this->any);
 
@@ -43,7 +43,7 @@ class AttributePathTest extends TestCase
         self::assertEquals("{foo:any}", $definition);
     }
 
-    public function test_it_creates_valid_definition_with_next_route_part()
+    public function test_definition_contains_that_of_nested_part()
     {
         $path = new AttributePath(
             "foo",
@@ -59,7 +59,7 @@ class AttributePathTest extends TestCase
         self::assertEquals("{foo}{bar}", $definition);
     }
 
-    public function test_it_returns_attribute()
+    public function test_attribute_is_returned()
     {
         $path = new AttributePath("foo", $this->any);
 
@@ -70,7 +70,7 @@ class AttributePathTest extends TestCase
         ], $attributes);
     }
 
-    public function test_it_returns_attribute_of_the_next_route_part()
+    public function test_attributes_include_that_of_nested_part()
     {
         $path = new AttributePath(
             "foo",

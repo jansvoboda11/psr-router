@@ -26,7 +26,7 @@ class PathUriTest extends TestCase
         $this->number = new Type("number", "\d+");
     }
 
-    public function test_it_generates_static_uri()
+    public function test_static_uri_is_generated()
     {
         $path = new StaticPath("/home");
 
@@ -35,7 +35,7 @@ class PathUriTest extends TestCase
         self::assertEquals("/home", $uri);
     }
 
-    public function test_it_generates_uri_with_single_attribute()
+    public function test_uri_with_single_attribute_is_generated()
     {
         $path = new StaticPath(
             "/users/",
@@ -52,7 +52,7 @@ class PathUriTest extends TestCase
         self::assertEquals("/users/42", $uri);
     }
 
-    public function test_it_generates_uri_with_multiple_attributes()
+    public function test_uri_with_multiple_attributes_is_generated()
     {
         $path = new StaticPath(
             "/users/",
@@ -77,7 +77,7 @@ class PathUriTest extends TestCase
         self::assertEquals("/users/42/jansvoboda11", $uri);
     }
 
-    public function test_it_generates_uri_with_optional_argument()
+    public function test_uri_with_optional_argument_is_generated()
     {
         $path = new StaticPath(
             "/users/",
@@ -104,7 +104,7 @@ class PathUriTest extends TestCase
         self::assertEquals("/users/42/jansvoboda11", $uri);
     }
 
-    public function test_it_ignores_optional_static_suffix()
+    public function test_optional_static_suffix_is_ignored()
     {
         $path = new StaticPath(
             "/users/",
@@ -126,7 +126,7 @@ class PathUriTest extends TestCase
         self::assertEquals("/users/42", $uri);
     }
 
-    public function test_it_ignores_optional_attribute_suffix()
+    public function test_optional_attribute_suffix_is_ignored()
     {
         $path = new StaticPath(
             "/users/",
@@ -152,7 +152,7 @@ class PathUriTest extends TestCase
         self::assertEquals("/users/42", $uri);
     }
 
-    public function test_it_ignores_non_existent_attribute()
+    public function test_non_existent_attribute_is_ignored()
     {
         $path = new StaticPath(
             "/users/",
@@ -170,7 +170,7 @@ class PathUriTest extends TestCase
         self::assertEquals("/users/42", $uri);
     }
 
-    public function test_it_fails_on_missing_required_attribute()
+    public function test_missing_required_attribute_causes_failure()
     {
         $path = new StaticPath(
             "/users/",
@@ -188,7 +188,7 @@ class PathUriTest extends TestCase
         new PathUri($path);
     }
 
-    public function test_it_fails_on_missing_preceding_optional_attribute()
+    public function test_missing_preceding_optional_attribute_causes_failure()
     {
         $path = new StaticPath(
             "/users/",
@@ -227,7 +227,7 @@ class PathUriTest extends TestCase
         ]);
     }
 
-    public function test_it_fails_on_attribute_type_mismatch()
+    public function test_attribute_type_mismatch_causes_failure()
     {
         $path = new StaticPath(
             "/users/",
