@@ -32,61 +32,17 @@ class MethodNotAllowedMiddlewareTest extends TestCase
         $this->middleware = new MethodNotAllowedMiddleware($this->responseFactory->reveal());
     }
 
-    public function test_it_ignores_request_with_method_that_is_always_allowed()
-    {
-        $request = self::createRequest("GET", "/users");
-
-        $nextHandlerResponse = self::createResponse(201, "Created", "Foobar");
-
-        $this->nextHandler->handle($request)->willReturn($nextHandlerResponse);
-
-        $response = $this->middleware->process($request, $this->nextHandler->reveal());
-
-        self::assertEquals($nextHandlerResponse, $response);
-    }
-
-    public function test_it_ignores_matched_route()
-    {
-        $route = new Route("POST", new StaticPath("/users"), new Handler("Users"));
-
-        $request = self::createRequest("POST", "/users");
-        $request = self::requestWithMatch($request, $route);
-
-        $nextHandlerResponse = self::createResponse(201, "Created", "Foobar");
-
-        $this->nextHandler->handle($request)->willReturn($nextHandlerResponse);
-
-        $response = $this->middleware->process($request, $this->nextHandler->reveal());
-
-        self::assertEquals($nextHandlerResponse, $response);
-    }
-
-    public function test_it_ignores_uri_failure()
-    {
-        $request = self::createRequest("POST", "/users");
-        $request = self::requestWithFailure($request, []);
-
-        $nextHandlerResponse = self::createResponse(201, "Created", "Foobar");
-
-        $this->nextHandler->handle($request)->willReturn($nextHandlerResponse);
-
-        $response = $this->middleware->process($request, $this->nextHandler->reveal());
-
-        self::assertEquals(201, $response->getStatusCode());
-        self::assertEquals("Foobar", $response->getBody());
-    }
-
-    public function test_it_returns_method_not_allowed_response()
+    public function test_method_failure_results_in_method_not_allowed_response()
     {
         $request = self::createRequest("POST", "/users");
         $request = self::requestWithFailure($request, [
-            "POST" => new Handler("Post"),
-            "PATCH" => new Handler("Patch"),
+            "POST" => new Handler(),
+            "PATCH" => new Handler(),
         ]);
 
-        $factoryResponse = self::createResponse(405, "Method Not Allowed");
-
-        $this->responseFactory->createResponse(405, "Method Not Allowed")->willReturn($factoryResponse);
+        $this->responseFactory->createResponse(405, "Method Not Allowed")->willReturn(
+            self::createResponse(405, "Method Not Allowed")
+        );
 
         $response = $this->middleware->process($request, $this->nextHandler->reveal());
 
@@ -94,6 +50,49 @@ class MethodNotAllowedMiddlewareTest extends TestCase
 
         self::assertEquals(405, $response->getStatusCode());
         self::assertEquals("Method Not Allowed", $response->getReasonPhrase());
-        self::assertEquals(["POST, PATCH"], $response->getHeader("Allow"));
+        self::assertEquals("POST, PATCH", $response->getHeaderLine("Allow"));
+    }
+
+    public function test_uri_failure_is_not_affected()
+    {
+        $request = self::createRequest("POST", "/users");
+        $request = self::requestWithFailure($request, []);
+
+        $notFoundResponse = self::createResponse(404, "Not Found");
+
+        $this->nextHandler->handle($request)->willReturn($notFoundResponse);
+
+        $response = $this->middleware->process($request, $this->nextHandler->reveal());
+
+        self::assertEquals($notFoundResponse, $response);
+    }
+
+    public function test_method_that_is_always_allowed_is_not_affected()
+    {
+        $request = self::createRequest("GET", "/users");
+
+        $getResponse = self::createResponse(200, "OK");
+
+        $this->nextHandler->handle($request)->willReturn($getResponse);
+
+        $response = $this->middleware->process($request, $this->nextHandler->reveal());
+
+        self::assertEquals($getResponse, $response);
+    }
+
+    public function test_matched_request_is_not_affected()
+    {
+        $route = new Route("POST", new StaticPath("/users"), new Handler());
+
+        $request = self::createRequest("POST", "/users");
+        $request = self::requestWithMatch($request, $route);
+
+        $postResponse = self::createResponse(201, "Created");
+
+        $this->nextHandler->handle($request)->willReturn($postResponse);
+
+        $response = $this->middleware->process($request, $this->nextHandler->reveal());
+
+        self::assertEquals($postResponse, $response);
     }
 }
