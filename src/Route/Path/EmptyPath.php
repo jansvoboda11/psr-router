@@ -30,6 +30,8 @@ class EmptyPath implements RoutePath
      */
     public function accept(PathVisitor $visitor): void
     {
-        //
+        $visitor->enterEmpty($this);
+
+        $visitor->leaveEmpty($this);
     }
 }

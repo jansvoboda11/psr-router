@@ -68,4 +68,24 @@ abstract class PathVisitor
     {
         //
     }
+
+    /**
+     * Enters the empty path.
+     *
+     * @param EmptyPath $path
+     */
+    public function enterEmpty(EmptyPath $path): void
+    {
+        //
+    }
+
+    /**
+     * Leaves the empty path.
+     *
+     * @param EmptyPath $path
+     */
+    public function leaveEmpty(EmptyPath $path): void
+    {
+        //
+    }
 }

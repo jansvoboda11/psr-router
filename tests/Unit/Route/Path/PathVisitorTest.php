@@ -38,6 +38,8 @@ class PathVisitorTest extends TestCase
             "Entering optional",
             "Entering static /",
             "Entering attribute id",
+            "Entering empty path",
+            "Leaving empty path",
             "Leaving attribute id",
             "Leaving static /",
             "Leaving optional",

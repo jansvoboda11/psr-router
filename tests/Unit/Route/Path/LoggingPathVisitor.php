@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SvobodaTest\Router\Unit\Route\Path;
 
 use Svoboda\Router\Route\Path\AttributePath;
+use Svoboda\Router\Route\Path\EmptyPath;
 use Svoboda\Router\Route\Path\OptionalPath;
 use Svoboda\Router\Route\Path\PathVisitor;
 use Svoboda\Router\Route\Path\RoutePath;
@@ -54,5 +55,15 @@ class LoggingPathVisitor extends PathVisitor
     public function leaveStatic(StaticPath $path): void
     {
         $this->logs[] = "Leaving static " . $path->getStatic();
+    }
+
+    public function enterEmpty(EmptyPath $path): void
+    {
+        $this->logs[] = "Entering empty path";
+    }
+
+    public function leaveEmpty(EmptyPath $path): void
+    {
+        $this->logs[] = "Leaving empty path";
     }
 }

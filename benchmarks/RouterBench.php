@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Svoboda\Router\Compiler\MultiPatternCompiler;
 use Svoboda\Router\Compiler\PatternFactory;
+use Svoboda\Router\Compiler\PhpCodeCompiler;
 use Svoboda\Router\Compiler\SinglePatternCompiler;
 use Svoboda\Router\Failure;
 use Svoboda\Router\Router;
@@ -13,6 +14,7 @@ class RouterBench
 {
     private $multiPatternRouter;
     private $singlePatternRouter;
+    private $phpCodeRouter;
 
     private $requestToFirstRoute;
     private $requestToLastRoute;
@@ -24,6 +26,7 @@ class RouterBench
 
         $this->multiPatternRouter = new Router($routes, new MultiPatternCompiler(new PatternFactory()));
         $this->singlePatternRouter = new Router($routes, new SinglePatternCompiler(new PatternFactory()));
+        $this->phpCodeRouter = new Router($routes, new PhpCodeCompiler());
 
         $this->requestToFirstRoute = (new Psr17Factory())->createServerRequest("GET", "/");
         $this->requestToLastRoute = (new Psr17Factory())->createServerRequest("DELETE", "/orders/123");
@@ -52,6 +55,15 @@ class RouterBench
      * @Iterations(10)
      * @Revs(1000)
      */
+    public function benchFirstRoutePhpCode()
+    {
+        $this->phpCodeRouter->match($this->requestToFirstRoute);
+    }
+
+    /**
+     * @Iterations(10)
+     * @Revs(1000)
+     */
     public function benchLastRouteMultiPattern()
     {
         $this->multiPatternRouter->match($this->requestToLastRoute);
@@ -64,6 +76,15 @@ class RouterBench
     public function benchLastRouteSinglePattern()
     {
         $this->singlePatternRouter->match($this->requestToLastRoute);
+    }
+
+    /**
+     * @Iterations(10)
+     * @Revs(1000)
+     */
+    public function benchLastRoutePhpCode()
+    {
+        $this->phpCodeRouter->match($this->requestToLastRoute);
     }
 
     /**
@@ -87,6 +108,19 @@ class RouterBench
     {
         try {
             $this->singlePatternRouter->match($this->requestToNoRoute);
+        } catch (Failure $failure) {
+            //
+        }
+    }
+
+    /**
+     * @Iterations(10)
+     * @Revs(1000)
+     */
+    public function benchNoRoutePhpCode()
+    {
+        try {
+            $this->phpCodeRouter->match($this->requestToNoRoute);
         } catch (Failure $failure) {
             //
         }
