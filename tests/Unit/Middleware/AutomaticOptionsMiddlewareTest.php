@@ -11,7 +11,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Svoboda\Router\Middleware\AutomaticOptionsMiddleware;
 use Svoboda\Router\Route\Path\StaticPath;
 use Svoboda\Router\Route\Route;
-use SvobodaTest\Router\Handler;
+use SvobodaTest\Router\FakeHandler;
 use SvobodaTest\Router\TestCase;
 
 class AutomaticOptionsMiddlewareTest extends TestCase
@@ -36,8 +36,8 @@ class AutomaticOptionsMiddlewareTest extends TestCase
     {
         $request = self::createRequest("OPTIONS", "/users");
         $request = self::requestWithFailure($request, [
-            "GET" => new Handler(),
-            "POST" => new Handler(),
+            "GET" => new FakeHandler(),
+            "POST" => new FakeHandler(),
         ]);
 
         $this->responseFactory->createResponse(200, "OK")->willReturn(
@@ -55,7 +55,7 @@ class AutomaticOptionsMiddlewareTest extends TestCase
 
     public function test_explicit_options_route_is_used()
     {
-        $optionsRoute = new Route("OPTIONS", new StaticPath("/users"), new Handler());
+        $optionsRoute = new Route("OPTIONS", new StaticPath("/users"), new FakeHandler());
 
         $request = self::createRequest("OPTIONS", "/users");
         $request = self::requestWithMatch($request, $optionsRoute);

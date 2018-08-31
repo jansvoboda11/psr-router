@@ -12,7 +12,7 @@ use Svoboda\Router\Middleware\RouteMatchingMiddleware;
 use Svoboda\Router\Route\Path\StaticPath;
 use Svoboda\Router\Route\Route;
 use Svoboda\Router\Router;
-use SvobodaTest\Router\Handler;
+use SvobodaTest\Router\FakeHandler;
 use SvobodaTest\Router\TestCase;
 
 class RouteMatchingMiddlewareTest extends TestCase
@@ -35,7 +35,7 @@ class RouteMatchingMiddlewareTest extends TestCase
 
     public function test_match_is_added_on_success()
     {
-        $route = new Route("POST", new StaticPath("/users"), new Handler());
+        $route = new Route("POST", new StaticPath("/users"), new FakeHandler());
 
         $request = self::createRequest("GET", "/users");
         $match = new Match($route, $request);

@@ -11,7 +11,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Svoboda\Router\Middleware\MethodNotAllowedMiddleware;
 use Svoboda\Router\Route\Path\StaticPath;
 use Svoboda\Router\Route\Route;
-use SvobodaTest\Router\Handler;
+use SvobodaTest\Router\FakeHandler;
 use SvobodaTest\Router\TestCase;
 
 class MethodNotAllowedMiddlewareTest extends TestCase
@@ -36,8 +36,8 @@ class MethodNotAllowedMiddlewareTest extends TestCase
     {
         $request = self::createRequest("POST", "/users");
         $request = self::requestWithFailure($request, [
-            "POST" => new Handler(),
-            "PATCH" => new Handler(),
+            "POST" => new FakeHandler(),
+            "PATCH" => new FakeHandler(),
         ]);
 
         $this->responseFactory->createResponse(405, "Method Not Allowed")->willReturn(
@@ -82,7 +82,7 @@ class MethodNotAllowedMiddlewareTest extends TestCase
 
     public function test_matched_request_is_not_affected()
     {
-        $route = new Route("POST", new StaticPath("/users"), new Handler());
+        $route = new Route("POST", new StaticPath("/users"), new FakeHandler());
 
         $request = self::createRequest("POST", "/users");
         $request = self::requestWithMatch($request, $route);

@@ -11,7 +11,7 @@ use Svoboda\Router\Compiler\SinglePatternCompiler;
 use Svoboda\Router\Failure;
 use Svoboda\Router\RouteCollection;
 use Svoboda\Router\Router;
-use SvobodaTest\Router\Handler;
+use SvobodaTest\Router\FakeHandler;
 use SvobodaTest\Router\TestCase;
 
 class RouterTest extends TestCase
@@ -22,10 +22,9 @@ class RouterTest extends TestCase
     public function test_it_matches_single_static_route(Compiler $compiler)
     {
         $request = self::createRequest("GET", "/users");
-        $handler = new Handler("Users");
 
         $routes = RouteCollection::create();
-        $route = $routes->get("/users", $handler);
+        $route = $routes->get("/users", new FakeHandler());
 
         $match = (new Router($routes, $compiler))->match($request);
 
@@ -39,12 +38,9 @@ class RouterTest extends TestCase
     {
         $request = self::createRequest("GET", "/admins");
 
-        $usersHandler = new Handler("Users");
-        $adminsHandler = new Handler("Admins");
-
         $routes = RouteCollection::create();
-        $usersRoute = $routes->get("/users", $usersHandler);
-        $adminsRoute = $routes->get("/admins", $adminsHandler);
+        $usersRoute = $routes->get("/users", new FakeHandler());
+        $adminsRoute = $routes->get("/admins", new FakeHandler());
 
         $match = (new Router($routes, $compiler))->match($request);
 
@@ -58,12 +54,9 @@ class RouterTest extends TestCase
     {
         $request = self::createRequest("GET", "/admins");
 
-        $firstHandler = new Handler("Admins1");
-        $secondHandler = new Handler("Admins2");
-
         $routes = RouteCollection::create();
-        $firstRoute = $routes->get("/admins", $firstHandler);
-        $secondRoute = $routes->get("/admins", $secondHandler);
+        $firstRoute = $routes->get("/admins", new FakeHandler());
+        $secondRoute = $routes->get("/admins", new FakeHandler());
 
         $match = (new Router($routes, $compiler))->match($request);
 
@@ -77,10 +70,8 @@ class RouterTest extends TestCase
     {
         $request = self::createRequest("GET", "/admins/jan/123");
 
-        $handler = new Handler("Admins");
-
         $routes = RouteCollection::create();
-        $route = $routes->get("/admins/{name}/{id}", $handler);
+        $route = $routes->get("/admins/{name}/{id}", new FakeHandler());
 
         $match = (new Router($routes, $compiler))->match($request);
 
@@ -98,12 +89,9 @@ class RouterTest extends TestCase
     {
         $request = self::createRequest("GET", "/users/jan/123");
 
-        $adminsHandler = new Handler("Admins");
-        $usersHandler = new Handler("Users");
-
         $routes = RouteCollection::create();
-        $adminsRoute = $routes->get("/admins/{name}/{id}", $adminsHandler);
-        $usersRoute = $routes->get("/users/{name}/{id}", $usersHandler);
+        $adminsRoute = $routes->get("/admins/{name}/{id}", new FakeHandler());
+        $usersRoute = $routes->get("/users/{name}/{id}", new FakeHandler());
 
         $match = (new Router($routes, $compiler))->match($request);
 
@@ -121,10 +109,8 @@ class RouterTest extends TestCase
     {
         $request = self::createRequest("GET", "/users/jan");
 
-        $handler = new Handler("Users");
-
         $routes = RouteCollection::create();
-        $route = $routes->get("/users/{name}[/{id}]", $handler);
+        $route = $routes->get("/users/{name}[/{id}]", new FakeHandler());
 
         $match = (new Router($routes, $compiler))->match($request);
 
@@ -142,12 +128,9 @@ class RouterTest extends TestCase
     {
         $request = self::createRequest("POST", "/users");
 
-        $getHandler = new Handler("Get");
-        $postHandler = new Handler("Post");
-
         $routes = RouteCollection::create();
-        $getRoute = $routes->get("/users", $getHandler);
-        $postRoute = $routes->post("/users", $postHandler);
+        $getRoute = $routes->get("/users", new FakeHandler());
+        $postRoute = $routes->post("/users", new FakeHandler());
 
         $match = (new Router($routes, $compiler))->match($request);
 
@@ -161,14 +144,10 @@ class RouterTest extends TestCase
     {
         $request = self::createRequest("GET", "/users");
 
-        $postHandler = new Handler("Post");
-        $patchHandler = new Handler("Patch");
-        $deleteHandler = new Handler("Delete");
-
         $routes = RouteCollection::create();
-        $routes->post("/users", $postHandler);
-        $routes->patch("/orders", $patchHandler);
-        $routes->delete("/users", $deleteHandler);
+        $routes->post("/users", new FakeHandler());
+        $routes->patch("/orders", new FakeHandler());
+        $routes->delete("/users", new FakeHandler());
 
         $this->expectException(Failure::class);
         $this->expectExceptionMessage(
@@ -185,12 +164,9 @@ class RouterTest extends TestCase
     {
         $request = self::createRequest("GET", "/orders");
 
-        $postHandler = new Handler("Post");
-        $deleteHandler = new Handler("Delete");
-
         $routes = RouteCollection::create();
-        $routes->post("/users", $postHandler);
-        $routes->delete("/users", $deleteHandler);
+        $routes->post("/users", new FakeHandler());
+        $routes->delete("/users", new FakeHandler());
 
         $this->expectException(Failure::class);
         $this->expectExceptionMessage("Failed to match incoming request, acceptable methods: []");
@@ -205,10 +181,8 @@ class RouterTest extends TestCase
     {
         $request = self::createRequest("GET", "/users/jan/123");
 
-        $handler = new Handler("Users");
-
         $routes = RouteCollection::create();
-        $routes->get("/users/{name}", $handler);
+        $routes->get("/users/{name}", new FakeHandler());
 
         $this->expectException(Failure::class);
         $this->expectExceptionMessage("Failed to match incoming request, acceptable methods: []");
@@ -223,10 +197,8 @@ class RouterTest extends TestCase
     {
         $request = self::createRequest("GET", "/api/users/jan");
 
-        $handler = new Handler("Users");
-
         $routes = RouteCollection::create();
-        $routes->get("/users/{name}", $handler);
+        $routes->get("/users/{name}", new FakeHandler());
 
         $this->expectException(Failure::class);
         $this->expectExceptionMessage("Failed to match incoming request, acceptable methods: []");
@@ -241,10 +213,8 @@ class RouterTest extends TestCase
     {
         $request = self::createRequest("GET", "/users?key=value");
 
-        $handler = new Handler("Users");
-
         $routes = RouteCollection::create();
-        $route = $routes->get("/users", $handler);
+        $route = $routes->get("/users", new FakeHandler());
 
         $match = (new Router($routes, $compiler))->match($request);
 
@@ -258,10 +228,8 @@ class RouterTest extends TestCase
     {
         $request = self::createRequest("GET", "/users#main");
 
-        $handler = new Handler("Users");
-
         $routes = RouteCollection::create();
-        $route = $routes->get("/users", $handler);
+        $route = $routes->get("/users", new FakeHandler());
 
         $match = (new Router($routes, $compiler))->match($request);
 

@@ -7,7 +7,7 @@ namespace SvobodaTest\Router\Unit;
 use Svoboda\Router\Failure;
 use Svoboda\Router\Route\Path\StaticPath;
 use Svoboda\Router\Route\Route;
-use SvobodaTest\Router\Handler;
+use SvobodaTest\Router\FakeHandler;
 use SvobodaTest\Router\TestCase;
 
 class FailureTest extends TestCase
@@ -63,8 +63,8 @@ class FailureTest extends TestCase
     {
         $request = self::createRequest("GET", "/");
 
-        $postRoute = new Route("GET", new StaticPath("/"), new Handler("Post"));
-        $deleteRoute = new Route("DELETE", new StaticPath("/"), new Handler("Delete"));
+        $postRoute = new Route("GET", new StaticPath("/"), new FakeHandler());
+        $deleteRoute = new Route("DELETE", new StaticPath("/"), new FakeHandler());
 
         $failure = new Failure([
             "POST" => $postRoute,
@@ -78,8 +78,8 @@ class FailureTest extends TestCase
     {
         $request = self::createRequest("GET", "/");
 
-        $postRoute = new Route("GET", new StaticPath("/"), new Handler("Post"));
-        $deleteRoute = new Route("DELETE", new StaticPath("/"), new Handler("Delete"));
+        $postRoute = new Route("GET", new StaticPath("/"), new FakeHandler());
+        $deleteRoute = new Route("DELETE", new StaticPath("/"), new FakeHandler());
 
         $failure = new Failure([
             "POST" => $postRoute,
@@ -95,8 +95,8 @@ class FailureTest extends TestCase
     {
         $request = self::createRequest("GET", "/");
 
-        $postRoute = new Route("GET", new StaticPath("/"), new Handler("Post"));
-        $deleteRoute = new Route("DELETE", new StaticPath("/"), new Handler("Delete"));
+        $postRoute = new Route("GET", new StaticPath("/"), new FakeHandler());
+        $deleteRoute = new Route("DELETE", new StaticPath("/"), new FakeHandler());
 
         $failure = new Failure([
             "POST" => $postRoute,
@@ -112,8 +112,8 @@ class FailureTest extends TestCase
     {
         $request = self::createRequest("GET", "/");
 
-        $postRoute = new Route("GET", new StaticPath("/"), new Handler("Post"));
-        $deleteRoute = new Route("DELETE", new StaticPath("/"), new Handler("Delete"));
+        $postRoute = new Route("GET", new StaticPath("/"), new FakeHandler());
+        $deleteRoute = new Route("DELETE", new StaticPath("/"), new FakeHandler());
 
         $failure = new Failure([
             "POST" => $postRoute,
@@ -128,8 +128,8 @@ class FailureTest extends TestCase
     {
         $request = self::createRequest("GET", "/");
 
-        $postRoute = new Route("GET", new StaticPath("/"), new Handler("Post"));
-        $deleteRoute = new Route("DELETE", new StaticPath("/"), new Handler("Delete"));
+        $postRoute = new Route("GET", new StaticPath("/"), new FakeHandler());
+        $deleteRoute = new Route("DELETE", new StaticPath("/"), new FakeHandler());
 
         $failure = new Failure([
             "POST" => $postRoute,

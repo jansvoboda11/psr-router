@@ -9,7 +9,7 @@ use Svoboda\Router\Route\Path\StaticPath;
 use Svoboda\Router\Route\Route;
 use Svoboda\Router\Route\RouteFactory;
 use Svoboda\Router\RouteCollection;
-use SvobodaTest\Router\Handler;
+use SvobodaTest\Router\FakeHandler;
 use SvobodaTest\Router\TestCase;
 
 class RouteCollectionTest extends TestCase
@@ -29,7 +29,7 @@ class RouteCollectionTest extends TestCase
     public function test_it_registers_get_route()
     {
         $path = new StaticPath("/users");
-        $handler = new Handler("UsersAction");
+        $handler = new FakeHandler();
         $route = new Route("GET", $path, $handler, "users", []);
 
         $this->factory->create("GET", "/users", $handler, "users", [])->willReturn($route);
@@ -44,7 +44,7 @@ class RouteCollectionTest extends TestCase
     public function test_it_registers_post_route()
     {
         $path = new StaticPath("/users");
-        $handler = new Handler("UsersAction");
+        $handler = new FakeHandler();
         $route = new Route("POST", $path, $handler, "users");
 
         $this->factory->create("POST", "/users", $handler, "users", [])->willReturn($route);
@@ -59,7 +59,7 @@ class RouteCollectionTest extends TestCase
     public function test_it_registers_put_route()
     {
         $path = new StaticPath("/users");
-        $handler = new Handler("UsersAction");
+        $handler = new FakeHandler();
         $route = new Route("PUT", $path, $handler, "users", []);
 
         $this->factory->create("PUT", "/users", $handler, "users", [])->willReturn($route);
@@ -74,7 +74,7 @@ class RouteCollectionTest extends TestCase
     public function test_it_registers_patch_route()
     {
         $path = new StaticPath("/users");
-        $handler = new Handler("UsersAction");
+        $handler = new FakeHandler();
         $route = new Route("PATCH", $path, $handler, "users", []);
 
         $this->factory->create("PATCH", "/users", $handler, "users", [])->willReturn($route);
@@ -89,7 +89,7 @@ class RouteCollectionTest extends TestCase
     public function test_it_registers_delete_route()
     {
         $path = new StaticPath("/users");
-        $handler = new Handler("UsersAction");
+        $handler = new FakeHandler();
         $route = new Route("DELETE", $path, $handler, "users", []);
 
         $this->factory->create("DELETE", "/users", $handler, "users", [])->willReturn($route);
@@ -104,7 +104,7 @@ class RouteCollectionTest extends TestCase
     public function test_it_finds_named_route()
     {
         $path = new StaticPath("/users");
-        $handler = new Handler("UsersAction");
+        $handler = new FakeHandler();
         $route = new Route("GET", $path, $handler, "users.all", []);
 
         $this->factory->create("GET", "/users", $handler, "users.all", [])->willReturn($route);
@@ -119,7 +119,7 @@ class RouteCollectionTest extends TestCase
     public function test_it_fails_to_find_named_route()
     {
         $path = new StaticPath("/users");
-        $handler = new Handler("UsersAction");
+        $handler = new FakeHandler();
         $route = new Route("GET", $path, $handler, "users.all", []);
 
         $this->factory->create("GET", "/users", $handler, "users.all", [])->willReturn($route);

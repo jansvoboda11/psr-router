@@ -10,7 +10,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Svoboda\Router\Middleware\AutomaticHeadMiddleware;
 use Svoboda\Router\Route\Path\StaticPath;
 use Svoboda\Router\Route\Route;
-use SvobodaTest\Router\Handler;
+use SvobodaTest\Router\FakeHandler;
 use SvobodaTest\Router\TestCase;
 
 class AutomaticHeadMiddlewareTest extends TestCase
@@ -33,7 +33,7 @@ class AutomaticHeadMiddlewareTest extends TestCase
 
     public function test_body_of_get_response_is_erased()
     {
-        $getRoute = new Route("GET", new StaticPath("/users"), new Handler());
+        $getRoute = new Route("GET", new StaticPath("/users"), new FakeHandler());
 
         $request = self::createRequest("HEAD", "/users");
         $failureRequest = self::requestWithFailure($request, ["GET" => $getRoute]);
@@ -56,7 +56,7 @@ class AutomaticHeadMiddlewareTest extends TestCase
 
     public function test_explicit_head_route_is_used()
     {
-        $headRoute = new Route("HEAD", new StaticPath("/users"), new Handler());
+        $headRoute = new Route("HEAD", new StaticPath("/users"), new FakeHandler());
 
         $request = self::createRequest("HEAD", "/users");
         $request = self::requestWithMatch($request, $headRoute);
@@ -100,7 +100,7 @@ class AutomaticHeadMiddlewareTest extends TestCase
     public function test_head_request_with_method_failure_is_not_affected()
     {
         $request = self::createRequest("HEAD", "/users");
-        $request = self::requestWithFailure($request, ["POST" => new Handler()]);
+        $request = self::requestWithFailure($request, ["POST" => new FakeHandler()]);
 
         $notFoundResponse = self::createResponse(404, "Not Found", "This page doesn't exist.");
 

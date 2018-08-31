@@ -12,7 +12,7 @@ use Svoboda\Router\Route\Path\StaticPath;
 use Svoboda\Router\Route\Route;
 use Svoboda\Router\RouteCollection;
 use Svoboda\Router\Types\TypeCollection;
-use SvobodaTest\Router\Handler;
+use SvobodaTest\Router\FakeHandler;
 use SvobodaTest\Router\TestCase;
 
 class UriGeneratorTest extends TestCase
@@ -55,8 +55,7 @@ class UriGeneratorTest extends TestCase
     public function test_creates_uri_without_prefix()
     {
         $path = new StaticPath("/users");
-        $handler = new Handler("UsersAction");
-        $route = new Route("GET", $path, $handler);
+        $route = new Route("GET", $path, new FakeHandler());
 
         $this->routes->oneNamed("users.all")->willReturn($route);
 
@@ -72,8 +71,7 @@ class UriGeneratorTest extends TestCase
     public function test_it_creates_uri_with_constructor_prefix()
     {
         $path = new StaticPath("/users");
-        $handler = new Handler("UsersAction");
-        $route = new Route("GET", $path, $handler);
+        $route = new Route("GET", $path, new FakeHandler());
 
         $this->routes->oneNamed("users.all")->willReturn($route);
 
@@ -89,8 +87,7 @@ class UriGeneratorTest extends TestCase
     public function test_method_prefix_overrides_constructor_prefix()
     {
         $path = new StaticPath("/users");
-        $handler = new Handler("UsersAction");
-        $route = new Route("GET", $path, $handler);
+        $route = new Route("GET", $path, new FakeHandler());
 
         $this->routes->oneNamed("users.all")->willReturn($route);
 
