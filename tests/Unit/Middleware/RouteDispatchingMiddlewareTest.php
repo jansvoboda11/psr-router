@@ -26,30 +26,17 @@ class RouteDispatchingMiddlewareTest extends TestCase
         $this->middleware = new RouteDispatchingMiddleware();
     }
 
-    public function test_it_calls_next_handler_without_match()
+    public function test_match_handler_is_used_on_success()
     {
-        $request = self::createRequest("GET", "/users");
+        $request = self::createRequest("POST", "/users");
 
-        $nextHandlerResponse = self::createResponse(201);
+        $postResponse = self::createResponse(201, "Created");
 
-        $this->nextHandler->handle($request)->willReturn($nextHandlerResponse);
+        /** @var ObjectProphecy|RequestHandlerInterface $postHandler */
+        $postHandler = $this->prophesize(RequestHandlerInterface::class);
+        $postHandler->handle($request)->willReturn($postResponse);
 
-        $response = $this->middleware->process($request, $this->nextHandler->reveal());
-
-        self::assertEquals($nextHandlerResponse, $response);
-    }
-
-    public function test_it_delegates_to_match_middleware_when_present()
-    {
-        $request = self::createRequest("GET", "/users");
-
-        $matchedHandlerResponse = self::createResponse(201);
-
-        /** @var ObjectProphecy|RequestHandlerInterface $matchedHandler */
-        $matchedHandler = $this->prophesize(RequestHandlerInterface::class);
-        $matchedHandler->handle($request)->willReturn($matchedHandlerResponse);
-
-        $route = new Route("GET", new StaticPath("/users"), $matchedHandler->reveal());
+        $route = new Route("POST", new StaticPath("/users"), $postHandler->reveal());
 
         $request = self::requestWithMatch($request, $route);
 
@@ -57,6 +44,19 @@ class RouteDispatchingMiddlewareTest extends TestCase
 
         $this->nextHandler->handle(Argument::any())->shouldNotHaveBeenCalled();
 
-        self::assertEquals($matchedHandlerResponse, $response);
+        self::assertEquals($postResponse, $response);
+    }
+
+    public function test_default_handler_is_used_on_failure()
+    {
+        $request = self::createRequest("GET", "/users");
+
+        $defaultResponse = self::createResponse(201);
+
+        $this->nextHandler->handle($request)->willReturn($defaultResponse);
+
+        $response = $this->middleware->process($request, $this->nextHandler->reveal());
+
+        self::assertEquals($defaultResponse, $response);
     }
 }

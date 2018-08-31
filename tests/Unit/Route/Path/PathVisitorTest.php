@@ -12,7 +12,7 @@ use SvobodaTest\Router\TestCase;
 
 class PathVisitorTest extends TestCase
 {
-    public function test_it_visits_path_parts_in_correct_order()
+    public function test_path_parts_are_visited_in_correct_orders()
     {
         $number = new Type("number", "\d+");
 

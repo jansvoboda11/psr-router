@@ -12,7 +12,7 @@ use Svoboda\Router\Route\Path\StaticPath;
 use Svoboda\Router\Route\Route;
 use Svoboda\Router\RouteCollection;
 use Svoboda\Router\Types\TypeCollection;
-use SvobodaTest\Router\Handler;
+use SvobodaTest\Router\FakeHandler;
 use SvobodaTest\Router\TestCase;
 
 class UriGeneratorTest extends TestCase
@@ -41,7 +41,7 @@ class UriGeneratorTest extends TestCase
         self::assertInstanceOf(UriGenerator::class, $generator);
     }
 
-    public function test_it_fails_on_missing_route()
+    public function test_missing_route_causes_failure()
     {
         $this->routes->oneNamed("users.all")->willReturn(null);
 
@@ -52,11 +52,10 @@ class UriGeneratorTest extends TestCase
         $generator->generate("users.all", []);
     }
 
-    public function test_creates_uri_without_prefix()
+    public function test_uri_without_prefix_is_generated()
     {
         $path = new StaticPath("/users");
-        $handler = new Handler("UsersAction");
-        $route = new Route("GET", $path, $handler);
+        $route = new Route("GET", $path, new FakeHandler());
 
         $this->routes->oneNamed("users.all")->willReturn($route);
 
@@ -69,11 +68,10 @@ class UriGeneratorTest extends TestCase
         self::assertEquals("/users", $uri);
     }
 
-    public function test_it_creates_uri_with_constructor_prefix()
+    public function test_uri_with_constructor_prefix_is_generated()
     {
         $path = new StaticPath("/users");
-        $handler = new Handler("UsersAction");
-        $route = new Route("GET", $path, $handler);
+        $route = new Route("GET", $path, new FakeHandler());
 
         $this->routes->oneNamed("users.all")->willReturn($route);
 
@@ -86,11 +84,10 @@ class UriGeneratorTest extends TestCase
         self::assertEquals("/api/users", $uri);
     }
 
-    public function test_method_prefix_overrides_constructor_prefix()
+    public function test_constructor_prefix_is_overridden_with_method_prefix()
     {
         $path = new StaticPath("/users");
-        $handler = new Handler("UsersAction");
-        $route = new Route("GET", $path, $handler);
+        $route = new Route("GET", $path, new FakeHandler());
 
         $this->routes->oneNamed("users.all")->willReturn($route);
 

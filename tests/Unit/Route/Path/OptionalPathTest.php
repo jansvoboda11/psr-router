@@ -21,7 +21,7 @@ class OptionalPathTest extends TestCase
         $this->any = new Type("any", "[^/]+");
     }
 
-    public function test_it_uses_brackets_in_definition()
+    public function test_square_brackets_surround_the_definition()
     {
         $path = new OptionalPath(
             new StaticPath(
@@ -34,7 +34,7 @@ class OptionalPathTest extends TestCase
         self::assertEquals("[/optional]", $definition);
     }
 
-    public function test_it_makes_attributes_optional()
+    public function test_nested_attribute_is_made_optional()
     {
         $path = new OptionalPath(
             new AttributePath(
@@ -50,7 +50,7 @@ class OptionalPathTest extends TestCase
         ], $attributes);
     }
 
-    public function test_it_keeps_optional_attributes_optional()
+    public function test_optional_attribute_remains_optional()
     {
         $path = new OptionalPath(
             new OptionalPath(

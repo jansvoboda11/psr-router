@@ -13,7 +13,7 @@ use Svoboda\Router\Route\Path\StaticPath;
 use Svoboda\Router\Route\Route;
 use Svoboda\Router\RouteCollection;
 use Svoboda\Router\Router;
-use SvobodaTest\Router\Handler;
+use SvobodaTest\Router\FakeHandler;
 use SvobodaTest\Router\TestCase;
 
 class RouterTest extends TestCase
@@ -37,7 +37,7 @@ class RouterTest extends TestCase
     public function test_it_creates_matcher_only_once()
     {
         $request = self::createRequest("GET", "/users");
-        $route = new Route("GET", new StaticPath("/users"), new Handler("Users"));
+        $route = new Route("GET", new StaticPath("/users"), new FakeHandler("Users"));
         $match = new Match($route, $request);
 
         $this->compiler->compile($this->routes)->willReturn($this->matcher->reveal());
@@ -55,7 +55,7 @@ class RouterTest extends TestCase
     public function test_it_uses_created_matcher()
     {
         $request = self::createRequest("GET", "/users");
-        $route = new Route("GET", new StaticPath("/users"), new Handler("Users"));
+        $route = new Route("GET", new StaticPath("/users"), new FakeHandler("Users"));
         $expectedMatch = new Match($route, $request);
 
         $this->compiler->compile($this->routes)->willReturn($this->matcher->reveal());

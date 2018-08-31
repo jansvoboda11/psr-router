@@ -12,7 +12,7 @@ use Svoboda\Router\Middleware\RouteMatchingMiddleware;
 use Svoboda\Router\Route\Path\StaticPath;
 use Svoboda\Router\Route\Route;
 use Svoboda\Router\Router;
-use SvobodaTest\Router\Handler;
+use SvobodaTest\Router\FakeHandler;
 use SvobodaTest\Router\TestCase;
 
 class RouteMatchingMiddlewareTest extends TestCase
@@ -33,39 +33,39 @@ class RouteMatchingMiddlewareTest extends TestCase
         $this->middleware = new RouteMatchingMiddleware($this->router->reveal());
     }
 
-    public function test_it_adds_match_attribute()
+    public function test_match_is_added_on_success()
     {
-        $route = new Route("GET", new StaticPath("/users"), new Handler("Match"));
+        $route = new Route("POST", new StaticPath("/users"), new FakeHandler());
 
         $request = self::createRequest("GET", "/users");
         $match = new Match($route, $request);
         $requestWithMatch = $request->withAttribute(Match::class, $match);
 
-        $nextHandlerResponse = self::createResponse(404);
+        $matchResponse = self::createResponse(201, "Created");
 
         $this->router->match($request)->willReturn($match);
 
-        $this->nextHandler->handle($requestWithMatch)->willReturn($nextHandlerResponse);
+        $this->nextHandler->handle($requestWithMatch)->willReturn($matchResponse);
 
         $response = $this->middleware->process($request, $this->nextHandler->reveal());
 
-        self::assertEquals($nextHandlerResponse, $response);
+        self::assertEquals($matchResponse, $response);
     }
 
-    public function test_it_adds_failure_attribute()
+    public function test_failure_is_added_on_fail()
     {
         $request = self::createRequest("PATCH", "/users");
         $failure = new Failure(["GET", "POST"], $request);
         $requestWithFailure = $request->withAttribute(Failure::class, $failure);
 
-        $nextHandlerResponse = self::createResponse(404);
+        $notFoundResponse = self::createResponse(404);
 
         $this->router->match($request)->willThrow($failure);
 
-        $this->nextHandler->handle($requestWithFailure)->willReturn($nextHandlerResponse);
+        $this->nextHandler->handle($requestWithFailure)->willReturn($notFoundResponse);
 
         $response = $this->middleware->process($request, $this->nextHandler->reveal());
 
-        self::assertSame($nextHandlerResponse, $response);
+        self::assertEquals($notFoundResponse, $response);
     }
 }
