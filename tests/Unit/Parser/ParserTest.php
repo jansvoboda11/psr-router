@@ -82,7 +82,7 @@ class ParserTest extends TestCase
             "/users/",
             new AttributePath(
                 "id",
-                 $this->any
+                $this->any
             )
         );
 

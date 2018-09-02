@@ -48,7 +48,7 @@ class Type
         if (@preg_match("#$pattern#", "") === false) {
             throw InvalidTypes::invalidTypePattern($name, $pattern);
         }
-        
+
         $this->name = $name;
         $this->pattern = $pattern;
         $this->implicit = $implicit;
