@@ -216,6 +216,6 @@ CODE;
      */
     private function getNextCode(): string
     {
-        return array_pop($this->codes);
+        return array_pop($this->codes) ?? "";
     }
 }

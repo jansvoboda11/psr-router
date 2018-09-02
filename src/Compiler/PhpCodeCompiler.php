@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Svoboda\Router\Compiler;
 
-use Svoboda\Router\Compiler\Path\PathCode;
+use Svoboda\Router\Compiler\Path\PathCodeFactory;
 use Svoboda\Router\Matcher\Matcher;
+use Svoboda\Router\Route\Route;
 use Svoboda\Router\RouteCollection;
 
 /**
@@ -14,52 +15,80 @@ use Svoboda\Router\RouteCollection;
 class PhpCodeCompiler implements Compiler
 {
     /**
+     * The code factory.
+     *
+     * @var PathCodeFactory
+     */
+    private $codeFactory;
+
+    /**
+     * Constructor.
+     *
+     * @param PathCodeFactory $codeFactory
+     */
+    public function __construct(PathCodeFactory $codeFactory)
+    {
+        $this->codeFactory = $codeFactory;
+    }
+
+    /**
      * @inheritdoc
      */
     public function compile(RouteCollection $routes): Matcher
     {
         // todo: make use of proper template engine
 
+        $routeCodes = array_map(function (int $index, Route $route): string {
+            return $this->codeFactory->create($route, $index);
+        }, range(0, $routes->count() - 1), $routes->all());
+
+        $routesCode = implode("", $routeCodes);
+
         $class = "PhpCodeMatcher" . mt_rand(0, PHP_INT_MAX);
 
         $code = <<<CODE
-class $class extends \Svoboda\Router\Matcher\AbstractMatcher
+use Psr\Http\Message\ServerRequestInterface;
+use Svoboda\Router\Matcher\AbstractMatcher;
+use Svoboda\Router\Failure;
+use Svoboda\Router\Match;
+use Svoboda\Router\RouteCollection;
+
+class $class extends AbstractMatcher
 {
     private \$routes;
-    
-    public function __construct(\Svoboda\Router\RouteCollection \$routes)
+
+    public function __construct(RouteCollection \$routes)
     {
         \$this->routes = \$routes;
     }
-    
-    public function match(\Psr\Http\Message\ServerRequestInterface \$request): \Svoboda\Router\Match
+
+    public function match(ServerRequestInterface \$request): Match
     {
-        \$m = [];
-        \$a = [];
-        
-        \$index = \$this->matchInner(\$request, \$m, \$a);
-        
+        \$matches = [];
+        \$allowed = [];
+
+        \$index = \$this->matchInner(\$request, \$matches, \$allowed);
+
         if (\$index === null) {
-            throw new \Svoboda\Router\Failure(\$a, \$request);
+            throw new Failure(\$allowed, \$request);
         }
-        
+
         \$route = \$this->routes->all()[\$index];
-        
-        return \$this->createResult(\$route, \$request, \$m);
+
+        return \$this->createResult(\$route, \$request, \$matches);
     }
-    
-    public function matchInner(\Psr\Http\Message\ServerRequestInterface \$request, array&\$matches, array &\$allowed): ?int
+
+    private function matchInner(ServerRequestInterface \$request, array &\$matches, array &\$allowed): ?int
     {
-    \$path = \$request->getUri()->getPath();
-    \$method = \$request->getMethod();
+        \$path = \$request->getUri()->getPath();
+        \$method = \$request->getMethod();
 
+        $routesCode
+
+        return null;
+    }
+}
 CODE;
-
-        foreach ($routes->all() as $index => $route) {
-            $code .= (new PathCode($route, $index));
-        }
-
-        $code .= "return null;}}";
 
         eval($code);
 

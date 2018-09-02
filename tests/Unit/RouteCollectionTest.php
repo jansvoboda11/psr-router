@@ -36,9 +36,8 @@ class RouteCollectionTest extends TestCase
 
         $this->collection->get("/users", $handler, "users", []);
 
-        $routes = $this->collection->all();
-
-        self::assertEquals([$route], $routes);
+        self::assertEquals(1, $this->collection->count());
+        self::assertEquals([$route], $this->collection->all());
     }
 
     public function test_it_registers_post_route()
@@ -51,9 +50,8 @@ class RouteCollectionTest extends TestCase
 
         $this->collection->post("/users", $handler, "users", []);
 
-        $routes = $this->collection->all();
-
-        self::assertEquals([$route], $routes);
+        self::assertEquals(1, $this->collection->count());
+        self::assertEquals([$route], $this->collection->all());
     }
 
     public function test_it_registers_put_route()
@@ -66,9 +64,8 @@ class RouteCollectionTest extends TestCase
 
         $this->collection->put("/users", $handler, "users", []);
 
-        $routes = $this->collection->all();
-
-        self::assertEquals([$route], $routes);
+        self::assertEquals(1, $this->collection->count());
+        self::assertEquals([$route], $this->collection->all());
     }
 
     public function test_it_registers_patch_route()
@@ -81,9 +78,8 @@ class RouteCollectionTest extends TestCase
 
         $this->collection->patch("/users", $handler, "users", []);
 
-        $routes = $this->collection->all();
-
-        self::assertEquals([$route], $routes);
+        self::assertEquals(1, $this->collection->count());
+        self::assertEquals([$route], $this->collection->all());
     }
 
     public function test_it_registers_delete_route()
@@ -96,9 +92,8 @@ class RouteCollectionTest extends TestCase
 
         $this->collection->delete("/users", $handler, "users", []);
 
-        $routes = $this->collection->all();
-
-        self::assertEquals([$route], $routes);
+        self::assertEquals(1, $this->collection->count());
+        self::assertEquals([$route], $this->collection->all());
     }
 
     public function test_it_finds_named_route()

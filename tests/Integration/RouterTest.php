@@ -6,6 +6,7 @@ namespace SvobodaTest\Router\Integration;
 
 use Svoboda\Router\Compiler\Compiler;
 use Svoboda\Router\Compiler\MultiPatternCompiler;
+use Svoboda\Router\Compiler\Path\PathCodeFactory;
 use Svoboda\Router\Compiler\Path\PathPatternFactory;
 use Svoboda\Router\Compiler\PhpCodeCompiler;
 use Svoboda\Router\Compiler\SinglePatternCompiler;
@@ -247,7 +248,7 @@ class RouterTest extends TestCase
         return [
             "multi pattern" => [new MultiPatternCompiler(new PathPatternFactory())],
             "single pattern" => [new SinglePatternCompiler(new PathPatternFactory())],
-            "generated code" => [new PhpCodeCompiler()],
+            "generated code" => [new PhpCodeCompiler(new PathCodeFactory())],
         ];
     }
 }

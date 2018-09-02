@@ -204,6 +204,16 @@ class RouteCollection
     }
 
     /**
+     * Returns the number of registered routes.
+     *
+     * @return int
+     */
+    public function count(): int
+    {
+        return count($this->routes);
+    }
+
+    /**
      * Returns one route with the given name.
      *
      * @param string $name
