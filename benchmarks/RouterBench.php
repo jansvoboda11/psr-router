@@ -34,6 +34,7 @@ class RouterBench
     }
 
     /**
+     * @Groups({"first route"})
      * @Iterations(10)
      * @Revs(1000)
      */
@@ -43,6 +44,7 @@ class RouterBench
     }
 
     /**
+     * @Groups({"first route"})
      * @Iterations(10)
      * @Revs(1000)
      */
@@ -52,6 +54,7 @@ class RouterBench
     }
 
     /**
+     * @Groups({"first route"})
      * @Iterations(10)
      * @Revs(1000)
      */
@@ -61,6 +64,7 @@ class RouterBench
     }
 
     /**
+     * @Groups({"last route"})
      * @Iterations(10)
      * @Revs(1000)
      */
@@ -70,6 +74,7 @@ class RouterBench
     }
 
     /**
+     * @Groups({"last route"})
      * @Iterations(10)
      * @Revs(1000)
      */
@@ -79,6 +84,7 @@ class RouterBench
     }
 
     /**
+     * @Groups({"last route"})
      * @Iterations(10)
      * @Revs(1000)
      */
@@ -88,6 +94,7 @@ class RouterBench
     }
 
     /**
+     * @Groups({"no route"})
      * @Iterations(10)
      * @Revs(1000)
      */
@@ -101,6 +108,7 @@ class RouterBench
     }
 
     /**
+     * @Groups({"no route"})
      * @Iterations(10)
      * @Revs(1000)
      */
@@ -114,6 +122,7 @@ class RouterBench
     }
 
     /**
+     * @Groups({"no route"})
      * @Iterations(10)
      * @Revs(1000)
      */
