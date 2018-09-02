@@ -11,6 +11,9 @@ use Svoboda\Router\Route\Path\PathVisitor;
 use Svoboda\Router\Route\Path\StaticPath;
 use Svoboda\Router\Route\Route;
 
+/**
+ * PHP code that performs matching of the route.
+ */
 class PathCode extends PathVisitor
 {
     /**
@@ -30,9 +33,9 @@ class PathCode extends PathVisitor
     /**
      * The generated matcher code.
      *
-     * @var string
+     * @var string[]
      */
-    private $code;
+    private $codes;
 
     /**
      * Constructor.
@@ -44,114 +47,175 @@ class PathCode extends PathVisitor
     {
         $this->route = $route;
         $this->index = $index;
-
-        $this->code = <<<'CODE'
-        
-// route
-
-$uri = $path;
-$matches = [];
-CODE;
+        $this->codes = [];
 
         $route->getPath()->accept($this);
+
+        $pathCode = $this->getNextCode();
+
+        $code = <<<CODE
+
+// route
+
+\$uri = \$path;
+\$matches = [];
+
+$pathCode
+
+// route end
+
+CODE;
+
+        $this->addCode($code);
     }
 
-    public function enterAttribute(AttributePath $path): void
+    /**
+     * @inheritdoc
+     */
+    public function leaveAttribute(AttributePath $path): void
     {
         $pattern = $path->getTypePattern();
 
-        $this->code .= <<<CODE
+        $nextCode = $this->getNextCode();
+
+        $code = <<<CODE
 
 // attribute path
 
 if (preg_match("#^($pattern)#", \$uri, \$ms) === 1) {
     \$matches[] = \$ms[1];
     \$uri = substr(\$uri, strlen(\$ms[1]));
-CODE;
-    }
 
-    public function leaveAttribute(AttributePath $path): void
-    {
-        $this->code .= <<<'CODE'
+    $nextCode
+
 }
 
 // attribute path end
 
 CODE;
+
+        $this->addCode($code);
     }
 
-    public function enterOptional(OptionalPath $path): void
-    {
-        $methodCode = $this->generateMethodCheck();
-
-        $this->code .= <<<CODE
-        
-// optional path
-
-    $methodCode
-CODE;
-    }
-
+    /**
+     * @inheritdoc
+     */
     public function leaveOptional(OptionalPath $path): void
     {
         $methodCode = $this->generateMethodCheck();
 
-        $this->code .= <<<CODE
-        
+        $nextCode = $this->getNextCode();
+
+        $code = <<<CODE
+
 // optional path
 
-    $methodCode
+$methodCode
+
+$nextCode
+
+// optional path end
+
+$methodCode
+
 CODE;
+
+        $this->addCode($code);
     }
 
-    public function enterStatic(StaticPath $path): void
+    /**
+     * @inheritdoc
+     */
+    public function leaveStatic(StaticPath $path): void
     {
         $static = $path->getStatic();
         $staticLength = strlen($static);
 
-        $this->code .= <<<CODE
-        
+        $nextCode = $this->getNextCode();
+
+        $code = <<<CODE
+
 // static path
 
 \$prefix = substr(\$uri, 0, $staticLength);
 if (\$prefix === "$static") {
     \$uri = substr(\$uri, $staticLength);
-CODE;
-    }
 
-    public function leaveStatic(StaticPath $path): void
-    {
-        $this->code .= <<<'CODE'
+     $nextCode
+
 }
 
 // static path end
 
 CODE;
+
+        $this->addCode($code);
     }
 
-    public function enterEmpty(EmptyPath $path): void
+    /**
+     * @inheritdoc
+     */
+    public function leaveEmpty(EmptyPath $path): void
     {
-        $this->code .= $this->generateMethodCheck();
+        $methodCode = $this->generateMethodCheck();
+
+        $this->addCode($methodCode);
     }
 
+    /**
+     * Generates a code that performs the method check.
+     *
+     * @return string
+     */
     public function generateMethodCheck(): string
     {
         $method = $this->route->getMethod();
         $index = $this->index;
 
         return <<<CODE
-if (\$uri === ""){
+
+// method check
+
+if (\$uri === "") {
     if (\$method === "$method") {
         return $index;
     } else {
         \$allowed["$method"] = $index;
     }
 }
+
+// method check end
+
 CODE;
     }
 
+    /**
+     * Converts the object to a string.
+     *
+     * @return string
+     */
     public function __toString(): string
     {
-        return $this->code;
+        return $this->codes[0];
+    }
+
+    /**
+     * Stores the code for later use.
+     *
+     * @param string $code
+     */
+    private function addCode(string $code): void
+    {
+        $this->codes[] = $code;
+    }
+
+    /**
+     * Returns the code of the next code path.
+     *
+     * @return string
+     */
+    private function getNextCode(): string
+    {
+        return array_pop($this->codes);
     }
 }
