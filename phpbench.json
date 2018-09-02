@@ -3,7 +3,7 @@
     "path": "benchmarks/",
     "php_disable_ini": true,
     "reports": {
-        "default": {
+        "simple": {
             "generator": "table",
             "break": ["groups"],
             "cols": ["subject", "mean", "diff"]
