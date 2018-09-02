@@ -8,8 +8,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Svoboda\Router\Match;
 use Svoboda\Router\Failure;
+use Svoboda\Router\Match;
 use Svoboda\Router\Router;
 
 /**
