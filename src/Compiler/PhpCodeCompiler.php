@@ -36,7 +36,7 @@ class PhpCodeCompiler implements Compiler
      */
     public function compile(RouteCollection $routes): Matcher
     {
-        // todo: make use of proper template engine
+        // todo: consider using a proper templating engine
 
         $routeCodes = array_map(function (int $index, Route $route): string {
             return $this->codeFactory->create($route, $index);

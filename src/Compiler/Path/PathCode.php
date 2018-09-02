@@ -137,8 +137,7 @@ CODE;
 
 // static path
 
-\$prefix = substr(\$uri, 0, $staticLength);
-if (\$prefix === "$static") {
+if (strpos(\$uri, "$static") === 0) {
     \$uri = substr(\$uri, $staticLength);
 
      $nextCode

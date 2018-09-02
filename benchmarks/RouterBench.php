@@ -36,8 +36,8 @@ class RouterBench
 
     /**
      * @Groups({"first route"})
-     * @Iterations(10)
-     * @Revs(1000)
+     * @Iterations(30)
+     * @Revs(10000)
      */
     public function benchFirstRouteMultiPattern()
     {
@@ -46,8 +46,8 @@ class RouterBench
 
     /**
      * @Groups({"first route"})
-     * @Iterations(10)
-     * @Revs(1000)
+     * @Iterations(30)
+     * @Revs(10000)
      */
     public function benchFirstRouteSinglePattern()
     {
@@ -56,8 +56,8 @@ class RouterBench
 
     /**
      * @Groups({"first route"})
-     * @Iterations(10)
-     * @Revs(1000)
+     * @Iterations(30)
+     * @Revs(10000)
      */
     public function benchFirstRoutePhpCode()
     {
@@ -66,8 +66,8 @@ class RouterBench
 
     /**
      * @Groups({"last route"})
-     * @Iterations(10)
-     * @Revs(1000)
+     * @Iterations(30)
+     * @Revs(10000)
      */
     public function benchLastRouteMultiPattern()
     {
@@ -76,8 +76,8 @@ class RouterBench
 
     /**
      * @Groups({"last route"})
-     * @Iterations(10)
-     * @Revs(1000)
+     * @Iterations(30)
+     * @Revs(10000)
      */
     public function benchLastRouteSinglePattern()
     {
@@ -86,8 +86,8 @@ class RouterBench
 
     /**
      * @Groups({"last route"})
-     * @Iterations(10)
-     * @Revs(1000)
+     * @Iterations(30)
+     * @Revs(10000)
      */
     public function benchLastRoutePhpCode()
     {
@@ -96,8 +96,8 @@ class RouterBench
 
     /**
      * @Groups({"no route"})
-     * @Iterations(10)
-     * @Revs(1000)
+     * @Iterations(30)
+     * @Revs(10000)
      */
     public function benchNoRouteMultiPattern()
     {
@@ -110,8 +110,8 @@ class RouterBench
 
     /**
      * @Groups({"no route"})
-     * @Iterations(10)
-     * @Revs(1000)
+     * @Iterations(30)
+     * @Revs(10000)
      */
     public function benchNoRouteSinglePattern()
     {
@@ -124,8 +124,8 @@ class RouterBench
 
     /**
      * @Groups({"no route"})
-     * @Iterations(10)
-     * @Revs(1000)
+     * @Iterations(30)
+     * @Revs(10000)
      */
     public function benchNoRoutePhpCode()
     {
