@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Svoboda\Router\Compiler;
 
+use Svoboda\Router\Compiler\Path\PathPatternFactory;
+use Svoboda\Router\Matcher\Matcher;
+use Svoboda\Router\Matcher\MultiPatternMatcher;
 use Svoboda\Router\RouteCollection;
 
 /**
@@ -14,16 +17,16 @@ class MultiPatternCompiler implements Compiler
     /**
      * The pattern factory.
      *
-     * @var PatternFactory
+     * @var PathPatternFactory
      */
     private $patternFactory;
 
     /**
      * Constructor.
      *
-     * @param PatternFactory $patternFactory
+     * @param PathPatternFactory $patternFactory
      */
-    public function __construct(PatternFactory $patternFactory)
+    public function __construct(PathPatternFactory $patternFactory)
     {
         $this->patternFactory = $patternFactory;
     }

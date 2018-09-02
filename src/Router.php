@@ -6,9 +6,9 @@ namespace Svoboda\Router;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Svoboda\Router\Compiler\Compiler;
-use Svoboda\Router\Compiler\Matcher;
 use Svoboda\Router\Compiler\MultiPatternCompiler;
-use Svoboda\Router\Compiler\PatternFactory;
+use Svoboda\Router\Compiler\Path\PathPatternFactory;
+use Svoboda\Router\Matcher\Matcher;
 
 /**
  * Routes an incoming HTTP requests based on given collection of routes.
@@ -41,7 +41,7 @@ class Router
      */
     public static function create(RouteCollection $routes): self
     {
-        $factory = new PatternFactory();
+        $factory = new PathPatternFactory();
         $compiler = new MultiPatternCompiler($factory);
 
         return new self($routes, $compiler);

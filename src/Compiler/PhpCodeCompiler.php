@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Svoboda\Router\Compiler;
 
+use Svoboda\Router\Compiler\Path\PathCode;
+use Svoboda\Router\Matcher\Matcher;
 use Svoboda\Router\RouteCollection;
 
 /**
@@ -21,7 +23,7 @@ class PhpCodeCompiler implements Compiler
         $class = "PhpCodeMatcher" . mt_rand(0, PHP_INT_MAX);
 
         $code = <<<CODE
-class $class extends \Svoboda\Router\Compiler\AbstractMatcher
+class $class extends \Svoboda\Router\Matcher\AbstractMatcher
 {
     private \$routes;
     

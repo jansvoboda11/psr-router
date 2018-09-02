@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Svoboda\Router\Compiler\MultiPatternCompiler;
-use Svoboda\Router\Compiler\PatternFactory;
+use Svoboda\Router\Compiler\Path\PathPatternFactory;
 use Svoboda\Router\Compiler\PhpCodeCompiler;
 use Svoboda\Router\Compiler\SinglePatternCompiler;
 use Svoboda\Router\Failure;
@@ -24,8 +24,8 @@ class RouterBench
     {
         $routes = require __DIR__ . "/config/routes.php";
 
-        $this->multiPatternRouter = new Router($routes, new MultiPatternCompiler(new PatternFactory()));
-        $this->singlePatternRouter = new Router($routes, new SinglePatternCompiler(new PatternFactory()));
+        $this->multiPatternRouter = new Router($routes, new MultiPatternCompiler(new PathPatternFactory()));
+        $this->singlePatternRouter = new Router($routes, new SinglePatternCompiler(new PathPatternFactory()));
         $this->phpCodeRouter = new Router($routes, new PhpCodeCompiler());
 
         $this->requestToFirstRoute = (new Psr17Factory())->createServerRequest("GET", "/");

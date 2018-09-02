@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\Router\Compiler;
+namespace Svoboda\Router\Matcher;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Svoboda\Router\Match;

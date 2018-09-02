@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Svoboda\Router\Compiler;
 
+use Svoboda\Router\Matcher\Matcher;
 use Svoboda\Router\RouteCollection;
 
 /**

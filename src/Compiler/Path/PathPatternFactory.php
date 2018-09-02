@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\Router\Compiler;
+namespace Svoboda\Router\Compiler\Path;
 
 use Svoboda\Router\Route\Path\RoutePath;
 
 /**
  * Creates path patterns.
  */
-class PatternFactory
+class PathPatternFactory
 {
     /**
      * Creates new path pattern.
