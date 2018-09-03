@@ -58,6 +58,16 @@ class AttributePath implements RoutePath
     }
 
     /**
+     * Returns the attribute type.
+     *
+     * @return Type
+     */
+    public function getType(): Type
+    {
+        return $this->type;
+    }
+
+    /**
      * Returns the pattern of the attribute type.
      *
      * @return string
