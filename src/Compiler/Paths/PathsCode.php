@@ -21,6 +21,13 @@ class PathsCode extends TreeVisitor
     private $code;
 
     /**
+     * The tree nesting level.
+     *
+     * @var int
+     */
+    private $nesting;
+
+    /**
      * Constructor.
      *
      * @param Tree $tree
@@ -28,6 +35,8 @@ class PathsCode extends TreeVisitor
      */
     public function __construct(Tree $tree, string $class)
     {
+        $this->nesting = 0;
+
         $this->code = <<<CODE
 use Psr\Http\Message\ServerRequestInterface;
 use Svoboda\Router\Matcher\AbstractMatcher;
@@ -79,10 +88,9 @@ CODE;
 
     public function enterTree(Tree $tree): void
     {
-        $this->code .= <<<CODE
+        $this->enter();
 
-\$uriArray = [];
-\$matchesArray = [];
+        $this->code .= <<<CODE
 
 \$uri = \$path;
 \$matches = [];
@@ -90,16 +98,23 @@ CODE;
 CODE;
     }
 
+    public function leaveTree(Tree $tree): void
+    {
+        $this->leave();
+    }
+
     public function enterAttribute(AttributeNode $node): void
     {
+        $this->enter();
+
         $pattern = $node->getTypePattern();
 
         $this->code .= <<<CODE
 
 // attribute path
 
-\$uriArray[] = \$uri;
-\$matchesArray[] = \$matches;
+\$uri{$this->nesting} = \$uri;
+\$matches{$this->nesting} = \$matches;
 
 if (preg_match("#^($pattern)#", \$uri, \$ms) === 1) {
     \$matches[] = \$ms[1];
@@ -114,16 +129,20 @@ CODE;
 
 }
 
-\$uri = array_pop(\$uriArray);
-\$matches = array_pop(\$matchesArray);
+\$uri = \$uri{$this->nesting};
+\$matches = \$matches{$this->nesting};
 
 // attribute path end
 
 CODE;
+
+        $this->leave();
     }
 
     public function enterOptional(OptionalNode $node): void
     {
+        $this->enter();
+
         $this->code .= <<<CODE
 
 // optional path
@@ -142,10 +161,14 @@ CODE;
 // optional path end
 
 CODE;
+
+        $this->leave();
     }
 
     public function enterStatic(StaticNode $node): void
     {
+        $this->enter();
+
         $static = $node->getStatic();
         $staticLength = strlen($static);
 
@@ -153,7 +176,7 @@ CODE;
 
 // static path
 
-\$uriArray[] = \$uri;
+\$uri{$this->nesting} = \$uri;
 
 if (strpos(\$uri, "$static") === 0) {
     \$uri = substr(\$uri, $staticLength);
@@ -167,15 +190,19 @@ CODE;
 
 }
 
-\$uri = array_pop(\$uriArray);
+\$uri = \$uri{$this->nesting};
 
 // static path end
 
 CODE;
+
+        $this->leave();
     }
 
     public function enterLeaf(LeafNode $node): void
     {
+        $this->enter();
+
         $method = $node->getRoute()->getMethod();
         $index = $node->getIndex();
 
@@ -196,6 +223,11 @@ if (\$uri === "") {
 CODE;
     }
 
+    public function leaveLeaf(LeafNode $node): void
+    {
+        $this->leave();
+    }
+
     /**
      * Returns the string representation of the code.
      *
@@ -204,5 +236,21 @@ CODE;
     public function __toString(): string
     {
         return $this->code;
+    }
+
+    /**
+     * Keeps track of nesting going down the tree.
+     */
+    private function enter(): void
+    {
+        $this->nesting += 1;
+    }
+
+    /**
+     * Keeps track of nesting going up in the tree.
+     */
+    private function leave(): void
+    {
+        $this->nesting -= 1;
     }
 }
