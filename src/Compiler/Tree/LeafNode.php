@@ -41,6 +41,14 @@ class LeafNode implements TreeNode
     /**
      * @inheritdoc
      */
+    public function addChild(TreeNode $child): void
+    {
+        //
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getChildren(): array
     {
         return [];
@@ -52,5 +60,14 @@ class LeafNode implements TreeNode
     public function gatherLeaves(): array
     {
         return [$this];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function equals(TreeNode $node): bool
+    {
+        return $node instanceof self
+            && $this->route == $node->route;
     }
 }

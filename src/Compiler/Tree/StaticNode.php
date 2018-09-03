@@ -29,25 +29,18 @@ class StaticNode extends LeavesGatheringNode implements TreeNode
      * @param string $static
      * @param TreeNode[] $children
      */
-    public function __construct(string $static, array $children)
+    public function __construct(string $static, array $children = [])
     {
         $this->static = $static;
         $this->children = $children;
     }
 
     /**
-     * Creates new instance with the given child.
-     *
-     * @param TreeNode $child
-     * @return StaticNode
+     * @inheritdoc
      */
-    public function withChild(TreeNode $child): self
+    public function addChild(TreeNode $child): void
     {
-        $children = $this->children;
-
-        $children[] = $child;
-
-        return new self($this->static, $children);
+        $this->children[] = $child;
     }
 
     /**
@@ -70,5 +63,14 @@ class StaticNode extends LeavesGatheringNode implements TreeNode
     public function getChildren(): array
     {
         return $this->children;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function equals(TreeNode $node): bool
+    {
+        return $node instanceof self
+            && $this->static === $node->static;
     }
 }

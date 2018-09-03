@@ -39,7 +39,7 @@ class AttributeNode extends LeavesGatheringNode implements TreeNode
      * @param Type $type
      * @param TreeNode[] $children
      */
-    public function __construct(string $name, Type $type, array $children)
+    public function __construct(string $name, Type $type, array $children = [])
     {
         $this->name = $name;
         $this->type = $type;
@@ -47,18 +47,11 @@ class AttributeNode extends LeavesGatheringNode implements TreeNode
     }
 
     /**
-     * Creates new instance with the given child.
-     *
-     * @param TreeNode $child
-     * @return AttributeNode
+     * @inheritdoc
      */
-    public function withChild(TreeNode $child): self
+    public function addChild(TreeNode $child): void
     {
-        $children = $this->children;
-
-        $children[] = $child;
-
-        return new self($this->name, $this->type, $children);
+        $this->children[] = $child;
     }
 
     /**
@@ -80,6 +73,16 @@ class AttributeNode extends LeavesGatheringNode implements TreeNode
      */
     public function getChildren(): array
     {
-        return $this->getChildren();
+        return $this->children;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function equals(TreeNode $node): bool
+    {
+        return $node instanceof self
+            && $this->name === $node->name
+            && $this->type == $node->type;
     }
 }

@@ -22,24 +22,17 @@ class Tree extends LeavesGatheringNode implements TreeNode
      *
      * @param TreeNode[] $nodes
      */
-    public function __construct(array $nodes)
+    public function __construct(array $nodes = [])
     {
         $this->nodes = $nodes;
     }
 
     /**
-     * Creates new instance with the given node.
-     *
-     * @param TreeNode $node
-     * @return Tree
+     * @inheritdoc
      */
-    public function withNode(TreeNode $node): self
+    public function addChild(TreeNode $child): void
     {
-        $nodes = $this->nodes;
-
-        $nodes[] = $node;
-
-        return new self($nodes);
+        $this->nodes[] = $child;
     }
 
     /**
@@ -62,5 +55,13 @@ class Tree extends LeavesGatheringNode implements TreeNode
     public function getChildren(): array
     {
         return $this->nodes;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function equals(TreeNode $node): bool
+    {
+        return $node instanceof self;
     }
 }

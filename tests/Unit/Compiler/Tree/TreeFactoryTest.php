@@ -39,7 +39,7 @@ class TreeFactoryTest extends TestCase
         $this->factory = new TreeFactory(new PathSerializer());
     }
 
-    public function test_linear_tree_is_creates()
+    public function test_one_route_is_transformed()
     {
         $path = new StaticPath(
             "/api/users/",
@@ -82,6 +82,77 @@ class TreeFactoryTest extends TestCase
                             )
                         ]
                     )
+                ]
+            )
+        ]);
+
+        self::assertEquals($expectedTree, $tree);
+    }
+
+    public function test_two_routes_with_same_path_are_transformed()
+    {
+        $path = new StaticPath(
+            "/users/",
+            new AttributePath(
+                "id",
+                $this->number
+            )
+        );
+
+        $getRoute = new Route("GET", $path, new FakeHandler());
+        $deleteRoute = new Route("DELETE", $path, new FakeHandler());
+
+        $this->routes->all()->willReturn([$getRoute, $deleteRoute]);
+
+        $tree = $this->factory->create($this->routes->reveal());
+
+        $expectedTree = new Tree([
+            new StaticNode(
+                "/users/",
+                [
+                    new AttributeNode(
+                        "id",
+                        $this->number,
+                        [
+                            new LeafNode($getRoute),
+                            new LeafNode($deleteRoute),
+                        ]
+                    )
+                ]
+            )
+        ]);
+
+        self::assertEquals($expectedTree, $tree);
+    }
+
+    public function test_two_routes_with_different_paths_are_transformed()
+    {
+        $path1 = new StaticPath(
+            "/users"
+        );
+
+        $path2 = new StaticPath(
+            "/orders"
+        );
+
+        $route1 = new Route("GET", $path1, new FakeHandler());
+        $route2 = new Route("GET", $path2, new FakeHandler());
+
+        $this->routes->all()->willReturn([$route1, $route2]);
+
+        $tree = $this->factory->create($this->routes->reveal());
+
+        $expectedTree = new Tree([
+            new StaticNode(
+                "/users",
+                [
+                    new LeafNode($route1)
+                ]
+            ),
+            new StaticNode(
+                "/orders",
+                [
+                    new LeafNode($route2)
                 ]
             )
         ]);

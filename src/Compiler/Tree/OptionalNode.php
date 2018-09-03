@@ -21,24 +21,17 @@ class OptionalNode extends LeavesGatheringNode implements TreeNode
      *
      * @param TreeNode[] $children
      */
-    public function __construct(array $children)
+    public function __construct(array $children = [])
     {
         $this->children = $children;
     }
 
     /**
-     * Creates new instance with the given child.
-     *
-     * @param TreeNode $child
-     * @return OptionalNode
+     * @inheritdoc
      */
-    public function withChild(TreeNode $child): self
+    public function addChild(TreeNode $child): void
     {
-        $children = $this->children;
-
-        $children[] = $child;
-
-        return new self($children);
+        $this->children[] = $child;
     }
 
     /**
@@ -75,5 +68,13 @@ class OptionalNode extends LeavesGatheringNode implements TreeNode
     public function getChildren(): array
     {
         return $this->children;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function equals(TreeNode $node): bool
+    {
+        return $node instanceof self;
     }
 }
