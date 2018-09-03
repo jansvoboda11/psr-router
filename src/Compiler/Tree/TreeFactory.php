@@ -58,7 +58,7 @@ class TreeFactory
             $treeNode = $tree;
 
             foreach ($pathArray as $path) {
-                $treeNode = $this->addPathPartToTree($treeNode, $path, $route);
+                $treeNode = $this->addPathPartToTree($treeNode, $path, $route, $index);
             }
         }
 
@@ -72,11 +72,12 @@ class TreeFactory
      * @param TreeNode $node
      * @param RoutePath $path
      * @param Route $route
+     * @param int $index
      * @return TreeNode
      */
-    private function addPathPartToTree(TreeNode $node, RoutePath $path, Route $route): TreeNode
+    private function addPathPartToTree(TreeNode $node, RoutePath $path, Route $route, int $index): TreeNode
     {
-        $pathNode = $this->pathToNode($path, $route);
+        $pathNode = $this->pathToNode($path, $route, $index);
 
         foreach ($node->getChildren() as $child) {
             if ($pathNode->equals($child)) {
@@ -94,9 +95,10 @@ class TreeFactory
      *
      * @param RoutePath $path
      * @param Route $route
+     * @param int $index
      * @return TreeNode
      */
-    private function pathToNode(RoutePath $path, Route $route): TreeNode
+    private function pathToNode(RoutePath $path, Route $route, int $index): TreeNode
     {
         if ($path instanceof AttributePath) {
             return $this->createAttributeNode($path);
@@ -110,7 +112,7 @@ class TreeFactory
             return $this->createOptionalNode();
         }
 
-        return $this->createLeafNode($route);
+        return $this->createLeafNode($route, $index);
     }
 
     /**
@@ -149,10 +151,11 @@ class TreeFactory
      * Creates new leaf node.
      *
      * @param Route $route
+     * @param int $index
      * @return LeafNode
      */
-    private function createLeafNode(Route $route): LeafNode
+    private function createLeafNode(Route $route, int $index): LeafNode
     {
-        return new LeafNode($route);
+        return new LeafNode($route, $index);
     }
 }

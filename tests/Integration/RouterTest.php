@@ -8,9 +8,13 @@ use Svoboda\Router\Compiler\Compiler;
 use Svoboda\Router\Compiler\MultiPatternCompiler;
 use Svoboda\Router\Compiler\Path\PathCodeFactory;
 use Svoboda\Router\Compiler\Path\PathPatternFactory;
+use Svoboda\Router\Compiler\Paths\PathsCodeFactory;
 use Svoboda\Router\Compiler\PhpCodeCompiler;
+use Svoboda\Router\Compiler\PhpCodeTreeCompiler;
 use Svoboda\Router\Compiler\SinglePatternCompiler;
+use Svoboda\Router\Compiler\Tree\TreeFactory;
 use Svoboda\Router\Failure;
+use Svoboda\Router\Route\Path\PathSerializer;
 use Svoboda\Router\RouteCollection;
 use Svoboda\Router\Router;
 use SvobodaTest\Router\FakeHandler;
@@ -102,6 +106,27 @@ class RouterTest extends TestCase
         self::assertEquals("jan", $matchRequest->getAttribute("name"));
         self::assertEquals("123", $matchRequest->getAttribute("id"));
         self::assertEquals($usersRoute, $match->getRoute());
+    }
+
+    /**
+     * @dataProvider getCompilers
+     */
+    public function test_it_matches_second_from_two_similar_routes(Compiler $compiler)
+    {
+        $request = self::createRequest("PATCH", "/admins/jan/svoboda/patch");
+
+        $routes = RouteCollection::create();
+        $postRoute = $routes->post("/admins/{name}/{id}/post", new FakeHandler());
+        $patchRoute = $routes->patch("/admins/{name}/{surname}/patch", new FakeHandler());
+
+        $match = (new Router($routes, $compiler))->match($request);
+
+        $matchRequest = $match->getRequest();
+
+        self::assertEquals("jan", $matchRequest->getAttribute("name"));
+        self::assertEquals("svoboda", $matchRequest->getAttribute("surname"));
+        self::assertEquals(null, $matchRequest->getAttribute("id"));
+        self::assertEquals($patchRoute, $match->getRoute());
     }
 
     /**
@@ -249,6 +274,7 @@ class RouterTest extends TestCase
             "multi pattern" => [new MultiPatternCompiler(new PathPatternFactory())],
             "single pattern" => [new SinglePatternCompiler(new PathPatternFactory())],
             "generated code" => [new PhpCodeCompiler(new PathCodeFactory())],
+            "generated tree code" => [new PhpCodeTreeCompiler(new TreeFactory(new PathSerializer()), new PathsCodeFactory())],
         ];
     }
 }

@@ -6,9 +6,13 @@ use Nyholm\Psr7\Factory\Psr17Factory;
 use Svoboda\Router\Compiler\MultiPatternCompiler;
 use Svoboda\Router\Compiler\Path\PathCodeFactory;
 use Svoboda\Router\Compiler\Path\PathPatternFactory;
+use Svoboda\Router\Compiler\Paths\PathsCodeFactory;
 use Svoboda\Router\Compiler\PhpCodeCompiler;
+use Svoboda\Router\Compiler\PhpCodeTreeCompiler;
 use Svoboda\Router\Compiler\SinglePatternCompiler;
+use Svoboda\Router\Compiler\Tree\TreeFactory;
 use Svoboda\Router\Failure;
+use Svoboda\Router\Route\Path\PathSerializer;
 use Svoboda\Router\Router;
 
 class RouterBench
@@ -16,6 +20,7 @@ class RouterBench
     private $multiPatternRouter;
     private $singlePatternRouter;
     private $phpCodeRouter;
+    private $phpCodeTreeRouter;
 
     private $requestToFirstRoute;
     private $requestToLastRoute;
@@ -28,6 +33,7 @@ class RouterBench
         $this->multiPatternRouter = new Router($routes, new MultiPatternCompiler(new PathPatternFactory()));
         $this->singlePatternRouter = new Router($routes, new SinglePatternCompiler(new PathPatternFactory()));
         $this->phpCodeRouter = new Router($routes, new PhpCodeCompiler(new PathCodeFactory()));
+        $this->phpCodeTreeRouter = new Router($routes, new PhpCodeTreeCompiler(new TreeFactory(new PathSerializer()), new PathsCodeFactory()));
 
         $this->requestToFirstRoute = (new Psr17Factory())->createServerRequest("GET", "/");
         $this->requestToLastRoute = (new Psr17Factory())->createServerRequest("DELETE", "/orders/123");
@@ -65,6 +71,16 @@ class RouterBench
     }
 
     /**
+     * @Groups({"first route"})
+     * @Iterations(30)
+     * @Revs(10000)
+     */
+    public function benchFirstRoutePhpCodeTree()
+    {
+        $this->phpCodeTreeRouter->match($this->requestToFirstRoute);
+    }
+
+    /**
      * @Groups({"last route"})
      * @Iterations(30)
      * @Revs(10000)
@@ -92,6 +108,16 @@ class RouterBench
     public function benchLastRoutePhpCode()
     {
         $this->phpCodeRouter->match($this->requestToLastRoute);
+    }
+
+    /**
+     * @Groups({"last route"})
+     * @Iterations(30)
+     * @Revs(10000)
+     */
+    public function benchLastRoutePhpCodeTree()
+    {
+        $this->phpCodeTreeRouter->match($this->requestToLastRoute);
     }
 
     /**
@@ -131,6 +157,20 @@ class RouterBench
     {
         try {
             $this->phpCodeRouter->match($this->requestToNoRoute);
+        } catch (Failure $failure) {
+            //
+        }
+    }
+
+    /**
+     * @Groups({"no route"})
+     * @Iterations(30)
+     * @Revs(10000)
+     */
+    public function benchNoRoutePhpCodeTree()
+    {
+        try {
+            $this->phpCodeTreeRouter->match($this->requestToNoRoute);
         } catch (Failure $failure) {
             //
         }

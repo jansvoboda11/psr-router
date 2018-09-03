@@ -114,9 +114,9 @@ $methodCode
 
 $nextCode
 
-// optional path end
-
 $methodCode
+
+// optional path end
 
 CODE;
 

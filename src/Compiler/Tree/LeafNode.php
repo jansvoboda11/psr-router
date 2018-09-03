@@ -19,13 +19,42 @@ class LeafNode implements TreeNode
     private $route;
 
     /**
+     * Index of the route in collection.
+     *
+     * @var int
+     */
+    private $index;
+
+    /**
      * Constructor.
      *
      * @param Route $route
+     * @param int $index
      */
-    public function __construct(Route $route)
+    public function __construct(Route $route, int $index)
     {
         $this->route = $route;
+        $this->index = $index;
+    }
+
+    /**
+     * Returns the route.
+     *
+     * @return Route
+     */
+    public function getRoute(): Route
+    {
+        return $this->route;
+    }
+
+    /**
+     * Returns route index.
+     *
+     * @return int
+     */
+    public function getIndex(): int
+    {
+        return $this->index;
     }
 
     /**

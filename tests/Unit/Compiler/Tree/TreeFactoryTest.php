@@ -74,7 +74,8 @@ class TreeFactoryTest extends TestCase
                                         "/show",
                                         [
                                             new LeafNode(
-                                                $route
+                                                $route,
+                                                0
                                             )
                                         ]
                                     )
@@ -114,8 +115,8 @@ class TreeFactoryTest extends TestCase
                         "id",
                         $this->number,
                         [
-                            new LeafNode($getRoute),
-                            new LeafNode($deleteRoute),
+                            new LeafNode($getRoute, 0),
+                            new LeafNode($deleteRoute, 1),
                         ]
                     )
                 ]
@@ -146,13 +147,13 @@ class TreeFactoryTest extends TestCase
             new StaticNode(
                 "/users",
                 [
-                    new LeafNode($route1)
+                    new LeafNode($route1, 0)
                 ]
             ),
             new StaticNode(
                 "/orders",
                 [
-                    new LeafNode($route2)
+                    new LeafNode($route2, 1)
                 ]
             )
         ]);

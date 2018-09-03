@@ -36,6 +36,16 @@ class StaticNode extends LeavesGatheringNode implements TreeNode
     }
 
     /**
+     * Returns the static string.
+     *
+     * @return string
+     */
+    public function getStatic(): string
+    {
+        return $this->static;
+    }
+
+    /**
      * @inheritdoc
      */
     public function addChild(TreeNode $child): void

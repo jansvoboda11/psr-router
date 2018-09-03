@@ -47,6 +47,16 @@ class AttributeNode extends LeavesGatheringNode implements TreeNode
     }
 
     /**
+     * Returns the type pattern.
+     *
+     * @return string
+     */
+    public function getTypePattern(): string
+    {
+        return $this->type->getPattern();
+    }
+
+    /**
      * @inheritdoc
      */
     public function addChild(TreeNode $child): void
