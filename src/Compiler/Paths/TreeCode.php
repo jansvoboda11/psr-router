@@ -11,7 +11,10 @@ use Svoboda\Router\Compiler\Tree\StaticNode;
 use Svoboda\Router\Compiler\Tree\Tree;
 use Svoboda\Router\Compiler\Tree\TreeVisitor;
 
-class PathsCode extends TreeVisitor
+/**
+ * PHP code structured as a tree that performs matching of the incoming request against all routes.
+ */
+class TreeCode extends TreeVisitor
 {
     /**
      * The generated matcher code.
@@ -86,6 +89,9 @@ CODE;
 CODE;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function enterTree(Tree $tree): void
     {
         $this->enter();
@@ -98,11 +104,17 @@ CODE;
 CODE;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function leaveTree(Tree $tree): void
     {
         $this->leave();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function enterAttribute(AttributeNode $node): void
     {
         $this->enter();
@@ -123,6 +135,9 @@ if (preg_match("#^($pattern)#", \$uri, \$ms) === 1) {
 CODE;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function leaveAttribute(AttributeNode $node): void
     {
         $this->code .= <<<CODE
@@ -139,6 +154,9 @@ CODE;
         $this->leave();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function enterOptional(OptionalNode $node): void
     {
         $this->enter();
@@ -152,6 +170,9 @@ CODE;
         $node->skipToLeaves($this);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function leaveOptional(OptionalNode $node): void
     {
         $node->skipToLeaves($this);
@@ -165,6 +186,9 @@ CODE;
         $this->leave();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function enterStatic(StaticNode $node): void
     {
         $this->enter();
@@ -184,6 +208,9 @@ if (strpos(\$uri, "$static") === 0) {
 CODE;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function leaveStatic(StaticNode $node): void
     {
         $this->code .= <<<CODE
@@ -199,6 +226,9 @@ CODE;
         $this->leave();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function enterLeaf(LeafNode $node): void
     {
         $this->enter();
@@ -223,6 +253,9 @@ if (\$uri === "") {
 CODE;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function leaveLeaf(LeafNode $node): void
     {
         $this->leave();

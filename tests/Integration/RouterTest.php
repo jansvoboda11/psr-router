@@ -8,7 +8,7 @@ use Svoboda\Router\Compiler\Compiler;
 use Svoboda\Router\Compiler\MultiPatternCompiler;
 use Svoboda\Router\Compiler\Path\PathCodeFactory;
 use Svoboda\Router\Compiler\Path\PathPatternFactory;
-use Svoboda\Router\Compiler\Paths\PathsCodeFactory;
+use Svoboda\Router\Compiler\Paths\TreeCodeFactory;
 use Svoboda\Router\Compiler\PhpCodeCompiler;
 use Svoboda\Router\Compiler\PhpCodeTreeCompiler;
 use Svoboda\Router\Compiler\SinglePatternCompiler;
@@ -273,8 +273,8 @@ class RouterTest extends TestCase
         return [
             "multi pattern" => [new MultiPatternCompiler(new PathPatternFactory())],
             "single pattern" => [new SinglePatternCompiler(new PathPatternFactory())],
-            "generated code" => [new PhpCodeCompiler(new PathCodeFactory())],
-            "generated tree code" => [new PhpCodeTreeCompiler(new TreeFactory(new PathSerializer()), new PathsCodeFactory())],
+            "linear code" => [new PhpCodeCompiler(new PathCodeFactory())],
+            "tree code" => [new PhpCodeTreeCompiler(new TreeFactory(new PathSerializer()), new TreeCodeFactory())],
         ];
     }
 }

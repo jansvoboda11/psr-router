@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Svoboda\Router\Compiler;
 
-use Svoboda\Router\Compiler\Paths\PathsCodeFactory;
+use Svoboda\Router\Compiler\Paths\TreeCodeFactory;
 use Svoboda\Router\Compiler\Tree\TreeFactory;
 use Svoboda\Router\Matcher\Matcher;
 use Svoboda\Router\RouteCollection;
@@ -24,11 +24,17 @@ class PhpCodeTreeCompiler implements Compiler
     /**
      * Code factory.
      *
-     * @var PathsCodeFactory
+     * @var TreeCodeFactory
      */
     private $codeFactory;
 
-    public function __construct(TreeFactory $treeFactory, PathsCodeFactory $codeFactory)
+    /**
+     * Constructor.
+     *
+     * @param TreeFactory $treeFactory
+     * @param TreeCodeFactory $codeFactory
+     */
+    public function __construct(TreeFactory $treeFactory, TreeCodeFactory $codeFactory)
     {
         $this->treeFactory = $treeFactory;
         $this->codeFactory = $codeFactory;
