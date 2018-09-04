@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Svoboda\Router\Compiler;
 
-use Svoboda\Router\Compiler\Path\PathCodeFactory;
+use Svoboda\Router\Compiler\Code\RoutesCodeFactory;
 use Svoboda\Router\Matcher\Matcher;
-use Svoboda\Router\Route\Route;
 use Svoboda\Router\RouteCollection;
 
 /**
@@ -17,16 +16,16 @@ class PhpCodeCompiler implements Compiler
     /**
      * The code factory.
      *
-     * @var PathCodeFactory
+     * @var RoutesCodeFactory
      */
     private $codeFactory;
 
     /**
      * Constructor.
      *
-     * @param PathCodeFactory $codeFactory
+     * @param RoutesCodeFactory $codeFactory
      */
-    public function __construct(PathCodeFactory $codeFactory)
+    public function __construct(RoutesCodeFactory $codeFactory)
     {
         $this->codeFactory = $codeFactory;
     }
@@ -36,17 +35,27 @@ class PhpCodeCompiler implements Compiler
      */
     public function compile(RouteCollection $routes): Matcher
     {
-        // todo: consider using a proper templating engine
-
-        $routeCodes = array_map(function (int $index, Route $route): string {
-            return $this->codeFactory->create($route, $index);
-        }, range(0, $routes->count() - 1), $routes->all());
-
-        $routesCode = implode("", $routeCodes);
-
         $class = "PhpCodeMatcher" . mt_rand(0, PHP_INT_MAX);
 
-        $code = <<<CODE
+        $routesCode = $this->codeFactory->create($routes);
+
+        $code = $this->createClass($class, $routesCode);
+
+        eval($code);
+
+        return new $class($routes);
+    }
+
+    /**
+     * Creates a matcher class with given name that matches incoming requests with the provided code.
+     *
+     * @param string $class
+     * @param string $routesCode
+     * @return string
+     */
+    private function createClass(string $class, string $routesCode): string
+    {
+        return <<<CODE
 use Psr\Http\Message\ServerRequestInterface;
 use Svoboda\Router\Matcher\AbstractMatcher;
 use Svoboda\Router\Failure;
@@ -89,9 +98,5 @@ class $class extends AbstractMatcher
     }
 }
 CODE;
-
-        eval($code);
-
-        return new $class($routes);
     }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\Router\Compiler\Path;
+namespace Svoboda\Router\Compiler\Pattern;
 
 use Svoboda\Router\Route\Path\RoutePath;
 

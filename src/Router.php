@@ -7,7 +7,7 @@ namespace Svoboda\Router;
 use Psr\Http\Message\ServerRequestInterface;
 use Svoboda\Router\Compiler\Compiler;
 use Svoboda\Router\Compiler\MultiPatternCompiler;
-use Svoboda\Router\Compiler\Path\PathPatternFactory;
+use Svoboda\Router\Compiler\Pattern\PathPatternFactory;
 use Svoboda\Router\Matcher\Matcher;
 
 /**

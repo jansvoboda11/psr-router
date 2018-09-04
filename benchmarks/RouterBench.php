@@ -3,12 +3,11 @@
 declare(strict_types=1);
 
 use Nyholm\Psr7\Factory\Psr17Factory;
+use Svoboda\Router\Compiler\Code\LinearCodeFactory;
+use Svoboda\Router\Compiler\Code\TreeCodeFactory;
 use Svoboda\Router\Compiler\MultiPatternCompiler;
-use Svoboda\Router\Compiler\Path\PathCodeFactory;
-use Svoboda\Router\Compiler\Path\PathPatternFactory;
-use Svoboda\Router\Compiler\Paths\TreeCodeFactory;
+use Svoboda\Router\Compiler\Pattern\PathPatternFactory;
 use Svoboda\Router\Compiler\PhpCodeCompiler;
-use Svoboda\Router\Compiler\PhpCodeTreeCompiler;
 use Svoboda\Router\Compiler\SinglePatternCompiler;
 use Svoboda\Router\Compiler\Tree\TreeFactory;
 use Svoboda\Router\Failure;
@@ -19,8 +18,8 @@ class RouterBench
 {
     private $multiPatternRouter;
     private $singlePatternRouter;
-    private $phpCodeRouter;
-    private $phpCodeTreeRouter;
+    private $phpLinearCodeRouter;
+    private $phpTreeCodeRouter;
 
     private $requestToFirstRoute;
     private $requestToLastRoute;
@@ -32,8 +31,8 @@ class RouterBench
 
         $this->multiPatternRouter = new Router($routes, new MultiPatternCompiler(new PathPatternFactory()));
         $this->singlePatternRouter = new Router($routes, new SinglePatternCompiler(new PathPatternFactory()));
-        $this->phpCodeRouter = new Router($routes, new PhpCodeCompiler(new PathCodeFactory()));
-        $this->phpCodeTreeRouter = new Router($routes, new PhpCodeTreeCompiler(new TreeFactory(new PathSerializer()), new TreeCodeFactory()));
+        $this->phpLinearCodeRouter = new Router($routes, new PhpCodeCompiler(new LinearCodeFactory()));
+        $this->phpTreeCodeRouter = new Router($routes, new PhpCodeCompiler(new TreeCodeFactory(new TreeFactory(new PathSerializer()))));
 
         $this->requestToFirstRoute = (new Psr17Factory())->createServerRequest("GET", "/");
         $this->requestToLastRoute = (new Psr17Factory())->createServerRequest("DELETE", "/orders/123");
@@ -67,7 +66,7 @@ class RouterBench
      */
     public function benchFirstRouteLinearCode()
     {
-        $this->phpCodeRouter->match($this->requestToFirstRoute);
+        $this->phpLinearCodeRouter->match($this->requestToFirstRoute);
     }
 
     /**
@@ -77,7 +76,7 @@ class RouterBench
      */
     public function benchFirstRouteTreeCode()
     {
-        $this->phpCodeTreeRouter->match($this->requestToFirstRoute);
+        $this->phpTreeCodeRouter->match($this->requestToFirstRoute);
     }
 
     /**
@@ -107,7 +106,7 @@ class RouterBench
      */
     public function benchLastRouteLinearCode()
     {
-        $this->phpCodeRouter->match($this->requestToLastRoute);
+        $this->phpLinearCodeRouter->match($this->requestToLastRoute);
     }
 
     /**
@@ -117,7 +116,7 @@ class RouterBench
      */
     public function benchLastRouteTreeCode()
     {
-        $this->phpCodeTreeRouter->match($this->requestToLastRoute);
+        $this->phpTreeCodeRouter->match($this->requestToLastRoute);
     }
 
     /**
@@ -156,7 +155,7 @@ class RouterBench
     public function benchNoRouteLinearCode()
     {
         try {
-            $this->phpCodeRouter->match($this->requestToNoRoute);
+            $this->phpLinearCodeRouter->match($this->requestToNoRoute);
         } catch (Failure $failure) {
             //
         }
@@ -170,7 +169,7 @@ class RouterBench
     public function benchNoRouteTreeCode()
     {
         try {
-            $this->phpCodeTreeRouter->match($this->requestToNoRoute);
+            $this->phpTreeCodeRouter->match($this->requestToNoRoute);
         } catch (Failure $failure) {
             //
         }

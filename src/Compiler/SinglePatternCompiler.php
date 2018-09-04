@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Svoboda\Router\Compiler;
 
-use Svoboda\Router\Compiler\Path\PathPatternFactory;
+use Svoboda\Router\Compiler\Pattern\PathPatternFactory;
 use Svoboda\Router\Matcher\Matcher;
 use Svoboda\Router\Matcher\SinglePatternMatcher;
 use Svoboda\Router\RouteCollection;

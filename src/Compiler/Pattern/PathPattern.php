@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\Router\Compiler\Path;
+namespace Svoboda\Router\Compiler\Pattern;
 
 use Svoboda\Router\Route\Path\AttributePath;
 use Svoboda\Router\Route\Path\OptionalPath;
@@ -15,13 +15,6 @@ use Svoboda\Router\Route\Path\StaticPath;
  */
 class PathPattern extends PathVisitor
 {
-    /**
-     * Route path.
-     *
-     * @var RoutePath
-     */
-    private $path;
-
     /**
      * The regular expression.
      *
@@ -36,10 +29,9 @@ class PathPattern extends PathVisitor
      */
     public function __construct(RoutePath $path)
     {
-        $this->path = $path;
         $this->pattern = "";
 
-        $this->path->accept($this);
+        $path->accept($this);
     }
 
     /**

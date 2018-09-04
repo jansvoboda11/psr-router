@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\Router\Compiler\Path;
+namespace Svoboda\Router\Compiler\Code;
 
 use Svoboda\Router\Route\Path\AttributePath;
 use Svoboda\Router\Route\Path\EmptyPath;
@@ -12,7 +12,7 @@ use Svoboda\Router\Route\Path\StaticPath;
 use Svoboda\Router\Route\Route;
 
 /**
- * PHP code that performs matching of the route.
+ * PHP code that performs matching of a single route.
  */
 class PathCode extends PathVisitor
 {

@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace SvobodaTest\Router\Integration;
 
+use Svoboda\Router\Compiler\Code\LinearCodeFactory;
+use Svoboda\Router\Compiler\Code\TreeCodeFactory;
 use Svoboda\Router\Compiler\Compiler;
 use Svoboda\Router\Compiler\MultiPatternCompiler;
-use Svoboda\Router\Compiler\Path\PathCodeFactory;
-use Svoboda\Router\Compiler\Path\PathPatternFactory;
-use Svoboda\Router\Compiler\Paths\TreeCodeFactory;
+use Svoboda\Router\Compiler\Pattern\PathPatternFactory;
 use Svoboda\Router\Compiler\PhpCodeCompiler;
-use Svoboda\Router\Compiler\PhpCodeTreeCompiler;
 use Svoboda\Router\Compiler\SinglePatternCompiler;
 use Svoboda\Router\Compiler\Tree\TreeFactory;
 use Svoboda\Router\Failure;
@@ -273,8 +272,8 @@ class RouterTest extends TestCase
         return [
             "multi pattern" => [new MultiPatternCompiler(new PathPatternFactory())],
             "single pattern" => [new SinglePatternCompiler(new PathPatternFactory())],
-            "linear code" => [new PhpCodeCompiler(new PathCodeFactory())],
-            "tree code" => [new PhpCodeTreeCompiler(new TreeFactory(new PathSerializer()), new TreeCodeFactory())],
+            "linear code" => [new PhpCodeCompiler(new LinearCodeFactory())],
+            "tree code" => [new PhpCodeCompiler(new TreeCodeFactory(new TreeFactory(new PathSerializer())))],
         ];
     }
 }

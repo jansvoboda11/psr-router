@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace SvobodaTest\Router\Unit\Compiler\Path;
+namespace SvobodaTest\Router\Unit\Compiler\Pattern;
 
-use Svoboda\Router\Compiler\Path\PathPattern;
+use Svoboda\Router\Compiler\Pattern\PathPattern;
 use Svoboda\Router\Route\Path\AttributePath;
 use Svoboda\Router\Route\Path\OptionalPath;
 use Svoboda\Router\Route\Path\StaticPath;

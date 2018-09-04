@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Svoboda\Router\Compiler\Paths;
+namespace Svoboda\Router\Compiler\Code;
 
 use Svoboda\Router\Compiler\Tree\AttributeNode;
 use Svoboda\Router\Compiler\Tree\LeafNode;
@@ -34,59 +34,13 @@ class TreeCode extends TreeVisitor
      * Constructor.
      *
      * @param Tree $tree
-     * @param string $class
      */
-    public function __construct(Tree $tree, string $class)
+    public function __construct(Tree $tree)
     {
+        $this->code = "";
         $this->nesting = 0;
 
-        $this->code = <<<CODE
-use Psr\Http\Message\ServerRequestInterface;
-use Svoboda\Router\Matcher\AbstractMatcher;
-use Svoboda\Router\Failure;
-use Svoboda\Router\Match;
-use Svoboda\Router\RouteCollection;
-
-class $class extends AbstractMatcher
-{
-    private \$routes;
-
-    public function __construct(RouteCollection \$routes)
-    {
-        \$this->routes = \$routes;
-    }
-
-    public function match(ServerRequestInterface \$request): Match
-    {
-        \$matches = [];
-        \$allowed = [];
-
-        \$index = \$this->matchInner(\$request, \$matches, \$allowed);
-
-        if (\$index === null) {
-            throw new Failure(\$allowed, \$request);
-        }
-
-        \$route = \$this->routes->all()[\$index];
-
-        return \$this->createResult(\$route, \$request, \$matches);
-    }
-
-    private function matchInner(ServerRequestInterface \$request, array &\$matches, array &\$allowed): ?int
-    {
-        \$path = \$request->getUri()->getPath();
-        \$method = \$request->getMethod();
-
-CODE;
-
         $tree->accept($this);
-
-        $this->code .= <<<CODE
-
-        return null;
-    }
-}
-CODE;
     }
 
     /**
