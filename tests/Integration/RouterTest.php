@@ -9,9 +9,11 @@ use Svoboda\Router\Compiler\Code\TreeCodeFactory;
 use Svoboda\Router\Compiler\Compiler;
 use Svoboda\Router\Compiler\MultiPatternCompiler;
 use Svoboda\Router\Compiler\Pattern\PathPatternFactory;
+use Svoboda\Router\Compiler\Pattern\TreePatternFactory;
 use Svoboda\Router\Compiler\PhpCodeCompiler;
 use Svoboda\Router\Compiler\SinglePatternCompiler;
 use Svoboda\Router\Compiler\Tree\TreeFactory;
+use Svoboda\Router\Compiler\TreePatternCompiler;
 use Svoboda\Router\Failure;
 use Svoboda\Router\Route\Path\PathSerializer;
 use Svoboda\Router\RouteCollection;
@@ -272,6 +274,7 @@ class RouterTest extends TestCase
         return [
             "multi pattern" => [new MultiPatternCompiler(new PathPatternFactory())],
             "single pattern" => [new SinglePatternCompiler(new PathPatternFactory())],
+            "tree pattern" => [new TreePatternCompiler(new TreeFactory(new PathSerializer()), new TreePatternFactory())],
             "linear code" => [new PhpCodeCompiler(new LinearCodeFactory())],
             "tree code" => [new PhpCodeCompiler(new TreeCodeFactory(new TreeFactory(new PathSerializer())))],
         ];

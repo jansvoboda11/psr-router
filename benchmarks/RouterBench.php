@@ -7,9 +7,11 @@ use Svoboda\Router\Compiler\Code\LinearCodeFactory;
 use Svoboda\Router\Compiler\Code\TreeCodeFactory;
 use Svoboda\Router\Compiler\MultiPatternCompiler;
 use Svoboda\Router\Compiler\Pattern\PathPatternFactory;
+use Svoboda\Router\Compiler\Pattern\TreePatternFactory;
 use Svoboda\Router\Compiler\PhpCodeCompiler;
 use Svoboda\Router\Compiler\SinglePatternCompiler;
 use Svoboda\Router\Compiler\Tree\TreeFactory;
+use Svoboda\Router\Compiler\TreePatternCompiler;
 use Svoboda\Router\Failure;
 use Svoboda\Router\Route\Path\PathSerializer;
 use Svoboda\Router\Router;
@@ -18,6 +20,7 @@ class RouterBench
 {
     private $multiPatternRouter;
     private $singlePatternRouter;
+    private $treePatternRouter;
     private $phpLinearCodeRouter;
     private $phpTreeCodeRouter;
 
@@ -31,6 +34,7 @@ class RouterBench
 
         $this->multiPatternRouter = new Router($routes, new MultiPatternCompiler(new PathPatternFactory()));
         $this->singlePatternRouter = new Router($routes, new SinglePatternCompiler(new PathPatternFactory()));
+        $this->treePatternRouter = new Router($routes, new TreePatternCompiler(new TreeFactory(new PathSerializer()), new TreePatternFactory()));
         $this->phpLinearCodeRouter = new Router($routes, new PhpCodeCompiler(new LinearCodeFactory()));
         $this->phpTreeCodeRouter = new Router($routes, new PhpCodeCompiler(new TreeCodeFactory(new TreeFactory(new PathSerializer()))));
 
@@ -57,6 +61,16 @@ class RouterBench
     public function benchFirstRouteSinglePattern()
     {
         $this->singlePatternRouter->match($this->requestToFirstRoute);
+    }
+
+    /**
+     * @Groups({"first route"})
+     * @Iterations(30)
+     * @Revs(10000)
+     */
+    public function benchFirstRouteTreePattern()
+    {
+        $this->treePatternRouter->match($this->requestToFirstRoute);
     }
 
     /**
@@ -104,6 +118,16 @@ class RouterBench
      * @Iterations(30)
      * @Revs(10000)
      */
+    public function benchLastRouteTreePattern()
+    {
+        $this->treePatternRouter->match($this->requestToLastRoute);
+    }
+
+    /**
+     * @Groups({"last route"})
+     * @Iterations(30)
+     * @Revs(10000)
+     */
     public function benchLastRouteLinearCode()
     {
         $this->phpLinearCodeRouter->match($this->requestToLastRoute);
@@ -142,6 +166,20 @@ class RouterBench
     {
         try {
             $this->singlePatternRouter->match($this->requestToNoRoute);
+        } catch (Failure $failure) {
+            //
+        }
+    }
+
+    /**
+     * @Groups({"no route"})
+     * @Iterations(30)
+     * @Revs(10000)
+     */
+    public function benchNoRouteTreePattern()
+    {
+        try {
+            $this->treePatternRouter->match($this->requestToNoRoute);
         } catch (Failure $failure) {
             //
         }
