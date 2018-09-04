@@ -7,9 +7,9 @@ namespace Svoboda\Router\Compiler\Code;
 use Svoboda\Router\RouteCollection;
 
 /**
- * Creates PHP code that matches incoming requests against all routes.
+ * Creates PHP code that matches incoming requests against the route collection.
  */
-interface RoutesCodeFactory
+interface CollectionCodeFactory
 {
     /**
      * Creates PHP code for the given collection.

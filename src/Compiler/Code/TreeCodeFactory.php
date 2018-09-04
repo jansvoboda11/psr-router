@@ -10,7 +10,7 @@ use Svoboda\Router\RouteCollection;
 /**
  * Creates tree PHP code for routes.
  */
-class TreeCodeFactory implements RoutesCodeFactory
+class TreeCodeFactory implements CollectionCodeFactory
 {
     /**
      * Tree factory.

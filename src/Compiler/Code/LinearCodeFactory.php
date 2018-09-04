@@ -10,7 +10,7 @@ use Svoboda\Router\RouteCollection;
 /**
  * Creates linear PHP code for routes.
  */
-class LinearCodeFactory implements RoutesCodeFactory
+class LinearCodeFactory implements CollectionCodeFactory
 {
     /**
      * @inheritdoc

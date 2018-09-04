@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Svoboda\Router\Compiler;
 
-use Svoboda\Router\Compiler\Code\RoutesCodeFactory;
+use Svoboda\Router\Compiler\Code\CollectionCodeFactory;
 use Svoboda\Router\Matcher\Matcher;
 use Svoboda\Router\RouteCollection;
 
@@ -16,16 +16,16 @@ class PhpCodeCompiler implements Compiler
     /**
      * The code factory.
      *
-     * @var RoutesCodeFactory
+     * @var CollectionCodeFactory
      */
     private $codeFactory;
 
     /**
      * Constructor.
      *
-     * @param RoutesCodeFactory $codeFactory
+     * @param CollectionCodeFactory $codeFactory
      */
-    public function __construct(RoutesCodeFactory $codeFactory)
+    public function __construct(CollectionCodeFactory $codeFactory)
     {
         $this->codeFactory = $codeFactory;
     }
