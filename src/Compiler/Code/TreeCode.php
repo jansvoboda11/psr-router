@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Svoboda\Router\Compiler\Code;
 
 use Svoboda\Router\Compiler\Tree\AttributeNode;
-use Svoboda\Router\Compiler\Tree\LeafNode;
+use Svoboda\Router\Compiler\Tree\Leaf;
 use Svoboda\Router\Compiler\Tree\OptionalNode;
 use Svoboda\Router\Compiler\Tree\StaticNode;
 use Svoboda\Router\Compiler\Tree\Tree;
@@ -183,7 +183,7 @@ CODE;
     /**
      * @inheritdoc
      */
-    public function enterLeaf(LeafNode $node): void
+    public function enterLeaf(Leaf $node): void
     {
         $this->enter();
 
@@ -210,7 +210,7 @@ CODE;
     /**
      * @inheritdoc
      */
-    public function leaveLeaf(LeafNode $node): void
+    public function leaveLeaf(Leaf $node): void
     {
         $this->leave();
     }

@@ -7,33 +7,8 @@ namespace Svoboda\Router\Compiler\Tree;
 /**
  * Node representing shared optional part of the path.
  */
-class OptionalNode extends LeavesGatheringNode implements TreeNode
+class OptionalNode extends AbstractNode implements TreeNode
 {
-    /**
-     * Child nodes.
-     *
-     * @var TreeNode[]
-     */
-    private $children;
-
-    /**
-     * Constructor.
-     *
-     * @param TreeNode[] $children
-     */
-    public function __construct(array $children = [])
-    {
-        $this->children = $children;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function addChild(TreeNode $child): void
-    {
-        $this->children[] = $child;
-    }
-
     /**
      * Sends the visitor to the tree leaves, skipping all intermediate nodes.
      *
@@ -60,21 +35,5 @@ class OptionalNode extends LeavesGatheringNode implements TreeNode
         }
 
         $visitor->leaveOptional($this);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getChildren(): array
-    {
-        return $this->children;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function equals(TreeNode $node): bool
-    {
-        return $node instanceof self;
     }
 }

@@ -7,7 +7,7 @@ namespace Svoboda\Router\Compiler\Tree;
 /**
  * Node representing a shared static part of the path.
  */
-class StaticNode extends LeavesGatheringNode implements TreeNode
+class StaticNode extends AbstractNode implements TreeNode
 {
     /**
      * Static path.
@@ -17,13 +17,6 @@ class StaticNode extends LeavesGatheringNode implements TreeNode
     private $static;
 
     /**
-     * Child nodes.
-     *
-     * @var TreeNode[]
-     */
-    private $children;
-
-    /**
      * Constructor.
      *
      * @param string $static
@@ -31,8 +24,9 @@ class StaticNode extends LeavesGatheringNode implements TreeNode
      */
     public function __construct(string $static, array $children = [])
     {
+        parent::__construct($children);
+
         $this->static = $static;
-        $this->children = $children;
     }
 
     /**
@@ -48,14 +42,6 @@ class StaticNode extends LeavesGatheringNode implements TreeNode
     /**
      * @inheritdoc
      */
-    public function addChild(TreeNode $child): void
-    {
-        $this->children[] = $child;
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function accept(TreeVisitor $visitor): void
     {
         $visitor->enterStatic($this);
@@ -65,22 +51,5 @@ class StaticNode extends LeavesGatheringNode implements TreeNode
         }
 
         $visitor->leaveStatic($this);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getChildren(): array
-    {
-        return $this->children;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function equals(TreeNode $node): bool
-    {
-        return $node instanceof self
-            && $this->static === $node->static;
     }
 }

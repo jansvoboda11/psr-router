@@ -31,18 +31,16 @@ interface TreeNode
     public function getChildren(): array;
 
     /**
-     * Gathers leaves of the sub-tree.
+     * Returns copy of the tree node without children.
      *
-     * @return LeafNode[]
+     * @return TreeNode
      */
-    public function gatherLeaves(): array;
+    public function withoutChildren(): self;
 
     /**
-     * Determines if the node is equal to the given one.
-     * Compares only stored values and ignores the children.
+     * Gathers leaves of the sub-tree.
      *
-     * @param TreeNode $node
-     * @return bool
+     * @return Leaf[]
      */
-    public function equals(TreeNode $node): bool;
+    public function gatherLeaves(): array;
 }

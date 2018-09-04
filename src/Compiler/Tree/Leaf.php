@@ -7,9 +7,9 @@ namespace Svoboda\Router\Compiler\Tree;
 use Svoboda\Router\Route\Route;
 
 /**
- * Node representing the end of a route path.
+ * Leaf representing the end of a route path.
  */
-class LeafNode implements TreeNode
+class Leaf implements TreeNode
 {
     /**
      * The route.
@@ -94,9 +94,8 @@ class LeafNode implements TreeNode
     /**
      * @inheritdoc
      */
-    public function equals(TreeNode $node): bool
+    public function withoutChildren(): TreeNode
     {
-        return $node instanceof self
-            && $this->route == $node->route;
+        return clone $this;
     }
 }

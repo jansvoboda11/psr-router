@@ -9,7 +9,7 @@ use Svoboda\Router\Types\Type;
 /**
  * Node representing a shared attribute part of the route path.
  */
-class AttributeNode extends LeavesGatheringNode implements TreeNode
+class AttributeNode extends AbstractNode implements TreeNode
 {
     /**
      * Attribute name.
@@ -26,13 +26,6 @@ class AttributeNode extends LeavesGatheringNode implements TreeNode
     private $type;
 
     /**
-     * Child nodes.
-     *
-     * @var TreeNode[]
-     */
-    private $children;
-
-    /**
      * Constructor.
      *
      * @param string $name
@@ -41,9 +34,10 @@ class AttributeNode extends LeavesGatheringNode implements TreeNode
      */
     public function __construct(string $name, Type $type, array $children = [])
     {
+        parent::__construct($children);
+
         $this->name = $name;
         $this->type = $type;
-        $this->children = $children;
     }
 
     /**
@@ -59,14 +53,6 @@ class AttributeNode extends LeavesGatheringNode implements TreeNode
     /**
      * @inheritdoc
      */
-    public function addChild(TreeNode $child): void
-    {
-        $this->children[] = $child;
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function accept(TreeVisitor $visitor): void
     {
         $visitor->enterAttribute($this);
@@ -76,23 +62,5 @@ class AttributeNode extends LeavesGatheringNode implements TreeNode
         }
 
         $visitor->leaveAttribute($this);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getChildren(): array
-    {
-        return $this->children;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function equals(TreeNode $node): bool
-    {
-        return $node instanceof self
-            && $this->name === $node->name
-            && $this->type == $node->type;
     }
 }

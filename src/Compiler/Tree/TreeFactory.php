@@ -80,7 +80,7 @@ class TreeFactory
         $pathNode = $this->pathToNode($path, $route, $index);
 
         foreach ($node->getChildren() as $child) {
-            if ($pathNode->equals($child)) {
+            if ($child->withoutChildren() == $pathNode->withoutChildren()) {
                 return $child;
             }
         }
@@ -112,7 +112,7 @@ class TreeFactory
             return $this->createOptionalNode();
         }
 
-        return $this->createLeafNode($route, $index);
+        return $this->createLeaf($route, $index);
     }
 
     /**
@@ -152,10 +152,10 @@ class TreeFactory
      *
      * @param Route $route
      * @param int $index
-     * @return LeafNode
+     * @return Leaf
      */
-    private function createLeafNode(Route $route, int $index): LeafNode
+    private function createLeaf(Route $route, int $index): Leaf
     {
-        return new LeafNode($route, $index);
+        return new Leaf($route, $index);
     }
 }
