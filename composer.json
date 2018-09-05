@@ -32,6 +32,7 @@
     },
     "autoload-dev": {
         "psr-4": {
+            "SvobodaBench\\Router\\": "benchmarks/",
             "SvobodaTest\\Router\\": "tests/"
         }
     }

@@ -2,23 +2,12 @@
 
 declare(strict_types=1);
 
-use Nyholm\Psr7\Factory\Psr17Factory;
+namespace SvobodaBench\Router;
+
 use Psr\Http\Message\ServerRequestInterface;
-use Svoboda\Router\Compiler\Code\LinearCodeFactory;
-use Svoboda\Router\Compiler\Code\TreeCodeFactory;
-use Svoboda\Router\Compiler\MultiPatternCompiler;
-use Svoboda\Router\Compiler\Pattern\PathPatternFactory;
-use Svoboda\Router\Compiler\Pattern\TreePatternFactory;
-use Svoboda\Router\Compiler\PhpCodeCompiler;
-use Svoboda\Router\Compiler\SinglePatternCompiler;
-use Svoboda\Router\Compiler\Tree\TreeFactory;
-use Svoboda\Router\Compiler\TreePatternCompiler;
 use Svoboda\Router\Failure;
-use Svoboda\Router\Generator\UriGenerator;
-use Svoboda\Router\Route\Path\PathSerializer;
 use Svoboda\Router\RouteCollection;
 use Svoboda\Router\Router;
-use SvobodaTest\Router\FakeHandler;
 
 /**
  * @Iterations(100)
@@ -26,6 +15,8 @@ use SvobodaTest\Router\FakeHandler;
  */
 class RouterBench
 {
+    use BenchmarkHelper;
+
     /** @var RouteCollection */
     private $routes;
     
@@ -47,24 +38,24 @@ class RouterBench
 
     public function __construct()
     {
-        $this->routes = $this->createRoutes(600);
+        $this->routes = $this->createRoutes(500);
 
         $this->routers = [
-            self::ROUTER_MULTI_PATTERN => $this->createMultiPatternRouter($this->routes),
-            self::ROUTER_SINGLE_PATTERN => $this->createSinglePatternRouter($this->routes),
-            self::ROUTER_TREE_PATTERN => $this->createTreePatternRouter($this->routes),
-            self::ROUTER_LINEAR_CODE => $this->createLinearCodeRouter($this->routes),
-            self::ROUTER_TREE_CODE => $this->createTreeCodeRouter($this->routes),
+            self::ROUTER_MULTI_PATTERN => new Router($this->routes, self::createMultiPatternCompiler()),
+            self::ROUTER_SINGLE_PATTERN => new Router($this->routes, self::createSinglePatternCompiler()),
+            self::ROUTER_TREE_PATTERN => new Router($this->routes, self::createTreePatternCompiler()),
+            self::ROUTER_LINEAR_CODE => new Router($this->routes, self::createLinearCodeCompiler()),
+            self::ROUTER_TREE_CODE => new Router($this->routes, self::createTreeCodeCompiler()),
         ];
 
         $this->requests = [
-            self::REQUEST_FIRST_ROUTE => $this->createFirstRouteRequest($this->routes),
-            self::REQUEST_LAST_ROUTE => $this->createLastRouteRequest($this->routes),
-            self::REQUEST_NO_ROUTE => $this->createNoRouteRequest(),
+            self::REQUEST_FIRST_ROUTE => self::createFirstRouteRequest($this->routes),
+            self::REQUEST_LAST_ROUTE => self::createLastRouteRequest($this->routes),
+            self::REQUEST_NO_ROUTE => self::createNoRouteRequest(),
         ];
 
-//        $this->showRoutes();
-//        $this->showRequests();
+//        self::showRoutes($this->routes);
+//        self::showRequests($this->requests);
     }
 
     /**
@@ -133,114 +124,5 @@ class RouterBench
             ["request" => self::REQUEST_LAST_ROUTE],
             ["request" => self::REQUEST_NO_ROUTE],
         ];
-    }
-
-    public function createRoutes(int $count): RouteCollection
-    {
-        $routes = RouteCollection::create();
-        $faker = Faker\Factory::create();
-
-        $methods = ["GET", "POST", "PATCH", "DELETE"];
-
-        $pathCount = $count / count($methods);
-
-        $words = array_map(function () use ($faker) {
-            return [$faker->word, $faker->word];
-        }, range(1, $pathCount));
-
-        foreach ($words as $pathIndex => $pair) {
-            [$word1, $word2] = $pair;
-
-            foreach ($methods as $methodIndex => $method) {
-                $path = "/api/v2/$word1/{id}/$word2/{name}";
-                $index = $pathIndex * count($methods) + $methodIndex;
-
-                $routes->route($method, $path, new FakeHandler(), (string)$index);
-            }
-        }
-
-        return $routes;
-    }
-
-    public function createMultiPatternRouter(RouteCollection $routes): Router
-    {
-        return new Router($routes, new MultiPatternCompiler(new PathPatternFactory()));
-    }
-
-    public function createSinglePatternRouter(RouteCollection $routes): Router
-    {
-        return new Router($routes, new SinglePatternCompiler(new PathPatternFactory()));
-    }
-
-    private function createTreePatternRouter(RouteCollection $routes): Router
-    {
-        return new Router(
-            $routes, new TreePatternCompiler(new TreeFactory(new PathSerializer()), new TreePatternFactory())
-        );
-    }
-
-    private function createLinearCodeRouter(RouteCollection $routes): Router
-    {
-        return new Router($routes, new PhpCodeCompiler(new LinearCodeFactory()));
-    }
-
-    private function createTreeCodeRouter(RouteCollection $routes): Router
-    {
-        return new Router($routes, new PhpCodeCompiler(new TreeCodeFactory(new TreeFactory(new PathSerializer()))));
-    }
-
-    public function createFirstRouteRequest(RouteCollection $routes): ServerRequestInterface
-    {
-        $faker = Faker\Factory::create();
-
-        $generator = UriGenerator::create($routes);
-
-        $firstUri = $generator->generate("0", [
-            "id" => $faker->randomNumber(),
-            "name" => $faker->word,
-        ]);
-
-        return (new Psr17Factory())->createServerRequest("GET", $firstUri);
-    }
-
-    public function createLastRouteRequest(RouteCollection $routes): ServerRequestInterface
-    {
-        $faker = Faker\Factory::create();
-
-        $generator = UriGenerator::create($routes);
-
-        $name = (string)($routes->count() - 1);
-
-        $lastUri = $generator->generate($name, [
-            "id" => $faker->randomNumber(),
-            "name" => $faker->word,
-        ]);
-
-        return (new Psr17Factory())->createServerRequest("DELETE", $lastUri);
-    }
-
-    public function createNoRouteRequest()
-    {
-        return (new Psr17Factory())->createServerRequest("GET", "/api/v2/does/not/exist");
-    }
-
-    public function showRoutes(): void
-    {
-        foreach ($this->routes->all() as $index => $route) {
-            $method = $route->getMethod();
-            $definition = $route->getPath()->getDefinition();
-
-            var_dump("[$index] $method:$definition");
-        }
-    }
-
-    public function showRequests(): void
-    {
-        foreach ($this->requests as $name => $request) {
-            $method = $request->getMethod();
-            $uri = $request->getUri()->getPath();
-
-            var_dump("[$name] $method:$uri");
-        }
     }
 }
