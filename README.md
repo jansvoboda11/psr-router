@@ -20,7 +20,7 @@ The only requirements are PHP 7.2 and few PSR packages.
 
 The API is designed to be really intuitive.
 Most of the time, you will interact with the `RouteCollection` class where you will register your routes.
-The `Router` class matches incoming HTTP requests against defined routes and using `UriGenerator` you can create URIs of your routes.
+The `Router` class matches incoming HTTP requests against defined routes and using `UriGenerator` you can create URIs pointing to routes.
 
 ### Registering routes
 
@@ -68,19 +68,17 @@ The defaults can be overridden by providing custom `Types` instance when creatin
 #### Optional part
 
 An optional part is a suffix of the URI that may not be present in some requests.
-Optional parts can be nested and contain both static text and dynamic attributes.
-To declare a part of the definition as optional, put it in square brackets: `[/{year:number}]`.
+Optional parts may contain both static text and dynamic attributes and can be nested.
+To declare part of the definition as optional, put it in square brackets: `[/{year:number}]`.
 
 ### Matching incoming requests
 
-The `Router` class processes incoming requests based on the route collection.
-Its `match` method accepts instance of the `ServerRequestInterface`.
-The method returns a `Match` if the request matches any route definition.
-The match contains the matched route and modified request with filled route attributes.
+The `Router` class tries to match incoming requests to definitions of your routes.
+Its `match` method accepts instances of `ServerRequestInterface` and returns a `Match` object if the request matches any route definition.
+The result contains the matched route and modified request filled with request URI attributes.
 
-If the incoming request does not match any route definition, the method throws a `Failure`.
-The failure holds the original request and an array of routes that would match the request if a different HTTP method was used.
-The array is indexed by their respective methods.
+If the incoming request does not match any route definition, the method throws a `Failure` exception.
+The exception holds the original request and an array of routes that would match the request if a different HTTP method was used (this is useful for `AutomaticOptionsMiddleware`).
 
 ```php
 /** @var ServerRequestInterface $request */
@@ -111,7 +109,7 @@ The library also provides five middleware that take care of few things for you. 
 ### Generating route URIs
 
 The **Router** library is also able to generate URIs from route specifications.
-This process is sometimes called *reverse routing* and it can be  useful when you want to dynamically create links in a declarative way.
+This process is sometimes called *reverse routing* and it can be  useful when you want to create links to your routes in a declarative way.
 
 After creating an instance of `UriGenerator` with a route collection, you can use its `generate` method.
 It accepts the route name, the attributes that will be filled in and outputs a complete URI.
