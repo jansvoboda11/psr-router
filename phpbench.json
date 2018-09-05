@@ -6,7 +6,7 @@
         "simple": {
             "generator": "table",
             "break": ["groups"],
-            "cols": ["subject", "mean", "diff"]
+            "cols": ["params", "mean", "diff"]
         }
     }
 }
