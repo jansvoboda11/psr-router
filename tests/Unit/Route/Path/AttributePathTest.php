@@ -45,13 +45,8 @@ class AttributePathTest extends TestCase
 
     public function test_definition_contains_that_of_nested_part()
     {
-        $path = new AttributePath(
-            "foo",
-            $this->implicit,
-            new AttributePath(
-                "bar",
-                $this->implicit
-            )
+        $path = new AttributePath("foo", $this->implicit,
+            new AttributePath("bar", $this->implicit)
         );
 
         $definition = $path->getDefinition();
@@ -72,13 +67,8 @@ class AttributePathTest extends TestCase
 
     public function test_attributes_include_that_of_nested_part()
     {
-        $path = new AttributePath(
-            "foo",
-            $this->number,
-            new AttributePath(
-                "bar",
-                $this->any
-            )
+        $path = new AttributePath("foo", $this->number,
+            new AttributePath("bar", $this->any)
         );
 
         $attributes = $path->getAttributes();

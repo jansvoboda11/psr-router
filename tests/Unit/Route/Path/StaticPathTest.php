@@ -31,12 +31,8 @@ class StaticPathTest extends TestCase
 
     public function test_definition_contains_that_of_nested_part()
     {
-        $path = new StaticPath(
-            "/api/users/",
-            new AttributePath(
-                "foo",
-                $this->number
-            )
+        $path = new StaticPath("/api/users/",
+            new AttributePath("foo", $this->number)
         );
 
         $definition = $path->getDefinition();
@@ -55,12 +51,8 @@ class StaticPathTest extends TestCase
 
     public function test_attributes_of_the_nested_part_are_returned()
     {
-        $path = new StaticPath(
-            "/api/users/",
-            new AttributePath(
-                "foo",
-                $this->number
-            )
+        $path = new StaticPath("/api/users/",
+            new AttributePath("foo", $this->number)
         );
 
         $attributes = $path->getAttributes();

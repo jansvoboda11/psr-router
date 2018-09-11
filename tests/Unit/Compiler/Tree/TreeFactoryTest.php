@@ -41,15 +41,10 @@ class TreeFactoryTest extends TestCase
 
     public function test_one_route_is_transformed()
     {
-        $path = new StaticPath(
-            "/api/users/",
-            new AttributePath(
-                "id",
-                $this->number,
+        $path = new StaticPath("/api/users/",
+            new AttributePath("id", $this->number,
                 new OptionalPath(
-                    new StaticPath(
-                        "/show"
-                    )
+                    new StaticPath("/show")
                 )
             )
         );
@@ -61,27 +56,15 @@ class TreeFactoryTest extends TestCase
         $tree = $this->factory->create($this->routes->reveal());
 
         $expectedTree = new Tree([
-            new StaticNode(
-                "/api/users/",
-                [
-                    new AttributeNode(
-                        "id",
-                        $this->number,
-                        [
-                            new OptionalNode(
-                                [
-                                    new StaticNode(
-                                        "/show",
-                                        [
-                                            new Leaf($route, 0)
-                                        ]
-                                    )
-                                ]
-                            )
-                        ]
-                    )
-                ]
-            )
+            new StaticNode("/api/users/", [
+                new AttributeNode("id", $this->number, [
+                    new OptionalNode([
+                        new StaticNode("/show", [
+                            new Leaf($route, 0)
+                        ])
+                    ])
+                ])
+            ])
         ]);
 
         self::assertEquals($expectedTree, $tree);
@@ -89,12 +72,8 @@ class TreeFactoryTest extends TestCase
 
     public function test_two_routes_with_same_path_are_transformed()
     {
-        $path = new StaticPath(
-            "/users/",
-            new AttributePath(
-                "id",
-                $this->number
-            )
+        $path = new StaticPath("/users/",
+            new AttributePath("id", $this->number)
         );
 
         $getRoute = new Route("GET", $path, new FakeHandler());
@@ -105,19 +84,12 @@ class TreeFactoryTest extends TestCase
         $tree = $this->factory->create($this->routes->reveal());
 
         $expectedTree = new Tree([
-            new StaticNode(
-                "/users/",
-                [
-                    new AttributeNode(
-                        "id",
-                        $this->number,
-                        [
-                            new Leaf($getRoute, 0),
-                            new Leaf($deleteRoute, 1),
-                        ]
-                    )
-                ]
-            )
+            new StaticNode("/users/", [
+                new AttributeNode("id", $this->number, [
+                    new Leaf($getRoute, 0),
+                    new Leaf($deleteRoute, 1),
+                ])
+            ])
         ]);
 
         self::assertEquals($expectedTree, $tree);
@@ -125,13 +97,8 @@ class TreeFactoryTest extends TestCase
 
     public function test_two_routes_with_different_paths_are_transformed()
     {
-        $path1 = new StaticPath(
-            "/users"
-        );
-
-        $path2 = new StaticPath(
-            "/orders"
-        );
+        $path1 = new StaticPath("/users");
+        $path2 = new StaticPath("/orders");
 
         $route1 = new Route("GET", $path1, new FakeHandler());
         $route2 = new Route("GET", $path2, new FakeHandler());
@@ -141,18 +108,12 @@ class TreeFactoryTest extends TestCase
         $tree = $this->factory->create($this->routes->reveal());
 
         $expectedTree = new Tree([
-            new StaticNode(
-                "/users",
-                [
-                    new Leaf($route1, 0)
-                ]
-            ),
-            new StaticNode(
-                "/orders",
-                [
-                    new Leaf($route2, 1)
-                ]
-            )
+            new StaticNode("/users", [
+                new Leaf($route1, 0)
+            ]),
+            new StaticNode("/orders", [
+                new Leaf($route2, 1)
+            ])
         ]);
 
         self::assertEquals($expectedTree, $tree);

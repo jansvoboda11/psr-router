@@ -30,9 +30,7 @@ class TypesTest extends TestCase
     public function test_it_requires_at_least_one_type()
     {
         $this->expectException(InvalidTypes::class);
-        $this->expectExceptionMessage(
-            "At least one type must be provided"
-        );
+        $this->expectExceptionMessage("At least one type must be provided");
 
         new TypeCollection([]);
     }

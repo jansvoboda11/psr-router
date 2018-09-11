@@ -24,9 +24,7 @@ class OptionalPathTest extends TestCase
     public function test_square_brackets_surround_the_definition()
     {
         $path = new OptionalPath(
-            new StaticPath(
-                "/optional"
-            )
+            new StaticPath("/optional")
         );
 
         $definition = $path->getDefinition();
@@ -37,10 +35,7 @@ class OptionalPathTest extends TestCase
     public function test_nested_attribute_is_made_optional()
     {
         $path = new OptionalPath(
-            new AttributePath(
-                "foo",
-                $this->any
-            )
+            new AttributePath("foo", $this->any)
         );
 
         $attributes = $path->getAttributes();
@@ -54,10 +49,7 @@ class OptionalPathTest extends TestCase
     {
         $path = new OptionalPath(
             new OptionalPath(
-                new AttributePath(
-                    "foo",
-                    $this->any
-                )
+                new AttributePath("foo", $this->any)
             )
         );
 

@@ -52,15 +52,10 @@ class PathPatternTest extends TestCase
 
     public function test_build_pattern_for_complex_path()
     {
-        $complex = new StaticPath(
-            "/users",
+        $complex = new StaticPath("/users",
             new OptionalPath(
-                new StaticPath(
-                    "/",
-                    new AttributePath(
-                        "id",
-                        $this->number
-                    )
+                new StaticPath("/",
+                    new AttributePath("id", $this->number)
                 )
             )
         );

@@ -16,15 +16,10 @@ class PathVisitorTest extends TestCase
     {
         $number = new Type("number", "\d+");
 
-        $path = new StaticPath(
-            "/users",
+        $path = new StaticPath("/users",
             new OptionalPath(
-                new StaticPath(
-                    "/",
-                    new AttributePath(
-                        "id",
-                        $number
-                    )
+                new StaticPath("/",
+                    new AttributePath("id", $number)
                 )
             )
         );

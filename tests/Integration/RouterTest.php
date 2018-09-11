@@ -178,9 +178,7 @@ class RouterTest extends TestCase
         $routes->delete("/users", new FakeHandler());
 
         $this->expectException(Failure::class);
-        $this->expectExceptionMessage(
-            "Failed to match incoming request, acceptable methods: [POST, DELETE]"
-        );
+        $this->expectExceptionMessage("Failed to match incoming request, acceptable methods: [POST, DELETE]");
 
         (new Router($routes, $compiler))->match($request);
     }

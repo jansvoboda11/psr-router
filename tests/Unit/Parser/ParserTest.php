@@ -61,12 +61,8 @@ class ParserTest extends TestCase
 
         $path = $this->parser->parse($definition, $this->types);
 
-        $expectedPath = new StaticPath(
-            "/users/",
-            new AttributePath(
-                "id",
-                $this->implicit
-            )
+        $expectedPath = new StaticPath("/users/",
+            new AttributePath("id", $this->implicit)
         );
 
         self::assertEquals($expectedPath, $path);
@@ -78,12 +74,8 @@ class ParserTest extends TestCase
 
         $path = $this->parser->parse($definition, $this->types);
 
-        $expectedPath = new StaticPath(
-            "/users/",
-            new AttributePath(
-                "id",
-                $this->any
-            )
+        $expectedPath = new StaticPath("/users/",
+            new AttributePath("id", $this->any)
         );
 
         self::assertEquals($expectedPath, $path);
@@ -95,17 +87,10 @@ class ParserTest extends TestCase
 
         $path = $this->parser->parse($definition, $this->types);
 
-        $expectedPath = new StaticPath(
-            "/users/",
-            new AttributePath(
-                "name",
-                $this->any,
-                new StaticPath(
-                    "/",
-                    new AttributePath(
-                        "id",
-                        $this->number
-                    )
+        $expectedPath = new StaticPath("/users/",
+            new AttributePath("name", $this->any,
+                new StaticPath("/",
+                    new AttributePath("id", $this->number)
                 )
             )
         );
@@ -119,15 +104,10 @@ class ParserTest extends TestCase
 
         $path = $this->parser->parse($definition, $this->types);
 
-        $expectedPath = new StaticPath(
-            "/users",
+        $expectedPath = new StaticPath("/users",
             new OptionalPath(
-                new StaticPath(
-                    "/",
-                    new AttributePath(
-                        "name",
-                        $this->any
-                    )
+                new StaticPath("/",
+                    new AttributePath("name", $this->any)
                 )
             )
         );
@@ -141,18 +121,11 @@ class ParserTest extends TestCase
 
         $path = $this->parser->parse($definition, $this->types);
 
-        $expectedPath = new StaticPath(
-            "/users/",
-            new AttributePath(
-                "name",
-                $this->any,
+        $expectedPath = new StaticPath("/users/",
+            new AttributePath("name", $this->any,
                 new OptionalPath(
-                    new StaticPath(
-                        "/",
-                        new AttributePath(
-                            "id",
-                            $this->number
-                        )
+                    new StaticPath("/",
+                        new AttributePath("id", $this->number)
                     )
                 )
             )

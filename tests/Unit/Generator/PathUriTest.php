@@ -37,12 +37,8 @@ class PathUriTest extends TestCase
 
     public function test_uri_with_single_attribute_is_generated()
     {
-        $path = new StaticPath(
-            "/users/",
-            new AttributePath(
-                "id",
-                $this->number
-            )
+        $path = new StaticPath("/users/",
+            new AttributePath("id", $this->number)
         );
 
         $uri = new PathUri($path, [
@@ -54,16 +50,10 @@ class PathUriTest extends TestCase
 
     public function test_uri_with_multiple_attributes_is_generated()
     {
-        $path = new StaticPath(
-            "/users/",
-            new AttributePath(
-                "id",
-                $this->number,
-                new StaticPath(
-                    "/",
-                    new AttributePath(
-                        "name",
-                        $this->any
+        $path = new StaticPath("/users/",
+            new AttributePath("id", $this->number,
+                new StaticPath("/",
+                    new AttributePath("name", $this->any
                     )
                 )
             )
@@ -79,18 +69,11 @@ class PathUriTest extends TestCase
 
     public function test_uri_with_optional_argument_is_generated()
     {
-        $path = new StaticPath(
-            "/users/",
-            new AttributePath(
-                "id",
-                $this->number,
+        $path = new StaticPath("/users/",
+            new AttributePath("id", $this->number,
                 new OptionalPath(
-                    new StaticPath(
-                        "/",
-                        new AttributePath(
-                            "name",
-                            $this->any
-                        )
+                    new StaticPath("/",
+                        new AttributePath("name", $this->any)
                     )
                 )
             )
@@ -106,15 +89,10 @@ class PathUriTest extends TestCase
 
     public function test_optional_static_suffix_is_ignored()
     {
-        $path = new StaticPath(
-            "/users/",
-            new AttributePath(
-                "id",
-                $this->number,
+        $path = new StaticPath("/users/",
+            new AttributePath("id", $this->number,
                 new OptionalPath(
-                    new StaticPath(
-                        "/edit"
-                    )
+                    new StaticPath("/edit")
                 )
             )
         );
@@ -128,18 +106,11 @@ class PathUriTest extends TestCase
 
     public function test_optional_attribute_suffix_is_ignored()
     {
-        $path = new StaticPath(
-            "/users/",
-            new AttributePath(
-                "id",
-                $this->number,
+        $path = new StaticPath("/users/",
+            new AttributePath("id", $this->number,
                 new OptionalPath(
-                    new StaticPath(
-                        "/",
-                        new AttributePath(
-                            "name",
-                            $this->any
-                        )
+                    new StaticPath("/",
+                        new AttributePath("name", $this->any)
                     )
                 )
             )
@@ -154,12 +125,8 @@ class PathUriTest extends TestCase
 
     public function test_non_existent_attribute_is_ignored()
     {
-        $path = new StaticPath(
-            "/users/",
-            new AttributePath(
-                "id",
-                $this->any
-            )
+        $path = new StaticPath("/users/",
+            new AttributePath("id", $this->any)
         );
 
         $uri = new PathUri($path, [
@@ -172,42 +139,26 @@ class PathUriTest extends TestCase
 
     public function test_missing_required_attribute_causes_failure()
     {
-        $path = new StaticPath(
-            "/users/",
-            new AttributePath(
-                "id",
-                $this->number
-            )
+        $path = new StaticPath("/users/",
+            new AttributePath("id", $this->number)
         );
 
         $this->expectException(InvalidAttribute::class);
-        $this->expectExceptionMessage(
-            "The value for attribute 'id' is missing"
-        );
+        $this->expectExceptionMessage("The value for attribute 'id' is missing");
 
         new PathUri($path);
     }
 
     public function test_missing_preceding_optional_attribute_causes_failure()
     {
-        $path = new StaticPath(
-            "/users/",
-            new AttributePath(
-                "id",
-                $this->number,
+        $path = new StaticPath("/users/",
+            new AttributePath("id", $this->number,
                 new OptionalPath(
-                    new StaticPath(
-                        "/",
-                        new AttributePath(
-                            "first",
-                            $this->any,
+                    new StaticPath("/",
+                        new AttributePath("first", $this->any,
                             new OptionalPath(
-                                new StaticPath(
-                                    "/",
-                                    new AttributePath(
-                                        "last",
-                                        $this->any
-                                    )
+                                new StaticPath("/",
+                                    new AttributePath("last", $this->any)
                                 )
                             )
                         )
@@ -217,9 +168,7 @@ class PathUriTest extends TestCase
         );
 
         $this->expectException(InvalidAttribute::class);
-        $this->expectExceptionMessage(
-            "The value for attribute 'first' is missing"
-        );
+        $this->expectExceptionMessage("The value for attribute 'first' is missing");
 
         new PathUri($path, [
             "id" => 42,
@@ -229,18 +178,12 @@ class PathUriTest extends TestCase
 
     public function test_attribute_type_mismatch_causes_failure()
     {
-        $path = new StaticPath(
-            "/users/",
-            new AttributePath(
-                "id",
-                $this->number
-            )
+        $path = new StaticPath("/users/",
+            new AttributePath("id", $this->number)
         );
 
         $this->expectException(InvalidAttribute::class);
-        $this->expectExceptionMessage(
-            "The value 'i42' of attribute 'id' does not match the specified pattern: \d+"
-        );
+        $this->expectExceptionMessage("The value 'i42' of attribute 'id' does not match the specified pattern: \d+");
 
         new PathUri($path, [
             "id" => "i42",

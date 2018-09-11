@@ -23,9 +23,7 @@ class TypeTest extends TestCase
     public function test_it_requires_valid_pattern()
     {
         $this->expectException(InvalidTypes::class);
-        $this->expectExceptionMessage(
-            "The pattern '[0-9+' of type 'number' is invalid"
-        );
+        $this->expectExceptionMessage("The pattern '[0-9+' of type 'number' is invalid");
 
         new Type("number", "[0-9+");
     }
