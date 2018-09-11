@@ -18,7 +18,6 @@
         "psr/http-server-middleware": "^1.0"
     },
     "require-dev": {
-        "fzaninotto/faker": "^1.8",
         "nyholm/psr7": "^1.0",
         "phpbench/phpbench": "^0.14.0",
         "phpstan/phpstan": "^0.10.0",

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SvobodaBench\Router;
 
-use Faker\Factory as Faker;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Http\Message\ServerRequestInterface;
 use Svoboda\Router\Compiler\Code\LinearCodeFactory;
@@ -55,14 +54,13 @@ trait BenchmarkHelper
     protected static function createRoutes(int $count): RouteCollection
     {
         $routes = RouteCollection::create();
-        $faker = Faker::create();
 
         $methods = ["GET", "POST", "PATCH", "DELETE"];
 
         $pathCount = $count / count($methods);
 
-        $words = array_map(function () use ($faker) {
-            return [$faker->word, $faker->word];
+        $words = array_map(function () {
+            return [self::random_word(), self::random_word()];
         }, range(1, $pathCount));
 
         foreach ($words as $pathIndex => $pair) {
@@ -81,13 +79,11 @@ trait BenchmarkHelper
 
     protected static function createFirstRouteRequest(RouteCollection $routes): ServerRequestInterface
     {
-        $faker = Faker::create();
-
         $generator = UriGenerator::create($routes);
 
         $firstUri = $generator->generate("0", [
-            "id" => $faker->randomNumber(),
-            "name" => $faker->word,
+            "id" => self::random_integer(),
+            "name" => self::random_word(),
         ]);
 
         return (new Psr17Factory())->createServerRequest("GET", $firstUri);
@@ -95,15 +91,13 @@ trait BenchmarkHelper
 
     protected static function createLastRouteRequest(RouteCollection $routes): ServerRequestInterface
     {
-        $faker = Faker::create();
-
         $generator = UriGenerator::create($routes);
 
         $name = (string)($routes->count() - 1);
 
         $lastUri = $generator->generate($name, [
-            "id" => $faker->randomNumber(),
-            "name" => $faker->word,
+            "id" => self::random_integer(),
+            "name" => self::random_word(),
         ]);
 
         return (new Psr17Factory())->createServerRequest("DELETE", $lastUri);
@@ -132,5 +126,15 @@ trait BenchmarkHelper
 
             var_dump("[$name] $method:$uri");
         }
+    }
+
+    protected static function random_word(int $length = 8): string
+    {
+        return bin2hex(random_bytes($length));
+    }
+
+    protected static function random_integer(int $max = PHP_INT_MAX): int
+    {
+        return random_int(0, $max);
     }
 }
