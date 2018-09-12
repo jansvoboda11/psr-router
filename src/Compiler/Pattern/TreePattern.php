@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Svoboda\Router\Compiler\Pattern;
 
 use Svoboda\Router\Compiler\Tree\AttributeNode;
-use Svoboda\Router\Compiler\Tree\Leaf;
+use Svoboda\Router\Compiler\Tree\LeafNode;
 use Svoboda\Router\Compiler\Tree\OptionalNode;
 use Svoboda\Router\Compiler\Tree\StaticNode;
 use Svoboda\Router\Compiler\Tree\Tree;
@@ -81,7 +81,7 @@ class TreePattern extends TreeVisitor
         $this->maybeEndOrGroup();
     }
 
-    public function enterLeaf(Leaf $node): void
+    public function enterLeaf(LeafNode $node): void
     {
         $this->maybeInsertInOrGroup();
 

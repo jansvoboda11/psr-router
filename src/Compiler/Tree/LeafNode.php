@@ -9,7 +9,7 @@ use Svoboda\Router\Route\Route;
 /**
  * Leaf representing the end of a route path.
  */
-class Leaf implements TreeNode
+class LeafNode implements TreeNode
 {
     /**
      * The route.

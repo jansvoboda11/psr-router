@@ -6,7 +6,7 @@ namespace SvobodaTest\Router\Unit\Compiler\Tree;
 
 use Prophecy\Prophecy\ObjectProphecy;
 use Svoboda\Router\Compiler\Tree\AttributeNode;
-use Svoboda\Router\Compiler\Tree\Leaf;
+use Svoboda\Router\Compiler\Tree\LeafNode;
 use Svoboda\Router\Compiler\Tree\OptionalNode;
 use Svoboda\Router\Compiler\Tree\StaticNode;
 use Svoboda\Router\Compiler\Tree\Tree;
@@ -60,7 +60,7 @@ class TreeFactoryTest extends TestCase
                 new AttributeNode("id", $this->number, [
                     new OptionalNode([
                         new StaticNode("/show", [
-                            new Leaf($route, 0)
+                            new LeafNode($route, 0)
                         ])
                     ])
                 ])
@@ -86,8 +86,8 @@ class TreeFactoryTest extends TestCase
         $expectedTree = new Tree([
             new StaticNode("/users/", [
                 new AttributeNode("id", $this->number, [
-                    new Leaf($getRoute, 0),
-                    new Leaf($deleteRoute, 1),
+                    new LeafNode($getRoute, 0),
+                    new LeafNode($deleteRoute, 1),
                 ])
             ])
         ]);
@@ -109,10 +109,10 @@ class TreeFactoryTest extends TestCase
 
         $expectedTree = new Tree([
             new StaticNode("/users", [
-                new Leaf($route1, 0)
+                new LeafNode($route1, 0)
             ]),
             new StaticNode("/orders", [
-                new Leaf($route2, 1)
+                new LeafNode($route2, 1)
             ])
         ]);
 

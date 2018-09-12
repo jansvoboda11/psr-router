@@ -92,9 +92,9 @@ abstract class TreeVisitor
     /**
      * Enters the leaf node.
      *
-     * @param Leaf $node
+     * @param LeafNode $node
      */
-    public function enterLeaf(Leaf $node): void
+    public function enterLeaf(LeafNode $node): void
     {
         //
     }
@@ -102,9 +102,9 @@ abstract class TreeVisitor
     /**
      * Leaves the leaf node.
      *
-     * @param Leaf $node
+     * @param LeafNode $node
      */
-    public function leaveLeaf(Leaf $node): void
+    public function leaveLeaf(LeafNode $node): void
     {
         //
     }

@@ -112,7 +112,7 @@ class TreeFactory
             return $this->createOptionalNode();
         }
 
-        return $this->createLeaf($route, $index);
+        return $this->createLeafNode($route, $index);
     }
 
     /**
@@ -152,10 +152,10 @@ class TreeFactory
      *
      * @param Route $route
      * @param int $index
-     * @return Leaf
+     * @return LeafNode
      */
-    private function createLeaf(Route $route, int $index): Leaf
+    private function createLeafNode(Route $route, int $index): LeafNode
     {
-        return new Leaf($route, $index);
+        return new LeafNode($route, $index);
     }
 }

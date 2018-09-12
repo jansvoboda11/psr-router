@@ -40,7 +40,7 @@ interface TreeNode
     /**
      * Gathers leaves of the sub-tree.
      *
-     * @return Leaf[]
+     * @return LeafNode[]
      */
     public function gatherLeaves(): array;
 }
