@@ -19,7 +19,7 @@ class RouterBench
 
     /** @var RouteCollection */
     private $routes;
-    
+
     /** @var Router[] */
     private $routers;
 
