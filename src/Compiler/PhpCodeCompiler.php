@@ -56,47 +56,47 @@ class PhpCodeCompiler implements Compiler
     private function createClass(string $class, string $routesCode): string
     {
         return <<<CODE
-use Psr\Http\Message\ServerRequestInterface;
-use Svoboda\Router\Matcher\AbstractMatcher;
-use Svoboda\Router\Failure;
-use Svoboda\Router\Match;
-use Svoboda\Router\RouteCollection;
-
-class $class extends AbstractMatcher
-{
-    private \$routes;
-
-    public function __construct(RouteCollection \$routes)
-    {
-        \$this->routes = \$routes;
-    }
-
-    public function match(ServerRequestInterface \$request): Match
-    {
-        \$matches = [];
-        \$allowed = [];
-
-        \$index = \$this->matchInner(\$request, \$matches, \$allowed);
-
-        if (\$index === null) {
-            throw new Failure(\$allowed, \$request);
-        }
-
-        \$route = \$this->routes->all()[\$index];
-
-        return \$this->createResult(\$route, \$request, \$matches);
-    }
-
-    private function matchInner(ServerRequestInterface \$request, array &\$matches, array &\$allowed): ?int
-    {
-        \$path = \$request->getUri()->getPath();
-        \$method = \$request->getMethod();
-
-        $routesCode
-
-        return null;
-    }
-}
-CODE;
+            use Psr\Http\Message\ServerRequestInterface;
+            use Svoboda\Router\Matcher\AbstractMatcher;
+            use Svoboda\Router\Failure;
+            use Svoboda\Router\Match;
+            use Svoboda\Router\RouteCollection;
+            
+            class $class extends AbstractMatcher
+            {
+                private \$routes;
+            
+                public function __construct(RouteCollection \$routes)
+                {
+                    \$this->routes = \$routes;
+                }
+            
+                public function match(ServerRequestInterface \$request): Match
+                {
+                    \$matches = [];
+                    \$allowed = [];
+            
+                    \$index = \$this->matchInner(\$request, \$matches, \$allowed);
+            
+                    if (\$index === null) {
+                        throw new Failure(\$allowed, \$request);
+                    }
+            
+                    \$route = \$this->routes->all()[\$index];
+            
+                    return \$this->createResult(\$route, \$request, \$matches);
+                }
+            
+                private function matchInner(ServerRequestInterface \$request, array &\$matches, array &\$allowed): ?int
+                {
+                    \$path = \$request->getUri()->getPath();
+                    \$method = \$request->getMethod();
+            
+                    $routesCode
+            
+                    return null;
+                }
+            }
+            CODE;
     }
 }

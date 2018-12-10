@@ -140,10 +140,10 @@ class ParserTest extends TestCase
 
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
-The attribute name is missing:
-/users/{}
-        ^
-MESSAGE
+            The attribute name is missing:
+            /users/{}
+                    ^
+            MESSAGE
         );
 
         $this->parser->parse($definition, $this->types);
@@ -155,10 +155,10 @@ MESSAGE
 
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
-The attribute name is missing:
-/users/{:any}
-        ^
-MESSAGE
+            The attribute name is missing:
+            /users/{:any}
+                    ^
+            MESSAGE
         );
 
         $this->parser->parse($definition, $this->types);
@@ -170,10 +170,10 @@ MESSAGE
 
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
-The attribute name exceeded maximum allowed length of 32 characters:
-/users/{wayTooLongAttributeNameNoOneShouldNeed:any}
-                                             ^
-MESSAGE
+            The attribute name exceeded maximum allowed length of 32 characters:
+            /users/{wayTooLongAttributeNameNoOneShouldNeed:any}
+                                                         ^
+            MESSAGE
         );
 
         $this->parser->parse($definition, $this->types);
@@ -185,10 +185,10 @@ MESSAGE
 
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
-Unexpected character (expected ':', '}', 'alphanumeric'):
-/users/{i%d:any}
-         ^
-MESSAGE
+            Unexpected character (expected ':', '}', 'alphanumeric'):
+            /users/{i%d:any}
+                     ^
+            MESSAGE
         );
 
         $this->parser->parse($definition, $this->types);
@@ -200,10 +200,10 @@ MESSAGE
 
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
-The attribute type is missing:
-/users/{id:}
-           ^
-MESSAGE
+            The attribute type is missing:
+            /users/{id:}
+                       ^
+            MESSAGE
         );
 
         $this->parser->parse($definition, $this->types);
@@ -215,10 +215,10 @@ MESSAGE
 
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
-Unexpected character (expected '}', 'alphanumeric'):
-/users/{id:a%ny}
-            ^
-MESSAGE
+            Unexpected character (expected '}', 'alphanumeric'):
+            /users/{id:a%ny}
+                        ^
+            MESSAGE
         );
 
         $this->parser->parse($definition, $this->types);
@@ -230,10 +230,10 @@ MESSAGE
 
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
-The attribute type exceeded maximum allowed length of 32 characters:
-/users/{id:wayTooLongAttributeTypeNoOneShouldNeed}
-                                                ^
-MESSAGE
+            The attribute type exceeded maximum allowed length of 32 characters:
+            /users/{id:wayTooLongAttributeTypeNoOneShouldNeed}
+                                                            ^
+            MESSAGE
         );
 
         $this->parser->parse($definition, $this->types);
@@ -245,10 +245,10 @@ MESSAGE
 
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
-Unexpected character:
-/users/id}
-         ^
-MESSAGE
+            Unexpected character:
+            /users/id}
+                     ^
+            MESSAGE
         );
 
         $this->parser->parse($definition, $this->types);
@@ -260,10 +260,10 @@ MESSAGE
 
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
-Unexpected end of route:
-/users/{id
-          ^
-MESSAGE
+            Unexpected end of route:
+            /users/{id
+                      ^
+            MESSAGE
         );
 
         $this->parser->parse($definition, $this->types);
@@ -275,10 +275,10 @@ MESSAGE
 
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
-Unexpected character:
-/users/{id}]
-           ^
-MESSAGE
+            Unexpected character:
+            /users/{id}]
+                       ^
+            MESSAGE
         );
 
         $this->parser->parse($definition, $this->types);
@@ -290,10 +290,10 @@ MESSAGE
 
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
-Unexpected end of route:
-/users[/{id}
-            ^
-MESSAGE
+            Unexpected end of route:
+            /users[/{id}
+                        ^
+            MESSAGE
         );
 
         $this->parser->parse($definition, $this->types);
@@ -305,10 +305,10 @@ MESSAGE
 
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
-Optional sequence cannot be followed by anything else:
-/users[/{id}]/{name}
-             ^
-MESSAGE
+            Optional sequence cannot be followed by anything else:
+            /users[/{id}]/{name}
+                         ^
+            MESSAGE
         );
 
         $this->parser->parse($definition, $this->types);
@@ -320,10 +320,10 @@ MESSAGE
 
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
-Unexpected character (expected ':', '}', 'alphanumeric'):
-/users[/{id]}
-           ^
-MESSAGE
+            Unexpected character (expected ':', '}', 'alphanumeric'):
+            /users[/{id]}
+                       ^
+            MESSAGE
         );
 
         $this->parser->parse($definition, $this->types);
@@ -335,10 +335,10 @@ MESSAGE
 
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
-Unexpected character (expected ':', '}', 'alphanumeric'):
-/users/{id[ing}]
-          ^
-MESSAGE
+            Unexpected character (expected ':', '}', 'alphanumeric'):
+            /users/{id[ing}]
+                      ^
+            MESSAGE
         );
 
         $this->parser->parse($definition, $this->types);
@@ -350,9 +350,9 @@ MESSAGE
 
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
-Multiple attributes with name 'id':
-/users/{id}/{id:number}
-MESSAGE
+            Multiple attributes with name 'id':
+            /users/{id}/{id:number}
+            MESSAGE
         );
 
         $this->parser->parse($definition, $this->types);
@@ -364,9 +364,9 @@ MESSAGE
 
         $this->expectException(InvalidRoute::class);
         $this->expectExceptionMessage(<<<MESSAGE
-Unknown type 'none' of attribute 'id':
-/users/{id:none}
-MESSAGE
+            Unknown type 'none' of attribute 'id':
+            /users/{id:none}
+            MESSAGE
         );
 
         $this->parser->parse($definition, $this->types);

@@ -54,17 +54,17 @@ class PathCode extends PathVisitor
         $pathCode = $this->getNextCode();
 
         $code = <<<CODE
+            
+            // route
+            
+            \$uri = \$path;
+            \$matches = [];
+            
+            $pathCode
+            
+            // route end
 
-// route
-
-\$uri = \$path;
-\$matches = [];
-
-$pathCode
-
-// route end
-
-CODE;
+            CODE;
 
         $this->addCode($code);
     }
@@ -80,19 +80,19 @@ CODE;
 
         $code = <<<CODE
 
-// attribute path
+            // attribute path
+            
+            if (preg_match("#^($pattern)#", \$uri, \$ms) === 1) {
+                \$matches[] = \$ms[1];
+                \$uri = substr(\$uri, strlen(\$ms[1]));
+            
+                $nextCode
+            
+            }
+            
+            // attribute path end
 
-if (preg_match("#^($pattern)#", \$uri, \$ms) === 1) {
-    \$matches[] = \$ms[1];
-    \$uri = substr(\$uri, strlen(\$ms[1]));
-
-    $nextCode
-
-}
-
-// attribute path end
-
-CODE;
+            CODE;
 
         $this->addCode($code);
     }
@@ -108,17 +108,17 @@ CODE;
 
         $code = <<<CODE
 
-// optional path
+            // optional path
+            
+            $methodCode
+            
+            $nextCode
+            
+            $methodCode
+            
+            // optional path end
 
-$methodCode
-
-$nextCode
-
-$methodCode
-
-// optional path end
-
-CODE;
+            CODE;
 
         $this->addCode($code);
     }
@@ -135,18 +135,18 @@ CODE;
 
         $code = <<<CODE
 
-// static path
+            // static path
+            
+            if (strpos(\$uri, "$static") === 0) {
+                \$uri = substr(\$uri, $staticLength);
+            
+                 $nextCode
+            
+            }
+            
+            // static path end
 
-if (strpos(\$uri, "$static") === 0) {
-    \$uri = substr(\$uri, $staticLength);
-
-     $nextCode
-
-}
-
-// static path end
-
-CODE;
+            CODE;
 
         $this->addCode($code);
     }
@@ -173,19 +173,19 @@ CODE;
 
         return <<<CODE
 
-// method check
+            // method check
+            
+            if (\$uri === "") {
+                if (\$method === "$method") {
+                    return $index;
+                } else {
+                    \$allowed["$method"] = $index;
+                }
+            }
+            
+            // method check end
 
-if (\$uri === "") {
-    if (\$method === "$method") {
-        return $index;
-    } else {
-        \$allowed["$method"] = $index;
-    }
-}
-
-// method check end
-
-CODE;
+            CODE;
     }
 
     /**

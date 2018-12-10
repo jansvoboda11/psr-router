@@ -52,10 +52,10 @@ class TreeCode extends TreeVisitor
 
         $this->code .= <<<CODE
 
-\$uri = \$path;
-\$matches = [];
+            \$uri = \$path;
+            \$matches = [];
 
-CODE;
+            CODE;
     }
 
     /**
@@ -77,16 +77,16 @@ CODE;
 
         $this->code .= <<<CODE
 
-// attribute path
+            // attribute path
+            
+            \$uri{$this->nesting} = \$uri;
+            \$matches{$this->nesting} = \$matches;
+            
+            if (preg_match("#^($pattern)#", \$uri, \$ms) === 1) {
+                \$matches[] = \$ms[1];
+                \$uri = substr(\$uri, strlen(\$ms[1]));
 
-\$uri{$this->nesting} = \$uri;
-\$matches{$this->nesting} = \$matches;
-
-if (preg_match("#^($pattern)#", \$uri, \$ms) === 1) {
-    \$matches[] = \$ms[1];
-    \$uri = substr(\$uri, strlen(\$ms[1]));
-
-CODE;
+            CODE;
     }
 
     /**
@@ -95,15 +95,15 @@ CODE;
     public function leaveAttribute(AttributeNode $node): void
     {
         $this->code .= <<<CODE
+            
+            }
+            
+            \$uri = \$uri{$this->nesting};
+            \$matches = \$matches{$this->nesting};
+            
+            // attribute path end
 
-}
-
-\$uri = \$uri{$this->nesting};
-\$matches = \$matches{$this->nesting};
-
-// attribute path end
-
-CODE;
+            CODE;
 
         $this->leave();
     }
@@ -117,9 +117,9 @@ CODE;
 
         $this->code .= <<<CODE
 
-// optional path
+            // optional path
 
-CODE;
+            CODE;
 
         $node->skipToLeaves($this);
     }
@@ -133,9 +133,9 @@ CODE;
 
         $this->code .= <<<CODE
 
-// optional path end
+            // optional path end
 
-CODE;
+            CODE;
 
         $this->leave();
     }
@@ -152,14 +152,14 @@ CODE;
 
         $this->code .= <<<CODE
 
-// static path
+            // static path
+            
+            \$uri{$this->nesting} = \$uri;
+            
+            if (strpos(\$uri, "$static") === 0) {
+                \$uri = substr(\$uri, $staticLength);
 
-\$uri{$this->nesting} = \$uri;
-
-if (strpos(\$uri, "$static") === 0) {
-    \$uri = substr(\$uri, $staticLength);
-
-CODE;
+            CODE;
     }
 
     /**
@@ -169,13 +169,13 @@ CODE;
     {
         $this->code .= <<<CODE
 
-}
+            }
+            
+            \$uri = \$uri{$this->nesting};
+            
+            // static path end
 
-\$uri = \$uri{$this->nesting};
-
-// static path end
-
-CODE;
+            CODE;
 
         $this->leave();
     }
@@ -192,19 +192,19 @@ CODE;
 
         $this->code .= <<<CODE
 
-// method check
+            // method check
+            
+            if (\$uri === "") {
+                if (\$method === "$method") {
+                    return $index;
+                } else {
+                    \$allowed["$method"] = $index;
+                }
+            }
+            
+            // method check end
 
-if (\$uri === "") {
-    if (\$method === "$method") {
-        return $index;
-    } else {
-        \$allowed["$method"] = $index;
-    }
-}
-
-// method check end
-
-CODE;
+            CODE;
     }
 
     /**
