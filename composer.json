@@ -19,9 +19,9 @@
     },
     "require-dev": {
         "nyholm/psr7": "^1.0",
-        "phpbench/phpbench": "^0.14.0",
+        "phpbench/phpbench": "^0.15.0",
         "phpstan/phpstan": "^0.10.0",
-        "phpunit/phpunit": "^7.3",
+        "phpunit/phpunit": "^7.5",
         "svoboda/dispatcher": "^0.1.0"
     },
     "autoload": {
